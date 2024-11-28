@@ -1,0 +1,35 @@
+# Ignore external libraries
+FFT/
+AudioFile/
+SoundTouch/
+
+# Build artifacts
+build/
+
+# Editor/IDE-specific files
+.vscode/
+
+# Operating system-specific files
+.DS_Store
+Thumbs.db
+
+# General temporary files
+*.log
+*.tmp
+*.swp
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Other generated or temporary files
+*.o
+*.obj
+*.exe
+*.out
+*.a
+*.so
+*.dll
+*.dylib
