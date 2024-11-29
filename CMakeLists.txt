@@ -12,6 +12,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
+find_package(SndFile REQUIRED)
+
 # Add your executable (main.cpp is the entry point)
 add_executable(AutoTune src/main.cpp src/autotune.cpp)
 
@@ -31,3 +33,4 @@ target_include_directories(AutoTune PRIVATE FFT)
 target_link_libraries(AutoTune PRIVATE SoundTouch)
 target_link_libraries(AutoTune PRIVATE AudioFile)
 target_link_libraries(AutoTune PRIVATE kissfft)
+target_link_libraries(AutoTune PRIVATE SndFile::sndfile)

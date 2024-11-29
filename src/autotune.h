@@ -3,6 +3,7 @@
 #include <iostream>
 #include<map>
 #include<vector>
+#include<sndfile.h>
 #include "../SoundTouch/include/SoundTouch.h"
 #include "../FFT/kiss_fft.h"
 #include "../AudioFile/AudioFile.h"
@@ -11,30 +12,31 @@ using namespace soundtouch;
 using namespace std;
 class  Autotune {
     private:
-        static map<int, vector<double>> noteTbl;
+        static double noteTbl [128];
+        static map<string, int> noteOffsets;
+        static int majorSemitones[7];
+        static vector<double> scaleNotes;
+        static map<char, array<int, 7>> intervals;
+        static map<string, double> rootNotes;
+
+        int chunkSize;
         SoundTouch st;
         AudioFile<double> af;
-        vector<double> findNearestNote(vector<double>);
+
+        vector<double> tuneSlice(vector<double>);
         vector<double> generateWindow(int);
         static void processSample();
         double findShiftingFactor(double);
+
         
     public: 
-        int intensity;
-        Autotune(int);
-        void process(const string&);
-        static void fillNoteTable() {
-            // Fill out note table:
-            double f0 = 440.0;
-            double n0 = 69;
-            // Calculate frequencies of each MIDI note
-            for (int midiNote = 0; midiNote < 127; midiNote++) {
-                int octave = midiNote / 12;
-                double freq = f0 * pow(2, (midiNote - n0) / 12);
-                noteTbl[octave].push_back(freq);
-            }
-            int x = 3;
-        }
+        double intensity;
+        string note;
+        char scale; // Major (M) or minor (m)
+        Autotune(double intensity, string note, char scale);
+        void process(const char*);
+        void fillNoteTable();
+
 };
 
 #endif

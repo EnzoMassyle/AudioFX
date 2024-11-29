@@ -1,17 +1,73 @@
 #include "autotune.h"
 
-map<int, vector<double>> Autotune::noteTbl;
-Autotune::Autotune(int intensity) {
+double Autotune::noteTbl [128];
+vector<double> Autotune::scaleNotes;
+
+map<char, array<int, 7>> Autotune::intervals = {
+    {'M', {2, 4, 5, 7, 9, 11, 12}},
+    {'m', {2, 3, 5, 7, 8, 10, 12}}
+};
+
+map<string, double> Autotune::rootNotes = {
+    {"C", 261.63}, 
+    {"C#", 277.18}, 
+    {"D", 293.66}, 
+    {"D#", 311.13}, 
+    {"E", 329.63}, 
+    {"F", 349.23}, 
+    {"F#", 369.99}, 
+    {"G", 392.00}, 
+    {"G#", 415.30 }, 
+    {"A", 440.00}, 
+    {"A#", 466.16}, 
+    {"B", 493.88}, 
+};
+
+
+
+
+
+Autotune::Autotune(double intensity, string note, char scale) {
     this->intensity = intensity;
+    this->note = note;
+    this->scale = scale;
+    this->chunkSize = 8192;
     af.setNumChannels(1);
     af.setSampleRate(44100);
     st.setSampleRate(44100);
     st.setChannels(1);
 }
 
-void Autotune::process(const string& fn) {
+/**
+ * Fill note table depending on the musical scale used
+ */
+void Autotune::fillNoteTable() {
+    double f0 = rootNotes[this->note];
+    double n0 = 69;
+    // Calculate frequencies of each MIDI note
+    for (int midiNote = 0; midiNote < 128; midiNote++) {
+        double freq = f0 * pow(2, (midiNote - n0) / 12);
+        noteTbl[midiNote] = freq;
+    }
+    array<int, 7> semitones = intervals[this->scale];
+    for (int octave = 0; octave < 8; octave++) {
+        double freq = f0 * pow(2, (12 * (octave - 4)) / 12.0);
+        scaleNotes.push_back(freq);
+        for (int n : semitones) {
+            double freq = f0 * pow(2, (n + 12 * (octave - 4)) / 12.0);
+            scaleNotes.push_back(freq);
+        }
+    }
+}
 
-    /* Load file for processing */
+/**
+ * @param fn -> Audio file name
+ * 
+ * Load file and analyze samples, Perform an overlap-add method where audio is broken up into slices. The signal is split up 
+ * into overlapping frames, where each one is individually processed and summed together
+ */
+void Autotune::process(const char* fn) {
+    int chunkSize = this->chunkSize;
     cout << "Loading Audio File ... " << endl;
     try {
         if (!af.load(fn)) {
@@ -23,40 +79,41 @@ void Autotune::process(const string& fn) {
     cout << "Success!" << endl;
     cout << "Processing Audio File..." << endl;
     int numSamples = af.getNumSamplesPerChannel();
-    int paddedSize = ((numSamples + 512 - 1) / 512) * 512; // Round up to the nearest multiple of hop size
+    int paddedSize = ((numSamples + chunkSize - 1) / chunkSize) * chunkSize; // Round up to the nearest multiple of hop size
     af.samples[0].resize(paddedSize, 0); // Pad with zeros
-
-
-    vector<double> window = generateWindow(512);
-
-    for (int start = 0, end = 1024; end < numSamples; start += 512, end += 512) {
+    vector<double> window = generateWindow(chunkSize);
+    vector<double> outputBuffer(af.samples[0].size(), 0.0);
+    for (int start = 0, end = chunkSize; end < numSamples; start += chunkSize / 6, end += chunkSize / 6) {
         vector<double> audioSlice(af.samples[0].begin() + start, af.samples[0].begin() + end);
         for (int i = 0; i < window.size(); i++) {
-            audioSlice[i] *= window[i];
+            audioSlice[i] *=  window[i];
         }
-        vector<double> shiftedSlice = findNearestNote(audioSlice);
+        vector<double> shiftedSlice = tuneSlice(audioSlice);
         for (int i = start, j = 0; j < shiftedSlice.size() && i < end && i < af.samples[0].size(); i++, j++) {
-            af.samples[0][i] += shiftedSlice[j];
+            outputBuffer[i] += shiftedSlice[j] * window[j];
+
         }
     }
-
-    for (int i = 0; i < af.samples[0].size(); i++) {
-        af.samples[0][i] *= 0.5;
-    }
-
-
+    af.samples[0] = outputBuffer;
     cout << "Saving File..." << endl;
-    af.save("test.wav");
+    af.save("../out.wav");
+    cout << "Done!" << endl;
 }
 
-vector<double> Autotune::findNearestNote(vector<double> slice) {
 
-    int fftSize = 1024;
+/**
+ * @param slice -> Chunk of an audio sample
+ * 
+ * Analyze frequencies of the audio slice and tune it to the nearest correct note
+ */
+vector<double> Autotune::tuneSlice(vector<double> slice) {
+    int fftSize = this->chunkSize;
     kiss_fft_cfg cfg = kiss_fft_alloc(fftSize, 0, nullptr, nullptr);
     kiss_fft_cfg inv = kiss_fft_alloc(fftSize, 1, nullptr, nullptr);
     kiss_fft_cpx* in = (kiss_fft_cpx*) malloc(sizeof(kiss_fft_cpx) * fftSize);
     kiss_fft_cpx* out = (kiss_fft_cpx*) malloc(sizeof(kiss_fft_cpx) * fftSize);
     kiss_fft_cpx* shiftedOut = (kiss_fft_cpx*) malloc(sizeof(kiss_fft_cpx) * fftSize);
+
 
     for (int i = 0; i < fftSize; i++) {
         in[i].r = slice[i];
@@ -64,9 +121,7 @@ vector<double> Autotune::findNearestNote(vector<double> slice) {
         shiftedOut[i].r = 0;
         shiftedOut[i].i = 0;
     }
-
     kiss_fft(cfg, in, out);
-
     // Find dominating frequency
     double maxMag = 0;
     int dominatingBin = 0;
@@ -77,7 +132,6 @@ vector<double> Autotune::findNearestNote(vector<double> slice) {
             dominatingBin = i;
         }
     }
-
     double dominatingFrequency = (dominatingBin * af.getSampleRate()) / fftSize;
     double shiftFactor = findShiftingFactor(dominatingFrequency);
     if (shiftFactor == 0) {
@@ -88,31 +142,19 @@ vector<double> Autotune::findNearestNote(vector<double> slice) {
         kiss_fft_free(inv);
         return slice;
     }
-
-
-
     // Apply shifting factor
     for (int i = 0; i < fftSize; i++) {
         int newBin = (int) i * shiftFactor;
         if (newBin < fftSize / 2) {
-            shiftedOut[newBin].r += out[i].r;
-            shiftedOut[newBin].i += out[i].i;
+            shiftedOut[newBin].r += out[i].r * intensity;
+            shiftedOut[newBin].i += out[i].i * intensity;
         }
     }
-    double lowCutoff = 80.0;
-    double highCutoff = 5000.0;
-
-    int  highCutoffBin = (int) (highCutoff / af.getSampleRate()) * fftSize;
-    int  lowCutoffBin =  (int) (lowCutoff / af.getSampleRate()) * fftSize;
-
-    for (int i = highCutoffBin; i < fftSize; i++) {
-        shiftedOut[i].r = 0;
-        shiftedOut[i].i = 0;
-    }
-
-    for (int i = 0; i < lowCutoffBin; i++) {
-        shiftedOut[i].r = 0;
-        shiftedOut[i].i = 0;
+    double maxAmplitude = 0;
+    for (int i = 0; i < fftSize; i++) {
+        if (fabs(in[i].r) > maxAmplitude) {
+            maxAmplitude = fabs(in[i].r);
+        }
     }
 
     // Apply filter
@@ -121,45 +163,46 @@ vector<double> Autotune::findNearestNote(vector<double> slice) {
     for (int i = 0; i < fftSize; i++) {
         output[i] = in[i].r / fftSize;
     }
-
     free(in);
     free(out);
     free(shiftedOut);
     kiss_fft_free(cfg);
     kiss_fft_free(inv);
-
     return output;
 }
 
+/**
+ * @param f -> frequency
+ * 
+ * For a given frequency, find the closest note for the given scale and calculate the shifting factor
+ */
 double Autotune::findShiftingFactor(double f) {
     if (f == 0) {
         return 0.0;
-    }
-    double C0 = 8.175;
-    int octave = log2(f / C0);
+    }   
+    double closestNote = scaleNotes[0];
+    double smallestDif = fabs(closestNote - f);
 
-    assert(octave <= 10);
-
-    double closestNote = noteTbl[octave][0];
-    double smallestDif = abs(noteTbl[octave][0] - f);
-    
-    for (int i = 1; i < noteTbl[octave].size(); i++) {
-        double note = noteTbl[octave][i];
-        double dif = abs(note - f);
+    for (int i = 0; i < scaleNotes.size(); i++) {
+        double dif = fabs(scaleNotes[i] - f);
         if (dif < smallestDif) {
-            closestNote = note;
+            closestNote = scaleNotes[i];
             smallestDif = dif;
         }
     }
     return pow(closestNote / f, this->intensity);
 }
 
+/**
+ * @param size -> length of window
+ *
+ * Generate Hamming window
+ */
 vector<double> Autotune::generateWindow(int size) {
     vector<double> window(size);
     for (int i = 0; i < size; i++) {
         window[i] = 0.5 * (1 - cos((2 * M_PI * i) / (size - 1)));
     }
     return window;
-
 }
 
