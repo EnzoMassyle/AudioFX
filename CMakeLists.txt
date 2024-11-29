@@ -1,7 +1,6 @@
 # Specify the minimum CMake version
 cmake_minimum_required(VERSION 3.10)
 
-# Name of your project
 project(AutoTune VERSION 1.0.0)
 
 # Set C++ Standard
@@ -14,15 +13,14 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
 find_package(SndFile REQUIRED)
 
-# Add your executable (main.cpp is the entry point)
 add_executable(AutoTune src/main.cpp src/autotune.cpp)
 
-# Add SoundTouch as a subdirectory
 add_subdirectory(SoundTouch)
 add_subdirectory(AudioFile)
 add_subdirectory(FFT)
-# 
-# Include SoundTouch headers
+
+
+
 target_include_directories(AutoTune PRIVATE SoundTouch/include)
 target_include_directories(AutoTune PRIVATE AudioFile)
 target_include_directories(AutoTune PRIVATE src)
