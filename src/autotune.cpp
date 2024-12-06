@@ -2,7 +2,7 @@
 
 double Autotune::noteTbl [128];
 vector<double> Autotune::scaleNotes;
-
+const int SAMPLE_LEN = 512;
 map<char, array<int, 7>> Autotune::intervals = {
     {'M', {2, 4, 5, 7, 9, 11, 12}},
     {'m', {2, 3, 5, 7, 8, 10, 12}}
@@ -24,16 +24,13 @@ map<string, double> Autotune::rootNotes = {
 };
 
 
-
-
-
 Autotune::Autotune(double intensity, string note, char scale) {
     this->intensity = intensity;
     this->note = note;
     this->scale = scale;
     this->chunkSize = 8192;
-    af.setNumChannels(1);
-    af.setSampleRate(44100);
+    // af.setNumChannels(1);
+    // af.setSampleRate(44100);
     st.setSampleRate(44100);
     st.setChannels(1);
 }
@@ -67,37 +64,86 @@ void Autotune::fillNoteTable() {
  * into overlapping frames, where each one is individually processed and summed together
  */
 void Autotune::process(const char* fn) {
-    int chunkSize = this->chunkSize;
-    cout << "Loading Audio File ... " << endl;
+
+    const char* inFileName = fn;
+    const char* outFileName = "out.wav";
+    // Prepare to read wav file
+    SNDFILE* inFile;
+    SNDFILE* outFile;
+
+    SF_INFO info;
+    memset(&info, 0, sizeof(info));
+
+    // int chunkSize = this->chunkSize;
+    // cout << "Loading Audio File ... " << endl;
+    // try {
+    //     if (!af.load(fn)) {
+    //         throw fn;
+    //     }
+    // } catch (string & fn) {
+    //     cout << fn << " not found" << endl;
+    // }
     try {
-        if (!af.load(fn)) {
-            throw fn;
+        if (!(inFile = sf_open(inFileName, SFM_READ, &info))) {
+            throw inFileName;
         }
-    } catch (string & fn) {
-        cout << fn << " not found" << endl;
+        if (!(outFile = sf_open(outFileName, SFM_WRITE, &info))) {
+            throw outFileName;
+        }
+    } catch (string& fn) {
+         cout << fn << " not found" << endl; 
     }
+
+    // Put samples into a vector
+    int bufferLen = SAMPLE_LEN * info.channels;
+    double* buffer = (double*) malloc(bufferLen * sizeof(double));
+    vector<double> samples;
+    int readcount;
+
+    while ((readcount = (int) sf_read_double(inFile, buffer, bufferLen))) {
+        samples.insert(samples.end(), buffer, buffer + bufferLen);
+    }
+
     cout << "Success!" << endl;
     cout << "Processing Audio File..." << endl;
-    int numSamples = af.getNumSamplesPerChannel();
+    int numSamples =  samples.size();//af.getNumSamplesPerChannel();
+    int numChannels = info.channels;
     int paddedSize = ((numSamples + chunkSize - 1) / chunkSize) * chunkSize; // Round up to the nearest multiple of hop size
-    af.samples[0].resize(paddedSize, 0); // Pad with zeros
-    vector<double> window = generateWindow(chunkSize);
-    vector<double> outputBuffer(af.samples[0].size(), 0.0);
-    for (int start = 0, end = chunkSize; end < numSamples; start += chunkSize / 6, end += chunkSize / 6) {
-        vector<double> audioSlice(af.samples[0].begin() + start, af.samples[0].begin() + end);
-        for (int i = 0; i < window.size(); i++) {
-            audioSlice[i] *=  window[i];
-        }
-        vector<double> shiftedSlice = tuneSlice(audioSlice);
-        for (int i = start, j = 0; j < shiftedSlice.size() && i < end && i < af.samples[0].size(); i++, j++) {
-            outputBuffer[i] += shiftedSlice[j] * window[j];
+    samples.resize(paddedSize, 0); // Pad with zeros
+    vector<double> window = generateWindow(chunkSize / numChannels);
+    vector<double> output(samples.size(), 0.0);
 
+    int s = chunkSize * numChannels;
+    int step = chunkSize / 6;
+
+
+    for (int start = 0, end = chunkSize; end < numSamples; start += step, end += step) {
+        for (int chan = 0; chan < info.channels; chan++) {
+            vector<double> audioSlice;
+            for (int k = start + chan; k < end; k += numChannels) {
+                audioSlice.push_back(samples[k]);
+            }
+            // vector<double> audioSlice(samples.begin() + start, samples.begin() + end);
+            for (int i = 0; i < window.size(); i++) {
+                audioSlice[i] *=  window[i];
+            }
+            vector<double> shiftedSlice = tuneSlice(audioSlice, info.samplerate, s);
+            for (int i = start + chan, j = 0; j < shiftedSlice.size() && i < end && i < samples.size(); i+= numChannels, j++) {
+                output[i] += shiftedSlice[j] * window[j];
+            }
         }
     }
-    af.samples[0] = outputBuffer;
+    // af.samples[0] = outputBuffer;
     cout << "Saving File..." << endl;
-    af.save("../out.wav");
+    // af.save("../out.wav");
+    for (int i = 0; i < output.size(); i += bufferLen) {
+        int size = min((int)output.size() - i, bufferLen);
+        copy(output.begin() + i, output.begin() + i + size, buffer);
+        sf_write_double(outFile, buffer, bufferLen);
+    }
     cout << "Done!" << endl;
+
+    free(buffer);
 }
 
 
@@ -106,8 +152,8 @@ void Autotune::process(const char* fn) {
  * 
  * Analyze frequencies of the audio slice and tune it to the nearest correct note
  */
-vector<double> Autotune::tuneSlice(vector<double> slice) {
-    int fftSize = this->chunkSize;
+vector<double> Autotune::tuneSlice(vector<double> slice, int sampleRate, int size) {
+    int fftSize = size;//this->chunkSize;
     kiss_fft_cfg cfg = kiss_fft_alloc(fftSize, 0, nullptr, nullptr);
     kiss_fft_cfg inv = kiss_fft_alloc(fftSize, 1, nullptr, nullptr);
     kiss_fft_cpx* in = (kiss_fft_cpx*) malloc(sizeof(kiss_fft_cpx) * fftSize);
@@ -132,7 +178,7 @@ vector<double> Autotune::tuneSlice(vector<double> slice) {
             dominatingBin = i;
         }
     }
-    double dominatingFrequency = (dominatingBin * af.getSampleRate()) / fftSize;
+    double dominatingFrequency = (dominatingBin * sampleRate) / fftSize;
     double shiftFactor = findShiftingFactor(dominatingFrequency);
     if (shiftFactor == 0) {
         free(in);
@@ -146,17 +192,10 @@ vector<double> Autotune::tuneSlice(vector<double> slice) {
     for (int i = 0; i < fftSize; i++) {
         int newBin = (int) i * shiftFactor;
         if (newBin < fftSize / 2) {
-            shiftedOut[newBin].r += out[i].r * intensity;
-            shiftedOut[newBin].i += out[i].i * intensity;
+            shiftedOut[newBin].r += out[i].r;
+            shiftedOut[newBin].i += out[i].i;
         }
     }
-    double maxAmplitude = 0;
-    for (int i = 0; i < fftSize; i++) {
-        if (fabs(in[i].r) > maxAmplitude) {
-            maxAmplitude = fabs(in[i].r);
-        }
-    }
-
     // Apply filter
     kiss_fft(inv, shiftedOut, in);
     vector<double> output(fftSize);

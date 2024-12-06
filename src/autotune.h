@@ -8,6 +8,7 @@
 #include "../FFT/kiss_fft.h"
 #include "../AudioFile/AudioFile.h"
 
+
 using namespace soundtouch;
 using namespace std;
 class  Autotune {
@@ -21,9 +22,8 @@ class  Autotune {
 
         int chunkSize;
         SoundTouch st;
-        AudioFile<double> af;
 
-        vector<double> tuneSlice(vector<double>);
+        vector<double> tuneSlice(vector<double> slice, int sampleRate, int size);
         vector<double> generateWindow(int);
         static void processSample();
         double findShiftingFactor(double);
