@@ -123,7 +123,6 @@ void Autotune::process(const char* fn) {
             for (int k = start + chan; k < end; k += numChannels) {
                 audioSlice.push_back(samples[k]);
             }
-            // vector<double> audioSlice(samples.begin() + start, samples.begin() + end);
             for (int i = 0; i < window.size(); i++) {
                 audioSlice[i] *=  window[i];
             }
