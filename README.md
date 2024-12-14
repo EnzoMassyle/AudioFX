@@ -7,10 +7,10 @@ This project was completed in C++ and the main tool that was used to accomplish 
 # How to Use
 To use this application, put any voice samples in the samples folder. In src/main.cpp, we can specify what musical scale we want to follow when processing the file. Currently we can choose any of the major or minor scales. The default is C Major scale. 
 
-navigate to the build directory
+navigate to the build directory \
 `cd build`
 
-excecute the Autotune excetuable providing a sound file. Here is provided with an example sound file
+excecute the Autotune excetuable providing a sound file. Here is provided with an example sound file \
 `./Autotune Diner.wav`
 
 A file titled out.wav will be written to the build directory
