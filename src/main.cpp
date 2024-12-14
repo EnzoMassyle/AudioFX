@@ -1,8 +1,6 @@
 #include <iostream>
 #include "autotune.h"
-#include "../SoundTouch/include/SoundTouch.h"
 
-using namespace soundtouch;
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
@@ -11,7 +9,6 @@ int main(int argc, char* argv[]) {
     }
     char parentFolder[16] = "../samples/";
     char* fn = strcat(parentFolder, argv[1]);
-    
     // Perform Autotune in C Major Scale
     Autotune* obj = new Autotune(1, "C", 'M'); 
     obj->fillNoteTable();

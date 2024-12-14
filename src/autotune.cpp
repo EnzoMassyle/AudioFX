@@ -29,10 +29,6 @@ Autotune::Autotune(double intensity, string note, char scale) {
     this->note = note;
     this->scale = scale;
     this->chunkSize = 8192;
-    // af.setNumChannels(1);
-    // af.setSampleRate(44100);
-    st.setSampleRate(44100);
-    st.setChannels(1);
 }
 
 /**
@@ -73,16 +69,6 @@ void Autotune::process(const char* fn) {
 
     SF_INFO info;
     memset(&info, 0, sizeof(info));
-
-    // int chunkSize = this->chunkSize;
-    // cout << "Loading Audio File ... " << endl;
-    // try {
-    //     if (!af.load(fn)) {
-    //         throw fn;
-    //     }
-    // } catch (string & fn) {
-    //     cout << fn << " not found" << endl;
-    // }
     try {
         if (!(inFile = sf_open(inFileName, SFM_READ, &info))) {
             throw inFileName;
@@ -104,18 +90,17 @@ void Autotune::process(const char* fn) {
         samples.insert(samples.end(), buffer, buffer + bufferLen);
     }
 
-    cout << "Success!" << endl;
-    cout << "Processing Audio File..." << endl;
-    int numSamples =  samples.size();//af.getNumSamplesPerChannel();
+    cout << "Successfully read " << inFileName <<  endl;
+    cout << "Processing..." << endl;
+    int numSamples =  samples.size();
     int numChannels = info.channels;
-    int paddedSize = ((numSamples + chunkSize - 1) / chunkSize) * chunkSize; // Round up to the nearest multiple of hop size
+    int paddedSize = ((numSamples + chunkSize - 1) / chunkSize) * chunkSize; // Round up to the nearest multiple of chunk size
     samples.resize(paddedSize, 0); // Pad with zeros
     vector<double> window = generateWindow(chunkSize / numChannels);
     vector<double> output(samples.size(), 0.0);
 
     int s = chunkSize * numChannels;
     int step = chunkSize / 6;
-
 
     for (int start = 0, end = chunkSize; end < numSamples; start += step, end += step) {
         for (int chan = 0; chan < info.channels; chan++) {
@@ -132,9 +117,7 @@ void Autotune::process(const char* fn) {
             }
         }
     }
-    // af.samples[0] = outputBuffer;
-    cout << "Saving File..." << endl;
-    // af.save("../out.wav");
+    cout << "Saving..." << endl;
     for (int i = 0; i < output.size(); i += bufferLen) {
         int size = min((int)output.size() - i, bufferLen);
         copy(output.begin() + i, output.begin() + i + size, buffer);
