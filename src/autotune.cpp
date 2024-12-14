@@ -102,6 +102,7 @@ void Autotune::process(const char* fn) {
     int s = chunkSize * numChannels;
     int step = chunkSize / 6;
 
+    // Process audio file in chunks. Will need to process each channel separately 
     for (int start = 0, end = chunkSize; end < numSamples; start += step, end += step) {
         for (int chan = 0; chan < info.channels; chan++) {
             vector<double> audioSlice;
