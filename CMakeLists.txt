@@ -12,7 +12,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
 find_package(SndFile REQUIRED)
 
-add_executable(AutoTune src/main.cpp src/autotune.cpp)
+add_executable(AutoTune src/main.cpp src/effects/autotune.cpp)
 
 add_subdirectory(SoundTouch)
 add_subdirectory(AudioFile)
@@ -22,7 +22,7 @@ add_subdirectory(FFT)
 
 target_include_directories(AutoTune PRIVATE SoundTouch/include)
 target_include_directories(AutoTune PRIVATE AudioFile)
-target_include_directories(AutoTune PRIVATE src)
+target_include_directories(AutoTune PRIVATE src/.)
 target_include_directories(AutoTune PRIVATE FFT)
 
 
