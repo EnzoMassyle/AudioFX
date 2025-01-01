@@ -62,41 +62,36 @@ void Autotune::fillNoteTable()
 void Autotune::process(const char *fn)
 {
     SF_INFO info;
-    vector<double> samples = FileHandler::open(fn, info);
+    vector<vector<double>> samples = FileHandler::open(fn, info);
 
     cout << "Processing..." << endl;
-    int numSamples = samples.size();
     int numChannels = info.channels;
-    int paddedSize = ((numSamples + chunkSize - 1) / chunkSize) * chunkSize; // Round up to the nearest multiple of chunk size
-    samples.resize(paddedSize, 0);                                           // Pad with zeros
-    vector<double> window = generateWindow(chunkSize / numChannels);
-    vector<double> output(samples.size(), 0.0);
-
-    int s = chunkSize * numChannels;
-    int step = chunkSize / 6;
-
-    // Process audio file in chunks. Will need to process each channel separately
-    for (int start = 0, end = chunkSize; end < numSamples; start += step, end += step)
+    for (int chan = 0; chan < numChannels; chan++)
     {
-        for (int chan = 0; chan < info.channels; chan++)
+        int paddedSize = ((samples[chan].size() + chunkSize - 1) / chunkSize) * chunkSize;
+        samples[chan].resize(paddedSize, 0);
+    }
+    vector<double> window = generateWindow(chunkSize);
+    vector<vector<double>> output(numChannels, vector<double>(samples[0].size(), 0.0));
+
+    int step = chunkSize / 6;
+    // Process audio file in chunks. Will need to process each channel separately
+    for (int chan = 0; chan < info.channels; chan++)
+    {
+        for (int start = 0, end = chunkSize; end < samples[chan].size(); start += step, end += step)
         {
-            vector<double> audioSlice;
-            for (int k = start + chan; k < end; k += numChannels)
-            {
-                audioSlice.push_back(samples[k]);
-            }
+            vector<double> audioSlice(samples[chan].begin() + start, samples[chan].begin() + end);
             for (int i = 0; i < window.size(); i++)
             {
                 audioSlice[i] *= window[i];
             }
-            vector<double> shiftedSlice = tuneSlice(audioSlice, info.samplerate, s);
-            for (int i = start + chan, j = 0; j < shiftedSlice.size() && i < end && i < samples.size(); i += numChannels, j++)
+            vector<double> shiftedSlice = tuneSlice(audioSlice, info.samplerate);
+            for (int i = start, j = 0; j < shiftedSlice.size() && i < end && i < samples[chan].size(); i++, j++)
             {
-                output[i] += shiftedSlice[j] * window[j];
+                output[chan][i] += shiftedSlice[j] * window[j];
             }
         }
     }
-
     FileHandler::write(output);
 }
 
@@ -105,9 +100,9 @@ void Autotune::process(const char *fn)
  *
  * Analyze frequencies of the audio slice and tune it to the nearest correct note
  */
-vector<double> Autotune::tuneSlice(vector<double> slice, int sampleRate, int size)
+vector<double> Autotune::tuneSlice(vector<double> slice, int sampleRate)
 {
-    int fftSize = size;
+    int fftSize = chunkSize;
     kiss_fft_cfg cfg = kiss_fft_alloc(fftSize, 0, nullptr, nullptr);
     kiss_fft_cfg inv = kiss_fft_alloc(fftSize, 1, nullptr, nullptr);
     kiss_fft_cpx *in = (kiss_fft_cpx *)malloc(sizeof(kiss_fft_cpx) * fftSize);

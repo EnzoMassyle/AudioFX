@@ -16,7 +16,7 @@ private:
 
     int chunkSize;
 
-    vector<double> tuneSlice(vector<double> slice, int sampleRate, int size);
+    vector<double> tuneSlice(vector<double> slice, int sampleRate);
     vector<double> generateWindow(int);
     double findShiftingFactor(double);
 

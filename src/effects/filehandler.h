@@ -21,7 +21,7 @@ public:
      *
      * Attempt to open audio file. If successful, fill vector with audio samples
      */
-    static vector<double> open(const char *fn, SF_INFO &info)
+    static vector<vector<double>> open(const char *fn, SF_INFO &info)
     {
         const char *inFileName = fn;
         const char *outFileName = "out.wav";
@@ -42,12 +42,15 @@ public:
             cout << fn << " not found" << endl;
         }
         buffer = (double *)malloc(bufferLen * sizeof(double));
-        vector<double> samples;
+        vector<vector<double>> samples(info.channels);
         int readcount;
-
         while ((readcount = (int)sf_read_double(inFile, buffer, bufferLen)))
         {
-            samples.insert(samples.end(), buffer, buffer + bufferLen);
+            for (int chan = 0; chan < info.channels; chan++) {
+                for (int k = chan; k < bufferLen; k += info.channels) {
+                    samples[chan].push_back(buffer[k]);
+                }
+            }
         }
         cout << "Successfully read " << inFileName << endl;
         return samples;
@@ -58,14 +61,18 @@ public:
      *
      * Write data from output to an output file
      */
-    static void write(vector<double> output)
+    static void write(vector<vector<double>> output)
     {
         cout << "Saving..." << endl;
-        for (int i = 0; i < output.size(); i += bufferLen)
-        {
-            int size = min((int)output.size() - i, bufferLen);
-            copy(output.begin() + i, output.begin() + i + size, buffer);
-            sf_write_double(outFile, buffer, bufferLen);
+        int idx = 0;
+        for (int i = 0; i < output[0].size(); i++) {
+            for (int chan = 0; chan < output.size(); chan++) {
+                buffer[idx++] = output[chan][i];
+                if (idx == bufferLen) {
+                    sf_write_double(outFile, buffer, bufferLen);
+                    idx = 0;
+                }
+            }
         }
         cout << "Done!" << endl;
         free(buffer);
