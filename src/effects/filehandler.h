@@ -46,8 +46,10 @@ public:
         int readcount;
         while ((readcount = (int)sf_read_double(inFile, buffer, bufferLen)))
         {
-            for (int chan = 0; chan < info.channels; chan++) {
-                for (int k = chan; k < bufferLen; k += info.channels) {
+            for (int chan = 0; chan < info.channels; chan++)
+            {
+                for (int k = chan; k < bufferLen; k += info.channels)
+                {
                     samples[chan].push_back(buffer[k]);
                 }
             }
@@ -65,10 +67,13 @@ public:
     {
         cout << "Saving..." << endl;
         int idx = 0;
-        for (int i = 0; i < output[0].size(); i++) {
-            for (int chan = 0; chan < output.size(); chan++) {
+        for (int i = 0; i < output[0].size(); i++)
+        {
+            for (int chan = 0; chan < output.size(); chan++)
+            {
                 buffer[idx++] = output[chan][i];
-                if (idx == bufferLen) {
+                if (idx == bufferLen)
+                {
                     sf_write_double(outFile, buffer, bufferLen);
                     idx = 0;
                 }

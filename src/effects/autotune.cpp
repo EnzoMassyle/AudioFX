@@ -71,7 +71,7 @@ void Autotune::process(const char *fn)
         int paddedSize = ((samples[chan].size() + chunkSize - 1) / chunkSize) * chunkSize;
         samples[chan].resize(paddedSize, 0);
     }
-    vector<double> window = generateWindow(chunkSize);
+    vector<double> window = Utils::generateWindow(chunkSize);
     vector<vector<double>> output(numChannels, vector<double>(samples[0].size(), 0.0));
 
     int step = chunkSize / 6;
@@ -189,19 +189,4 @@ double Autotune::findShiftingFactor(double f)
         }
     }
     return pow(closestNote / f, this->intensity);
-}
-
-/**
- * @param size -> length of window
- *
- * Generate Hamming window
- */
-vector<double> Autotune::generateWindow(int size)
-{
-    vector<double> window(size);
-    for (int i = 0; i < size; i++)
-    {
-        window[i] = 0.5 * (1 - cos((2 * M_PI * i) / (size - 1)));
-    }
-    return window;
 }

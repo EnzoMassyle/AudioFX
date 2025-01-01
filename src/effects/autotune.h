@@ -6,6 +6,7 @@
 #include <sndfile.h>
 #include "../FFT/kiss_fft.h"
 #include "filehandler.h"
+#include "utils.h"
 using namespace std;
 class Autotune
 {
@@ -17,7 +18,6 @@ private:
     int chunkSize;
 
     vector<double> tuneSlice(vector<double> slice, int sampleRate);
-    vector<double> generateWindow(int);
     double findShiftingFactor(double);
 
 public:
