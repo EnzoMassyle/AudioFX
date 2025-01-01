@@ -23,6 +23,11 @@ public:
         return window;
     }
 
+    /**
+     * @param samples Audio samples separated by channel
+     * 
+     * Apply normalization factor to all audio samples
+     */
     static void normalize(vector<vector<double>>& samples) {
         // Calculate maximum peak
         double peak = 0.0;
@@ -31,7 +36,6 @@ public:
                 peak = fmax(peak, abs(samples[chan][i]));
             }
         }
-
         // apply normalization
         if (peak > 0.0) {
             double normalizationFactor = 1.0 / peak;

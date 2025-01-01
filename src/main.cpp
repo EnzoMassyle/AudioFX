@@ -1,6 +1,7 @@
 #include <iostream>
 #include "effects/autotune.h"
 #include "effects/timeshift.h"
+#include "effects/pitchshift.h"
 
 int main(int argc, char *argv[])
 {
@@ -17,6 +18,7 @@ int main(int argc, char *argv[])
     // obj->process(fn);
 
     TimeShift::changeSpeed(fn, 0.5);
+    // PitchShift::changePitch(fn, 2.0);
 
 
 }
