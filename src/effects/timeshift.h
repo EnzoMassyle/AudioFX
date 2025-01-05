@@ -1,16 +1,18 @@
 #ifndef TIMESHIFT_H
 #define TIMESHIFT_H
 
-#include<iostream>
-#include<vector>
-#include<sndfile.h>
+#include <iostream>
+#include <vector>
+#include <sndfile.h>
 #include "filehandler.h"
 #include "utils.h"
 
 using namespace std;
-class TimeShift {
-  public: 
-    static void changeSpeed(const char* fn, double shiftFactor) {
+class TimeShift
+{
+public:
+    static void changeSpeed(const char *fn, double shiftFactor)
+    {
         SF_INFO info;
         vector<vector<double>> samples = FileHandler::open(fn, info);
         vector<vector<double>> output(info.channels, vector<double>(samples[0].size() * shiftFactor, 0.0));
@@ -30,13 +32,14 @@ class TimeShift {
                 {
                     audioSlice[i] *= window[i];
                 }
-                for (int i = 0; i < chunkSize; i++) {
+                for (int i = 0; i < chunkSize; i++)
+                {
                     output[chan][i + shiftedStart] += audioSlice[i] / numOverlap;
                 }
             }
         }
         Utils::normalize(output);
-        FileHandler::write(output);
+        FileHandler::write(output, info);
     }
 };
 

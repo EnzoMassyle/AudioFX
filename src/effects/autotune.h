@@ -4,8 +4,8 @@
 #include <map>
 #include <vector>
 #include <sndfile.h>
-#include "../FFT/kiss_fft.h"
 #include "filehandler.h"
+#include "../../FFT/kiss_fft.h"
 #include "utils.h"
 using namespace std;
 class Autotune

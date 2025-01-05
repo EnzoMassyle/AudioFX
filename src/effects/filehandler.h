@@ -24,17 +24,12 @@ public:
     static vector<vector<double>> open(const char *fn, SF_INFO &info)
     {
         const char *inFileName = fn;
-        const char *outFileName = "out.wav";
         memset(&info, 0, sizeof(info));
         try
         {
             if (!(inFile = sf_open(inFileName, SFM_READ, &info)))
             {
                 throw inFileName;
-            }
-            if (!(outFile = sf_open(outFileName, SFM_WRITE, &info)))
-            {
-                throw outFileName;
             }
         }
         catch (string &fn)
@@ -63,8 +58,13 @@ public:
      *
      * Write data from output to an output file
      */
-    static void write(vector<vector<double>> output)
+    static void write(vector<vector<double>> output, SF_INFO& info)
     {
+        const char *outFileName = "out.wav";
+        if (!(outFile = sf_open(outFileName, SFM_WRITE, &info)))
+            {
+                throw outFileName;
+            }
         cout << "Saving..." << endl;
         int idx = 0;
         for (int i = 0; i < output[0].size(); i++)

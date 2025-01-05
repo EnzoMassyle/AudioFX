@@ -63,7 +63,6 @@ void Autotune::process(const char *fn)
 {
     SF_INFO info;
     vector<vector<double>> samples = FileHandler::open(fn, info);
-
     cout << "Processing..." << endl;
     int numChannels = info.channels;
     for (int chan = 0; chan < numChannels; chan++)
@@ -92,7 +91,9 @@ void Autotune::process(const char *fn)
             }
         }
     }
-    FileHandler::write(output);
+    
+    Utils::normalize(output);
+    FileHandler::write(output, info);
 }
 
 /**
@@ -155,7 +156,7 @@ vector<double> Autotune::tuneSlice(vector<double> slice, int sampleRate)
     vector<double> output(fftSize);
     for (int i = 0; i < fftSize; i++)
     {
-        output[i] = in[i].r / fftSize;
+        output[i] = (in[i].r * in[i].i) / fftSize;
     }
     free(in);
     free(out);

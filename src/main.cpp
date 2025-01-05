@@ -2,7 +2,7 @@
 #include "effects/autotune.h"
 #include "effects/timeshift.h"
 #include "effects/pitchshift.h"
-
+#include "effects/reverb.h"
 int main(int argc, char *argv[])
 {
     if (argc != 2)
@@ -13,12 +13,10 @@ int main(int argc, char *argv[])
     char parentFolder[16] = "../samples/";
     char *fn = strcat(parentFolder, argv[1]);
     // Perform Autotune in C Major Scale
-    // Autotune *obj = new Autotune(0.2, "C", 'M');
+    // Autotune *obj = new Autotune(1,  "A", 'm');
     // obj->fillNoteTable();
     // obj->process(fn);
-
-    TimeShift::changeSpeed(fn, 0.5);
-    // PitchShift::changePitch(fn, 2.0);
-
-
+    // TimeShift::changeSpeed(fn, 1.3);
+    // PitchShift::changePitch(fn, 0.7);
+    // Reverb::apply(fn);
 }
