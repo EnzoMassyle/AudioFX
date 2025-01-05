@@ -156,7 +156,7 @@ vector<double> Autotune::tuneSlice(vector<double> slice, int sampleRate)
     vector<double> output(fftSize);
     for (int i = 0; i < fftSize; i++)
     {
-        output[i] = (in[i].r * in[i].i) / fftSize;
+        output[i] = in[i].r / fftSize;
     }
     free(in);
     free(out);

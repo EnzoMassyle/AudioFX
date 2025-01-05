@@ -91,6 +91,7 @@ public:
         kiss_fft(cfg, inIr, outIr);
         for (int i = 0; i < N; i++)
         {
+            // To multiply two complex numbers: (ac−bd) + (ad+bc)i
             double temp1 = (out[i].r * outIr[i].r) - (out[i].i * outIr[i].i);
             double temp2 = (out[i].r * outIr[i].i) + (out[i].i * outIr[i].r);
             out[i].r = temp1;
@@ -114,13 +115,13 @@ public:
 
     static int nextPowerOfTwo(int n)
     {
-        int power = 0;
-        while ((int)pow(2, power) / n == 0)
+        int p = 0;
+        while ((int)pow(2, p) / n == 0)
         {
-            power++;
+            p++;
         }
 
-        return pow(2, power);
+        return pow(2, p);
     }
 };
 

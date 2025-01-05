@@ -18,5 +18,5 @@ int main(int argc, char *argv[])
     // obj->process(fn);
     // TimeShift::changeSpeed(fn, 1.3);
     // PitchShift::changePitch(fn, 0.7);
-    // Reverb::apply(fn);
+    Reverb::apply(fn);
 }
