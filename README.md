@@ -10,6 +10,8 @@ To use this application, put any voice samples in the samples folder. In src/mai
 navigate to the build directory \
 `cd build`
 
+run `make`
+
 excecute the `mc` excetuable providing a sound file. Here is provided with an example sound file \
 `./mc Diner.wav`
 
