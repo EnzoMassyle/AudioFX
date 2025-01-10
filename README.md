@@ -11,7 +11,7 @@ navigate to the build directory \
 
 run `cd build` \
 run `cmake ..` \
-run `make` \
+run `make` 
 
 excecute the `mc` excetuable providing a sound file. Here is provided with an example sound file \
 `./mc Diner.wav`
