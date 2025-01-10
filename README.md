@@ -9,7 +9,7 @@ To use this application, put any voice samples in the samples folder. In src/mai
 
 First install [libsndfile](https://github.com/libsndfile/libsndfile)
 
-navigate to the build directory \
+navigate to the build directory 
 
 run `cd build` \
 run `cmake ..` \
