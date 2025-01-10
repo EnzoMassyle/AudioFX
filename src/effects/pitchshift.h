@@ -23,7 +23,7 @@ public:
         vector<vector<double>> samples = FileHandler::open(fn, info);
         vector<vector<double>> output(info.channels, vector<double>(samples[0].size(), 0.0));
 
-        int chunkSize = 8192;
+        int chunkSize = 4096;
         int numOverlap = 4;
         int step = chunkSize / numOverlap;
         vector<double> window = Utils::generateWindow(chunkSize);
@@ -36,6 +36,7 @@ public:
                 {
                     audioSlice[i] *= window[i];
                 }
+                
                 vector<double> resampledGrain = resampleGrain(audioSlice, pitchFactor);
                 for (int i = 0; i < chunkSize; i++)
                 {

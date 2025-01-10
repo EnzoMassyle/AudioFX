@@ -52,6 +52,19 @@ public:
         }
     }
     /**
+     * @param v -> vector
+     * @param g -> gain
+     */
+    static void gain(vector<vector<double>> &v, double g) {
+        for (int i = 0; i < v.size(); i++)
+            {
+                for (int j = 0; j < v[i].size(); j++)
+                {
+                    v[i][j] *= g;
+                }
+            }
+    }
+    /**
      * @param v1 -> vector one
      * @param v2 -> vector two
      * 
@@ -59,7 +72,13 @@ public:
      */
     static vector<double> convolve(vector<double> v1, vector<double> v2)
     {
-        int N = max(nextPowerOfTwo(v1.size()), nextPowerOfTwo(v2.size()));
+        int N;
+        if (v1.size() > v2.size()) {
+            N = nextPowerOfTwo(v1.size());
+        } else {
+            N = nextPowerOfTwo(v2.size());
+        }
+
         vector<double> output(N, 0.0);
         kiss_fft_cfg cfg = kiss_fft_alloc(N, 0, nullptr, nullptr);
         kiss_fft_cfg inv = kiss_fft_alloc(N, 1, nullptr, nullptr);
@@ -73,16 +92,12 @@ public:
 
         kiss_fft_cpx *in = (kiss_fft_cpx *)malloc(sizeof(kiss_fft_cpx) * N);
         kiss_fft_cpx *out = (kiss_fft_cpx *)malloc(sizeof(kiss_fft_cpx) * N);
-        for (int i = 0; i < N; i++)
-        {
-            in[i].r = i < v1.size() ? v1[i] : 0.0;
-            in[i].i = 0;
-        }
-
         kiss_fft_cpx *inIr = (kiss_fft_cpx *)malloc(sizeof(kiss_fft_cpx) * N);
         kiss_fft_cpx *outIr = (kiss_fft_cpx *)malloc(sizeof(kiss_fft_cpx) * N);
         for (int i = 0; i < N; i++)
         {
+            in[i].r = i < v1.size() ? v1[i] : 0.0;
+            in[i].i = 0;
             inIr[i].r = i < v2.size() ? v2[i] : 0.0;
             inIr[i].i = 0;
         }
@@ -91,7 +106,7 @@ public:
         kiss_fft(cfg, inIr, outIr);
         for (int i = 0; i < N; i++)
         {
-            // To multiply two complex numbers: (ac−bd) + (ad+bc)i
+            // Multiply two complex numbers: (a + bi) * (c + di) = (ac−bd) + (ad+bc)i
             double temp1 = (out[i].r * outIr[i].r) - (out[i].i * outIr[i].i);
             double temp2 = (out[i].r * outIr[i].i) + (out[i].i * outIr[i].r);
             out[i].r = temp1;
@@ -116,11 +131,10 @@ public:
     static int nextPowerOfTwo(int n)
     {
         int p = 0;
-        while ((int)pow(2, p) / n == 0)
+        while ((int) pow(2, p) / n == 0)
         {
             p++;
         }
-
         return pow(2, p);
     }
 };

@@ -6,19 +6,28 @@
 #include <sndfile.h>
 #include "filehandler.h"
 #include "utils.h"
-#include "../../FFT/kiss_fft.h"
 
 class Reverb
 {
 private:
-    // enum TYPES = {};
+    inline static unordered_map<string, string> types = {
+        {"CHURCH", "church.wav"},
+        {"CAVE", "church.wav"},
+        {"AIRY", "airy.wav"}};
+
 public:
-    static void apply(const char *fn)
+    static void apply(const char *fn, string t = "CHURCH")
     {
+        if (types.find(t) == types.end())
+        {
+            cout << t << " is not a valid type" << endl;
+            throw;
+        }
         SF_INFO fnInfo;
         SF_INFO irInfo;
         vector<vector<double>> samples = FileHandler::open(fn, fnInfo);
-        vector<double> irSamples = FileHandler::open("../samples/ir.wav", irInfo)[0];
+        string outFile = "../samples/ir/" + types.at(t);
+        vector<double> irSamples = FileHandler::open(outFile.c_str(), irInfo)[0];
 
         for (int chan = 0; chan < fnInfo.channels; chan++)
         {
@@ -26,8 +35,9 @@ public:
             samples[chan] = Utils::convolve(samples[chan], irSamples);
             samples[chan].resize(n);
         }
-
+        
         Utils::normalize(samples);
+        Utils::gain(samples, 1.35);
         FileHandler::write(samples, fnInfo);
     }
 };

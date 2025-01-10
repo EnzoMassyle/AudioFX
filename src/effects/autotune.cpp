@@ -73,7 +73,7 @@ void Autotune::process(const char *fn)
     vector<double> window = Utils::generateWindow(chunkSize);
     vector<vector<double>> output(numChannels, vector<double>(samples[0].size(), 0.0));
 
-    int step = chunkSize / 6;
+    int step = chunkSize / 2;
     // Process audio file in chunks. Will need to process each channel separately
     for (int chan = 0; chan < info.channels; chan++)
     {
@@ -87,7 +87,7 @@ void Autotune::process(const char *fn)
             vector<double> shiftedSlice = tuneSlice(audioSlice, info.samplerate);
             for (int i = start, j = 0; j < shiftedSlice.size() && i < end && i < samples[chan].size(); i++, j++)
             {
-                output[chan][i] += shiftedSlice[j] * window[j];
+                output[chan][i] += shiftedSlice[j];
             }
         }
     }
