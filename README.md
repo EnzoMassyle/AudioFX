@@ -8,8 +8,9 @@ This project is written in C++. Currently the basic flow of the program is proce
 To use this application, put any voice samples in the samples folder. In src/main.cpp, apply audio processing to a given .mp3 or .wav file
 
 navigate to the build directory \
-`cd build`
 
+run `cd build`
+run `cmake ..`
 run `make`
 
 excecute the `mc` excetuable providing a sound file. Here is provided with an example sound file \
