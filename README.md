@@ -8,6 +8,7 @@ This project is written in C++. Currently the basic flow of the program is proce
 To use this application, put any voice samples in the samples folder. In src/main.cpp, apply audio processing to a given .mp3 or .wav file
 
 First install [libsndfile](https://github.com/libsndfile/libsndfile)
+Clone this [FFT Repo](https://github.com/mborgerding/kissfft)
 
 navigate to the build directory 
 
