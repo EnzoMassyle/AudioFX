@@ -7,6 +7,8 @@ This project is written in C++. Currently the basic flow of the program is proce
 # How to Use
 To use this application, put any voice samples in the samples folder. In src/main.cpp, apply audio processing to a given .mp3 or .wav file
 
+First install [libsndfile](https://github.com/libsndfile/libsndfile)
+
 navigate to the build directory \
 
 run `cd build` \
