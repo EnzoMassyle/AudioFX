@@ -3,7 +3,10 @@
 
 #include <iostream>
 #include <vector>
+#include <future>
+#include "fft.h"
 using namespace std;
+
 class Utils
 {
 public:
@@ -70,7 +73,7 @@ public:
      * 
      * Convolve v1 and v2 using FFT
      */
-    static vector<double> convolve(vector<double> v1, vector<double> v2)
+    static vector<double> convolve(vector<double> v1, vector<double> v2, promise<vector<double>>&& p)
     {
         int N;
         if (v1.size() > v2.size()) {
@@ -78,32 +81,11 @@ public:
         } else {
             N = nextPowerOfTwo(v2.size());
         }
+        FFT handler = FFT(N);
+        
+        cpx* out = handler.fft(v1);
+        cpx* outIr = handler.fft(v2);
 
-        vector<double> output(N, 0.0);
-        kiss_fft_cfg cfg = kiss_fft_alloc(N, 0, nullptr, nullptr);
-        kiss_fft_cfg inv = kiss_fft_alloc(N, 1, nullptr, nullptr);
-
-        if (!cfg || !inv)
-        {
-            kiss_fft_free(cfg);
-            kiss_fft_free(inv);
-            throw "allocation failed";
-        }
-
-        kiss_fft_cpx *in = (kiss_fft_cpx *)malloc(sizeof(kiss_fft_cpx) * N);
-        kiss_fft_cpx *out = (kiss_fft_cpx *)malloc(sizeof(kiss_fft_cpx) * N);
-        kiss_fft_cpx *inIr = (kiss_fft_cpx *)malloc(sizeof(kiss_fft_cpx) * N);
-        kiss_fft_cpx *outIr = (kiss_fft_cpx *)malloc(sizeof(kiss_fft_cpx) * N);
-        for (int i = 0; i < N; i++)
-        {
-            in[i].r = i < v1.size() ? v1[i] : 0.0;
-            in[i].i = 0;
-            inIr[i].r = i < v2.size() ? v2[i] : 0.0;
-            inIr[i].i = 0;
-        }
-
-        kiss_fft(cfg, in, out);
-        kiss_fft(cfg, inIr, outIr);
         for (int i = 0; i < N; i++)
         {
             // Multiply two complex numbers: (a + bi) * (c + di) = (ac−bd) + (ad+bc)i
@@ -112,22 +94,13 @@ public:
             out[i].r = temp1;
             out[i].i = temp2;
         }
-
-        kiss_fft(inv, out, in);
-        for (int i = 0; i < N; i++)
-        {
-            output[i] = in[i].r / N;
-        }
-        free(in);
-        free(out);
-        free(inIr);
-        free(outIr);
-        kiss_fft_free(cfg);
-        kiss_fft_free(inv);
-
+        vector<double> output = handler.ifft(out);
+        p.set_value(output);
         return output;
     }
-
+    /**
+     * @param 
+     */
     static int nextPowerOfTwo(int n)
     {
         int p = 0;

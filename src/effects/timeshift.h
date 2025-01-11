@@ -16,8 +16,6 @@ public:
     {
         SF_INFO info;
         vector<vector<double>> samples = FileHandler::open(fn, info);
-        // info.samplerate = 44100;
-        // FileHandler::write(samples, info);
         vector<vector<double>> output(info.channels, vector<double>(samples[0].size() * shiftFactor, 0.0));
 
         int chunkSize = 16384;

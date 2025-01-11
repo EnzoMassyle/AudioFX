@@ -18,10 +18,10 @@ int main(int argc, char *argv[])
     // obj->process(fn);
 
     //change second parameter to affect playback speed   x > 1 Makes audio slower, x < 1 makes audio faster
-    // TimeShift::changeSpeed(fn, 1);
+    // TimeShift::changeSpeed(fn, 1.3);
 
     // change second parameter to affect pitch x > 1 makes pitch higher x < 1 makes pitch lower
     // PitchShift::changePitch(fn, 1);
 
-    // Reverb::apply(fn);
+    Reverb::apply(fn);
 }

@@ -29,7 +29,7 @@ Autotune::Autotune(double intensity, string note, char scale)
     this->intensity = intensity;
     this->note = note;
     this->scale = scale;
-    this->chunkSize = 8192;
+    this->chunkSize = 16384;
 }
 
 /**
@@ -91,7 +91,6 @@ void Autotune::process(const char *fn)
             }
         }
     }
-    
     Utils::normalize(output);
     FileHandler::write(output, info);
 }
@@ -103,26 +102,20 @@ void Autotune::process(const char *fn)
  */
 vector<double> Autotune::tuneSlice(vector<double> slice, int sampleRate)
 {
-    int fftSize = chunkSize;
-    kiss_fft_cfg cfg = kiss_fft_alloc(fftSize, 0, nullptr, nullptr);
-    kiss_fft_cfg inv = kiss_fft_alloc(fftSize, 1, nullptr, nullptr);
-    kiss_fft_cpx *in = (kiss_fft_cpx *)malloc(sizeof(kiss_fft_cpx) * fftSize);
-    kiss_fft_cpx *out = (kiss_fft_cpx *)malloc(sizeof(kiss_fft_cpx) * fftSize);
-    kiss_fft_cpx *shiftedOut = (kiss_fft_cpx *)malloc(sizeof(kiss_fft_cpx) * fftSize);
-
-    for (int i = 0; i < fftSize; i++)
+    int N = Utils::nextPowerOfTwo(chunkSize);
+    FFT handler = FFT(N);
+    cpx shiftedOut[N];
+    for (int i = 0; i < N; i++)
     {
-        in[i].r = slice[i];
-        in[i].i = 0;
         shiftedOut[i].r = 0;
         shiftedOut[i].i = 0;
     }
-    kiss_fft(cfg, in, out);
+    cpx* out = handler.fft(slice);
 
     // Find dominating frequency
     double maxMag = 0;
     int dominatingBin = 0;
-    for (int i = 0; i < fftSize; i++)
+    for (int i = 0; i < N; i++)
     {
         double magnitude = sqrt((out[i].r * out[i].r) + (out[i].i * out[i].i));
         if (magnitude > maxMag)
@@ -131,39 +124,23 @@ vector<double> Autotune::tuneSlice(vector<double> slice, int sampleRate)
             dominatingBin = i;
         }
     }
-    double dominatingFrequency = (dominatingBin * sampleRate) / fftSize;
+    double dominatingFrequency = (dominatingBin * sampleRate) / N;
     double shiftFactor = findShiftingFactor(dominatingFrequency);
     if (shiftFactor == 0)
     {
-        free(in);
-        free(out);
-        free(shiftedOut);
-        kiss_fft_free(cfg);
-        kiss_fft_free(inv);
         return slice;
     }
     // Apply shifting factor
-    for (int i = 0; i < fftSize; i++)
+    for (int i = 0; i < N; i++)
     {
         int newBin = (int)i * shiftFactor;
-        if (newBin < fftSize / 2)
+        if (newBin < N / 2)
         {
             shiftedOut[newBin].r += out[i].r;
             shiftedOut[newBin].i += out[i].i;
         }
     }
-    kiss_fft(inv, shiftedOut, in);
-    vector<double> output(fftSize);
-    for (int i = 0; i < fftSize; i++)
-    {
-        output[i] = in[i].r / fftSize;
-    }
-    free(in);
-    free(out);
-    free(shiftedOut);
-    kiss_fft_free(cfg);
-    kiss_fft_free(inv);
-    return output;
+    return handler.ifft(shiftedOut);
 }
 
 /**

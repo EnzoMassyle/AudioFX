@@ -6,6 +6,8 @@
 #include <sndfile.h>
 #include "filehandler.h"
 #include "utils.h"
+#include <thread>
+#include <future>
 
 class Reverb
 {
@@ -29,15 +31,21 @@ public:
         string outFile = "../samples/ir/" + types.at(t);
         vector<double> irSamples = FileHandler::open(outFile.c_str(), irInfo)[0];
 
+        vector<thread> threads;
+
         for (int chan = 0; chan < fnInfo.channels; chan++)
         {
             int n = samples[chan].size();
-            samples[chan] = Utils::convolve(samples[chan], irSamples);
+            promise<vector<double>> p;
+            future<vector<double>> f = p.get_future();
+            threads.emplace_back(Utils::convolve, samples[chan], irSamples, std::move(p));
+            samples[chan] = f.get();
             samples[chan].resize(n);
         }
-        
+        for (thread& t : threads) {
+            t.join();
+        }
         Utils::normalize(samples);
-        Utils::gain(samples, 1.35);
         FileHandler::write(samples, fnInfo);
     }
 };

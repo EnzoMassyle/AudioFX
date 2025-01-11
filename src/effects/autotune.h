@@ -5,8 +5,8 @@
 #include <vector>
 #include <sndfile.h>
 #include "filehandler.h"
-#include "../../FFT/kiss_fft.h"
 #include "utils.h"
+#include "fft.h"
 using namespace std;
 class Autotune
 {
