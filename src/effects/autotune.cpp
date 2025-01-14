@@ -29,7 +29,6 @@ Autotune::Autotune(double intensity, string note, char scale)
     this->intensity = intensity;
     this->note = note;
     this->scale = scale;
-    this->chunkSize = 16384;
 }
 
 /**
@@ -64,20 +63,14 @@ void Autotune::process(const char *fn)
     SF_INFO info;
     vector<vector<double>> samples = FileHandler::open(fn, info);
     cout << "Processing..." << endl;
-    int numChannels = info.channels;
-    for (int chan = 0; chan < numChannels; chan++)
-    {
-        int paddedSize = ((samples[chan].size() + chunkSize - 1) / chunkSize) * chunkSize;
-        samples[chan].resize(paddedSize, 0);
-    }
-    vector<double> window = Utils::generateWindow(chunkSize);
-    vector<vector<double>> output(numChannels, vector<double>(samples[0].size(), 0.0));
+    vector<double> window = Utils::generateWindow(CHUNK_SIZE);
+    vector<vector<double>> output(info.channels, vector<double>(samples[0].size(), 0.0));
 
-    int step = chunkSize / 2;
+    int step = CHUNK_SIZE / NUM_OVERLAP;
     // Process audio file in chunks. Will need to process each channel separately
     for (int chan = 0; chan < info.channels; chan++)
     {
-        for (int start = 0, end = chunkSize; end < samples[chan].size(); start += step, end += step)
+        for (int start = 0, end = CHUNK_SIZE; end < samples[chan].size(); start += step, end += step)
         {
             vector<double> audioSlice(samples[chan].begin() + start, samples[chan].begin() + end);
             for (int i = 0; i < window.size(); i++)
@@ -102,7 +95,7 @@ void Autotune::process(const char *fn)
  */
 vector<double> Autotune::tuneSlice(vector<double> slice, int sampleRate)
 {
-    int N = Utils::nextPowerOfTwo(chunkSize);
+    int N = Utils::nextPowerOfTwo(CHUNK_SIZE);
     FFT handler = FFT(N);
     cpx shiftedOut[N];
     for (int i = 0; i < N; i++)
@@ -110,7 +103,7 @@ vector<double> Autotune::tuneSlice(vector<double> slice, int sampleRate)
         shiftedOut[i].r = 0;
         shiftedOut[i].i = 0;
     }
-    cpx* out = handler.fft(slice);
+    cpx *out = handler.fft(slice);
 
     // Find dominating frequency
     double maxMag = 0;

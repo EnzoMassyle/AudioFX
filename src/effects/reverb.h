@@ -14,11 +14,11 @@ class Reverb
 private:
     inline static unordered_map<string, string> types = {
         {"CHURCH", "church.wav"},
-        {"CAVE", "church.wav"},
+        {"CAVE", "cave.wav"},
         {"AIRY", "airy.wav"}};
 
 public:
-    static void apply(const char *fn, string t = "CHURCH")
+    static void convReverb(const char *fn, string t = "CHURCH")
     {
         if (types.find(t) == types.end())
         {
@@ -30,21 +30,24 @@ public:
         vector<vector<double>> samples = FileHandler::open(fn, fnInfo);
         string outFile = "../samples/ir/" + types.at(t);
         vector<double> irSamples = FileHandler::open(outFile.c_str(), irInfo)[0];
-
         vector<thread> threads;
+        int sizes[fnInfo.channels];
+        for (int chan = 0; chan < fnInfo.channels; chan++)
+        {
+            sizes[chan] = samples[chan].size();
+            threads.emplace_back(Utils::convolve, ref(samples[chan]), irSamples);
+        }
+
+        for (thread &t : threads)
+        {
+            t.join();
+        }
 
         for (int chan = 0; chan < fnInfo.channels; chan++)
         {
-            int n = samples[chan].size();
-            promise<vector<double>> p;
-            future<vector<double>> f = p.get_future();
-            threads.emplace_back(Utils::convolve, samples[chan], irSamples, std::move(p));
-            samples[chan] = f.get();
-            samples[chan].resize(n);
+            samples[chan].resize(sizes[chan]);
         }
-        for (thread& t : threads) {
-            t.join();
-        }
+
         Utils::normalize(samples);
         FileHandler::write(samples, fnInfo);
     }

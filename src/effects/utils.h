@@ -5,6 +5,7 @@
 #include <vector>
 #include <future>
 #include "fft.h"
+#include "params.h"
 using namespace std;
 
 class Utils
@@ -58,53 +59,57 @@ public:
      * @param v -> vector
      * @param g -> gain
      */
-    static void gain(vector<vector<double>> &v, double g) {
+    static void gain(vector<vector<double>> &v, double g)
+    {
         for (int i = 0; i < v.size(); i++)
+        {
+            for (int j = 0; j < v[i].size(); j++)
             {
-                for (int j = 0; j < v[i].size(); j++)
-                {
-                    v[i][j] *= g;
-                }
+                v[i][j] *= g;
             }
+        }
     }
+
     /**
      * @param v1 -> vector one
      * @param v2 -> vector two
-     * 
-     * Convolve v1 and v2 using FFT
+     *
+     * Convolve v1 and v2 using FFT. Result is stored in v1.
      */
-    static vector<double> convolve(vector<double> v1, vector<double> v2, promise<vector<double>>&& p)
+    static void convolve(vector<double> &v1, vector<double> v2)
     {
         int N;
-        if (v1.size() > v2.size()) {
+        if (v1.size() > v2.size())
+        {
             N = nextPowerOfTwo(v1.size());
-        } else {
+        }
+        else
+        {
             N = nextPowerOfTwo(v2.size());
         }
         FFT handler = FFT(N);
-        
-        cpx* out = handler.fft(v1);
-        cpx* outIr = handler.fft(v2);
+
+        cpx *z = handler.fft(v1);
+        cpx *w = handler.fft(v2);
 
         for (int i = 0; i < N; i++)
         {
             // Multiply two complex numbers: (a + bi) * (c + di) = (ac−bd) + (ad+bc)i
-            double temp1 = (out[i].r * outIr[i].r) - (out[i].i * outIr[i].i);
-            double temp2 = (out[i].r * outIr[i].i) + (out[i].i * outIr[i].r);
-            out[i].r = temp1;
-            out[i].i = temp2;
+            double temp1 = (z[i].r * w[i].r) - (z[i].i * w[i].i);
+            double temp2 = (z[i].r * w[i].i) + (z[i].i * w[i].r);
+            z[i].r = temp1;
+            z[i].i = temp2;
         }
-        vector<double> output = handler.ifft(out);
-        p.set_value(output);
-        return output;
+        v1 = handler.ifft(z);
     }
     /**
-     * @param 
+     * @param n -> number
+     * Return the next power of 2 that is >= n. If n is already a power of 2, n is returned
      */
     static int nextPowerOfTwo(int n)
     {
         int p = 0;
-        while ((int) pow(2, p) / n == 0)
+        while ((int)pow(2, p) / n == 0)
         {
             p++;
         }

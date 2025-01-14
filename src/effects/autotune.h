@@ -6,6 +6,7 @@
 #include <sndfile.h>
 #include "filehandler.h"
 #include "utils.h"
+#include "params.h"
 #include "fft.h"
 using namespace std;
 class Autotune
@@ -14,8 +15,6 @@ private:
     inline static vector<double> scaleNotes;
     static map<char, array<int, 7>> intervals;
     static map<string, double> rootNotes;
-
-    int chunkSize;
 
     vector<double> tuneSlice(vector<double> slice, int sampleRate);
     double findShiftingFactor(double);
