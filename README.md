@@ -4,7 +4,7 @@ This is a project that combines features of a music player and a Digital Audio W
 # Key Features and Technologies used
 This project is written in C++. Currently the basic flow of the program is processing a sound file and applying some audio processing technique to it. time stretching pitch shifting reverb and autotune have a working implementation.  
 
-# How to Use
+<!-- # How to Use
 To use this application, put any voice samples in the samples folder. In src/main.cpp, apply audio processing to a given .mp3 or .wav file
 
 First install [libsndfile](https://github.com/libsndfile/libsndfile)
@@ -19,4 +19,4 @@ run `make`
 excecute the `mc` excetuable providing a sound file. Here is provided with an example sound file \
 `./mc Diner.wav`
 
-A file titled out.wav will be written to the build directory
+A file titled out.wav will be written to the build directory -->
