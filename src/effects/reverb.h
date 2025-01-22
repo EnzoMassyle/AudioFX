@@ -8,7 +8,8 @@
 #include "utils.h"
 #include <thread>
 #include <future>
-
+#include <unordered_map>
+#include <string>
 class Reverb
 {
 private:
@@ -23,7 +24,7 @@ public:
         if (types.find(t) == types.end())
         {
             cout << t << " is not a valid type" << endl;
-            throw;
+            throw "hello";
         }
         SF_INFO fnInfo;
         SF_INFO irInfo;

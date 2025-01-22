@@ -2,7 +2,6 @@
 #define VOCODER_H
 
 #include <vector>
-#include "../../FFT/kiss_fft.h"
 #include "utils.h"
 #include "fft.h"
 using namespace std;

@@ -1,8 +1,3 @@
-# Ignore external libraries
-FFT/
-AudioFile/
-SoundTouch/
-1.2.2/
 # Build artifacts
 build/
 
@@ -33,3 +28,6 @@ Makefile
 *.so
 *.dll
 *.dylib
+
+
+src/CMakeUserPresets.json

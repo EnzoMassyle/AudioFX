@@ -6,6 +6,8 @@
 #include <future>
 #include "fft.h"
 #include "params.h"
+#include <cmath>
+
 using namespace std;
 
 class Utils
@@ -89,16 +91,15 @@ public:
         }
         FFT handler = FFT(N);
 
-        cpx *z = handler.fft(v1);
-        cpx *w = handler.fft(v2);
+        vector<complex<double>> z = handler.fft(v1);
+        vector<complex<double>> w = handler.fft(v2);
 
         for (int i = 0; i < N; i++)
         {
             // Multiply two complex numbers: (a + bi) * (c + di) = (ac−bd) + (ad+bc)i
-            double temp1 = (z[i].r * w[i].r) - (z[i].i * w[i].i);
-            double temp2 = (z[i].r * w[i].i) + (z[i].i * w[i].r);
-            z[i].r = temp1;
-            z[i].i = temp2;
+            double tempR = (z[i].real() * w[i].real()) - (z[i].imag() * w[i].imag());
+            double tempI = (z[i].real() * w[i].imag()) + (z[i].imag() * w[i].real());
+            z[i] = complex<double>(tempR, tempI);
         }
         v1 = handler.ifft(z);
     }

@@ -4,6 +4,7 @@
 #include <sndfile.h>
 #include <vector>
 #include <iostream>
+#include <cstring>
 
 using namespace std;
 class FileHandler
@@ -28,7 +29,8 @@ public:
         try
         {
             if (!(inFile = sf_open(inFileName, SFM_READ, &info)))
-            {
+            {   
+                cout << inFileName << " not found" << endl;
                 throw inFileName;
             }
         }

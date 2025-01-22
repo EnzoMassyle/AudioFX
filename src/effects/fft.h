@@ -1,25 +1,25 @@
 #ifndef FFT_H
 #define FFT_H
 
-#include "../../FFT/kiss_fft.h"
 #include <vector>
+#include <fftw3.h>
+#include <complex>
 using namespace std;
-typedef kiss_fft_cpx cpx;
+typedef fftw_complex cpx;
 
 class FFT {
     private:
-        kiss_fft_cfg cfg;
-        kiss_fft_cfg inv;
         int n;
-        cpx* in;
-        cpx* out;
+        cpx* f;
+        fftw_plan forward;
+        fftw_plan backward;
 
     public:
         FFT(int n);
         ~FFT();
         
-        cpx* fft(vector<double> v);
-        vector<double> ifft(cpx* c);
+        vector<complex<double>> fft(vector<double> v);
+        vector<double> ifft(vector<complex<double>> c);
 };
 
 #endif 

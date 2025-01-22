@@ -97,20 +97,19 @@ vector<double> Autotune::tuneSlice(vector<double> slice, int sampleRate)
 {
     int N = Utils::nextPowerOfTwo(CHUNK_SIZE);
     FFT handler = FFT(N);
-    cpx shiftedOut[N];
+    vector<complex<double>> shiftedOut;
     for (int i = 0; i < N; i++)
     {
-        shiftedOut[i].r = 0;
-        shiftedOut[i].i = 0;
+        shiftedOut[i] = (0.0, 0.0);
     }
-    cpx *out = handler.fft(slice);
+    vector<complex<double>> out = handler.fft(slice);
 
     // Find dominating frequency
     double maxMag = 0;
     int dominatingBin = 0;
     for (int i = 0; i < N; i++)
     {
-        double magnitude = sqrt((out[i].r * out[i].r) + (out[i].i * out[i].i));
+        double magnitude = sqrt((out[i].real() * out[i].real()) + (out[i].imag() * out[i].imag()));
         if (magnitude > maxMag)
         {
             maxMag = magnitude;
@@ -129,8 +128,7 @@ vector<double> Autotune::tuneSlice(vector<double> slice, int sampleRate)
         int newBin = (int)i * shiftFactor;
         if (newBin < N / 2)
         {
-            shiftedOut[newBin].r += out[i].r;
-            shiftedOut[newBin].i += out[i].i;
+            shiftedOut[newBin] = (shiftedOut[newBin].real() + out[i].real(), shiftedOut[newBin].imag() + out[i].imag());
         }
     }
     return handler.ifft(shiftedOut);
