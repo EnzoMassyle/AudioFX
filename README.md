@@ -1,5 +1,5 @@
 # Abstract
-This is project is an open-source C++ library enabling developers to transform audio effortlessly without DSP expertise. Current stage of development is building out the audio effects and tweaking them to be high quality. 
+This project is an open-source C++ library enabling developers to transform audio effortlessly without DSP expertise. The current stage of development is building out the audio effects and tweaking them to be high quality. 
 
 # Key Features and Technologies used
 This project is written in C++. Currently the basic flow of the program is processing a sound file and applying some audio processing technique to it. time stretching pitch shifting reverb and autotune have a working implementation.  
