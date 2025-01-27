@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
+
 find_package(SndFile REQUIRED)
 find_package(FFTW3 CONFIG REQUIRED)
 

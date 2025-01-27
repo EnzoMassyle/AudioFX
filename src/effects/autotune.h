@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 #include <sndfile.h>
+#include <thread>
 #include "filehandler.h"
 #include "utils.h"
 #include "params.h"
@@ -16,12 +17,12 @@ private:
     static map<char, array<int, 7>> intervals;
     static map<string, double> rootNotes;
 
-    vector<double> tuneSlice(vector<double> slice, int sampleRate);
+    void tuneSlice(vector<double> slice, int start, int sampleRate, vector<double>& out);
     double findShiftingFactor(double);
+    void test();
 
 public:
     Autotune(double intensity, string note, char scale);
-
     double intensity;
     string note;
     char scale; // Major (M) or minor (m)

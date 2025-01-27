@@ -4,6 +4,8 @@
 #include <vector>
 #include <fftw3.h>
 #include <complex>
+#include <thread>
+#include <mutex>
 using namespace std;
 typedef fftw_complex cpx;
 
@@ -11,15 +13,17 @@ class FFT {
     private:
         int n;
         cpx* f;
-        fftw_plan forward;
-        fftw_plan backward;
+        inline static fftw_plan forward;
+        inline static fftw_plan backward;
+        inline static cpx* dummy;
 
     public:
         FFT(int n);
         ~FFT();
-        
         vector<complex<double>> fft(vector<double> v);
         vector<double> ifft(vector<complex<double>> c);
+        static void preInit(int n);
+        static void destroyPlan();
 };
 
 #endif 

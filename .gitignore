@@ -31,3 +31,5 @@ Makefile
 
 
 src/CMakeUserPresets.json
+
+samples/

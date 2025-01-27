@@ -36,13 +36,14 @@ public:
         for (int chan = 0; chan < fnInfo.channels; chan++)
         {
             sizes[chan] = samples[chan].size();
-            threads.emplace_back(Utils::convolve, ref(samples[chan]), irSamples);
+            Utils::convolve(samples[chan], irSamples);
+            // threads.emplace_back(Utils::convolve, ref(samples[chan]), irSamples);
         }
 
-        for (thread &t : threads)
-        {
-            t.join();
-        }
+        // for (thread &t : threads)
+        // {
+        //     t.join();
+        // }
 
         for (int chan = 0; chan < fnInfo.channels; chan++)
         {

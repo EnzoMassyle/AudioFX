@@ -2,7 +2,10 @@
   "name": "mc",
   "version": "1.0.0",
   "dependencies": [
-    "fftw3",
+    {
+      "name": "fftw3",
+      "features": ["threads"]
+    },
     "libsndfile"
   ]
 }

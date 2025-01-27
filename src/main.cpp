@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     char parentFolder[128] = "../samples/";
     char *fn = strcat(parentFolder, argv[1]);
     // Perform Autotune in C Major Scale
-    // Autotune *obj = new Autotune(1,  "C", 'M');
+    // Autotune *obj = new Autotune(1.0,  "A", 'm');
     // obj->fillNoteTable();
     // obj->process(fn);
 
@@ -22,6 +22,6 @@ int main(int argc, char *argv[])
 
     // change second parameter to affect pitch x > 1 makes pitch higher x < 1 makes pitch lower
     // PitchShift::changePitch(fn, 0.9);
-
-    Reverb::convReverb(fn);
+// 
+    Reverb::convReverb(fn, "AIRY");
 }

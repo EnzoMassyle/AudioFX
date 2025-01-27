@@ -49,7 +49,6 @@ public:
      */
     static void shiftChannel(vector<double> samples, double pitchFactor, vector<double> &out)
     {
-
         int step = CHUNK_SIZE / NUM_OVERLAP;
         vector<thread> threads;
         for (int start = 0, end = CHUNK_SIZE; end < samples.size(); start += step, end += step)
@@ -78,14 +77,17 @@ public:
             samples[i] *= window[i];
         }
 
-        vector<double> resampled(samples.size() / pitchFactor, 0.0);
-        for (int i = 0; i < resampled.size(); i++)
+        vector<double> resampled(samples.size(), 0.0);
+        resampled.push_back(samples.back());
+        for (int i = 0; i < samples.size(); i++)
         {
             double exact = i * pitchFactor;
-            int idx = (int)exact;
-            double frac = exact - idx;
-            double alpha = 1 - (exact - idx);
-            resampled[i] += alpha * samples[idx] + (1 - alpha) * samples[idx + 1];
+            if (exact < samples.size()) {
+                int idx = (int)exact;
+                double frac = exact - idx;
+                double alpha = 1 - (exact - idx);
+                resampled[i] += alpha * samples[idx] + (1 - alpha) * samples[idx + 1];
+            }
         }
 
         for (int i = 0; i < samples.size(); i++)

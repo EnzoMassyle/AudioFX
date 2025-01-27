@@ -66,50 +66,64 @@ void Autotune::process(const char *fn)
     vector<double> window = Utils::generateWindow(CHUNK_SIZE);
     vector<vector<double>> output(info.channels, vector<double>(samples[0].size(), 0.0));
 
-    int step = CHUNK_SIZE / NUM_OVERLAP;
+    // int step = CHUNK_SIZE / NUM_OVERLAP;
+    int chunkSize = CHUNK_SIZE;
+    int step = chunkSize / 3;
     // Process audio file in chunks. Will need to process each channel separately
+    vector<thread> threads;
+    int n = Utils::nextPowerOfTwo(CHUNK_SIZE);
+    thread start(FFT::preInit, n);
+    start.join();
+    cout << "FFT done" << endl;
     for (int chan = 0; chan < info.channels; chan++)
     {
-        for (int start = 0, end = CHUNK_SIZE; end < samples[chan].size(); start += step, end += step)
+        for (int start = 0, end = chunkSize; end < samples[chan].size(); start += step, end += step)
         {
             vector<double> audioSlice(samples[chan].begin() + start, samples[chan].begin() + end);
             for (int i = 0; i < window.size(); i++)
             {
                 audioSlice[i] *= window[i];
             }
-            vector<double> shiftedSlice = tuneSlice(audioSlice, info.samplerate);
-            for (int i = start, j = 0; j < shiftedSlice.size() && i < end && i < samples[chan].size(); i++, j++)
-            {
-                output[chan][i] += shiftedSlice[j];
-            }
+            threads.emplace_back([this, start, &audioSlice, &info, &output, chan]()
+                                 { this->tuneSlice(audioSlice, start, info.samplerate, ref(output[chan])); });
         }
     }
+    for (thread &t : threads)
+    {
+        t.join();
+    }
+
+    FFT::destroyPlan(); 
     Utils::normalize(output);
     FileHandler::write(output, info);
 }
 
+void Autotune::test() {
+    FFT handler = FFT(2);
+}
 /**
  * @param slice -> Chunk of an audio sample
  *
  * Analyze frequencies of the audio slice and tune it to the nearest correct note
  */
-vector<double> Autotune::tuneSlice(vector<double> slice, int sampleRate)
+void Autotune::tuneSlice(vector<double> slice, int start, int sampleRate, vector<double> &out)
 {
     int N = Utils::nextPowerOfTwo(CHUNK_SIZE);
     FFT handler = FFT(N);
-    vector<complex<double>> shiftedOut;
+    vector<double> window = Utils::generateWindow(N);
+    vector<complex<double>> shiftedOut(N, 0.0);
     for (int i = 0; i < N; i++)
     {
-        shiftedOut[i] = (0.0, 0.0);
+        shiftedOut[i] = 0.0;
     }
-    vector<complex<double>> out = handler.fft(slice);
+    vector<complex<double>> sliceFreq = handler.fft(slice);
 
     // Find dominating frequency
     double maxMag = 0;
     int dominatingBin = 0;
-    for (int i = 0; i < N; i++)
+    for (int i = 0; i < N / 2; i++)
     {
-        double magnitude = sqrt((out[i].real() * out[i].real()) + (out[i].imag() * out[i].imag()));
+        double magnitude = abs(sliceFreq[i]);
         if (magnitude > maxMag)
         {
             maxMag = magnitude;
@@ -120,18 +134,45 @@ vector<double> Autotune::tuneSlice(vector<double> slice, int sampleRate)
     double shiftFactor = findShiftingFactor(dominatingFrequency);
     if (shiftFactor == 0)
     {
-        return slice;
+        slice = handler.ifft(sliceFreq);
+        for (int i = 0; i < window.size(); i++)
+        {
+            slice[i] *= window[i];
+        }
+        for (int i = 0; i < slice.size(); i++)
+        {
+            out[i + start] += slice[i];
+        }
+        return;
     }
-    // Apply shifting factor
+    // Apply shifting factor. if the new bin is a fraction, properly distribute energy to lower and upper bin
     for (int i = 0; i < N; i++)
     {
-        int newBin = (int)i * shiftFactor;
-        if (newBin < N / 2)
+        double newBin = (i * shiftFactor);
+        int lower = floor(newBin);
+        int upper = ceil(newBin);
+        double frac = newBin - lower;
+        if (lower >= 0 && lower < N / 2)
         {
-            shiftedOut[newBin] = (shiftedOut[newBin].real() + out[i].real(), shiftedOut[newBin].imag() + out[i].imag());
+            shiftedOut[lower] += sliceFreq[i] * (1.0 - frac);
+        }
+        if (upper >= 0 && upper < N / 2)
+        {
+            shiftedOut[upper] += sliceFreq[i] * frac;
         }
     }
-    return handler.ifft(shiftedOut);
+
+    slice = handler.ifft(shiftedOut);
+
+    for (int i = 0; i < window.size(); i++)
+    {
+        slice[i] *= window[i];
+    }
+
+    for (int i = 0; i < slice.size(); i++)
+    {
+        out[i + start] += slice[i];
+    }
 }
 
 /**
