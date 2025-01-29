@@ -1,18 +1,27 @@
-#include "fft.h"
+#include "../headers/fft.h"
+#include <iostream>
+
+fftw_plan FFT::forward;
+fftw_plan FFT::backward;
+cpx* FFT::dummy;
+once_flag FFT::flag;
+shared_ptr<void> FFT::plan;
 
 void FFT::preInit(int n) {
-    dummy = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n);
-    forward = fftw_plan_dft_1d(n, dummy, dummy, FFTW_FORWARD, FFTW_ESTIMATE);
-    backward = fftw_plan_dft_1d(n, dummy, dummy, FFTW_BACKWARD, FFTW_ESTIMATE);
+    FFT::dummy = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n);
+    FFT::forward = fftw_plan_dft_1d(n, FFT::dummy, FFT::dummy, FFTW_FORWARD, FFTW_ESTIMATE);
+    FFT::backward = fftw_plan_dft_1d(n, FFT::dummy, FFT::dummy, FFTW_BACKWARD, FFTW_ESTIMATE);
+    plan = shared_ptr<void>(nullptr, [](void*) {destroyPlan();});
 }
 
 void FFT::destroyPlan() {
-    fftw_destroy_plan(forward);
-    fftw_destroy_plan(backward);
+    fftw_destroy_plan(FFT::forward);
+    fftw_destroy_plan(FFT::backward);
 }
 
 FFT::FFT(int n) {
     this->n = n; 
+    call_once(flag, preInit, n);
     f = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n);
 }
 
@@ -25,7 +34,7 @@ vector<complex<double>> FFT::fft(vector<double> v) {
         f[i][0] = i < v.size() ? v[i] : 0.0;
         f[i][1] = 0;
     }
-    fftw_execute_dft(forward, f, f);
+    fftw_execute_dft(FFT::forward, f, f);
 
     vector<complex<double>> res(n);
     for (int i = 0; i < n; i++) {
@@ -40,7 +49,7 @@ vector<double> FFT::ifft(vector<complex<double>> c) {
         f[i][0] = i < c.size() ? c[i].real() : 0.0;
         f[i][1] = i < c.size() ? c[i].imag() : 0.0;
     }
-    fftw_execute_dft(backward, f, f);
+    fftw_execute_dft(FFT::backward, f, f);
     for (int i = 0; i < n; i++)
     {
         res[i] = f[i][0];

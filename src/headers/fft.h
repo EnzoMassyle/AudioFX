@@ -13,9 +13,11 @@ class FFT {
     private:
         int n;
         cpx* f;
-        inline static fftw_plan forward;
-        inline static fftw_plan backward;
-        inline static cpx* dummy;
+        static fftw_plan forward;
+        static fftw_plan backward;
+        static cpx* dummy;
+        static once_flag flag;
+        static shared_ptr<void> plan;
 
     public:
         FFT(int n);

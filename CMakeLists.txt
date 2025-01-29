@@ -9,12 +9,32 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
-
+# Find external libraries
 find_package(SndFile REQUIRED)
 find_package(FFTW3 CONFIG REQUIRED)
 
-add_executable(mc src/main.cpp src/effects/autotune.cpp src/effects/fft.cpp)
+# Add the executable with all source files
+add_executable(mc 
+    src/main.cpp
+    src/effects/autotune.cpp
+    src/effects/fft.cpp
+    src/effects/reverb.cpp
+    src/effects/filehandler.cpp
+    src/effects/timestretch.cpp
+    src/effects/pitchShift.cpp
+    src/utils.cpp
+)
 
-target_include_directories(mc PRIVATE src/effects/.)
-target_link_libraries(mc PRIVATE SndFile::sndfile)
-target_link_libraries(mc PRIVATE FFTW3::fftw3)
+# Include paths for header files
+target_include_directories(mc PRIVATE 
+    src                      # Include the src/ directory
+    src/effects              # Include the src/effects/ directory
+    src/effects/filters      # Include the src/effects/filters/ directory, if needed
+    src/headers
+)
+
+# Link external libraries
+target_link_libraries(mc PRIVATE 
+    SndFile::sndfile 
+    FFTW3::fftw3
+)

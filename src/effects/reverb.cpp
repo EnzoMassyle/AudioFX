@@ -1,49 +1,34 @@
-#ifndef REVERB_H
-#define REVERB_H
+#include <../headers/reverb.h>
 
-#include <iostream>
-#include <vector>
-#include <sndfile.h>
-#include "filehandler.h"
-#include "utils.h"
-#include <thread>
-#include <future>
-#include <unordered_map>
-#include <string>
-class Reverb
-{
-private:
-    inline static unordered_map<string, string> types = {
+
+unordered_map<string, string> Reverb::types = {
         {"CHURCH", "church.wav"},
         {"CAVE", "cave.wav"},
         {"AIRY", "airy.wav"}};
 
-public:
-    static void convReverb(const char *fn, string t = "CHURCH")
+void Reverb::convReverb(const char *fn, string t)
     {
-        if (types.find(t) == types.end())
+        if (Reverb::types.find(t) == Reverb::types.end())
         {
             cout << t << " is not a valid type" << endl;
-            throw "hello";
         }
         SF_INFO fnInfo;
         SF_INFO irInfo;
         vector<vector<double>> samples = FileHandler::open(fn, fnInfo);
-        string outFile = "../samples/ir/" + types.at(t);
+        string outFile = "../samples/ir/" + Reverb::types.at(t);
         vector<double> irSamples = FileHandler::open(outFile.c_str(), irInfo)[0];
         vector<thread> threads;
         int sizes[fnInfo.channels];
         for (int chan = 0; chan < fnInfo.channels; chan++)
         {
             sizes[chan] = samples[chan].size();
-            Utils::convolve(samples[chan], irSamples);
-            // threads.emplace_back(Utils::convolve, ref(samples[chan]), irSamples);
+            threads.emplace_back(Utils::convolve, ref(samples[chan]), irSamples);
         }
 
-        // for (thread &t : threads)
-        // {
-        //     t.join();
-        // }
+        for (thread &t : threads)
+        {
+            t.join();
+        }
 
         for (int chan = 0; chan < fnInfo.channels; chan++)
         {
@@ -53,6 +38,3 @@ public:
         Utils::normalize(samples);
         FileHandler::write(samples, fnInfo);
     }
-};
-
-#endif
