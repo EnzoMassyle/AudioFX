@@ -4,7 +4,6 @@
 #include <vector> 
 #include <filehandler.h>
 
-
 class Reverse {
     public:
         static void reverse(const char* fn);

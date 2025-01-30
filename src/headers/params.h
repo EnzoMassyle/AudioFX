@@ -13,9 +13,9 @@
 
 
 /* Autotune */
-#define AT_CHUNK_SZ 4000
+#define AT_CHUNK_SZ 5000
 #define AT_OFFSET 100
-#define AT_OVERLAP 5
+#define AT_OVERLAP 4
 
 
 

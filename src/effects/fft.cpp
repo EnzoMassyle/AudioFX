@@ -34,6 +34,7 @@ vector<complex<double>> FFT::fft(vector<double> v) {
         f[i][0] = i < v.size() ? v[i] : 0.0;
         f[i][1] = 0;
     }
+
     fftw_execute_dft(FFT::forward, f, f);
 
     vector<complex<double>> res(n);

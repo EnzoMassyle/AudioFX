@@ -88,10 +88,9 @@ void Autotune::tuneChannel(vector<double> channel, vector<double> &out)
         vector<double> audioSlice(channel.begin() + randStart, channel.begin() + randEnd);
         Utils::applyWindow(audioSlice);
         threads.emplace_back(
-            [this, start, audioSlice, &out]()
+            [this, randStart, audioSlice, &out]()
             {
-                this_thread::sleep_for(chrono::milliseconds(1)); // temporary fix for threads being created too fast, make more dynamic
-                this->tuneSlice(audioSlice, start, ref(out));
+                this->tuneSlice(audioSlice, randStart, ref(out));
             });
     }
 
@@ -110,6 +109,7 @@ void Autotune::tuneSlice(vector<double> slice, int start, vector<double> &out)
     {
         shiftedOut[i] = 0.0;
     }
+    int originalSize = slice.size();
     vector<complex<double>> sliceFreq = handler.fft(slice);
 
     // Find dominating frequency
@@ -129,6 +129,7 @@ void Autotune::tuneSlice(vector<double> slice, int start, vector<double> &out)
     if (shiftFactor == 0)
     {
         slice = handler.ifft(sliceFreq);
+        slice.resize(originalSize);
         Utils::applyWindow(slice);
         for (int i = 0; i < slice.size(); i++)
         {
@@ -155,6 +156,7 @@ void Autotune::tuneSlice(vector<double> slice, int start, vector<double> &out)
     }
 
     slice = handler.ifft(shiftedOut);
+    slice.resize(originalSize);
     Utils::applyWindow(slice);
 
     for (int i = 0; i < slice.size(); i++)

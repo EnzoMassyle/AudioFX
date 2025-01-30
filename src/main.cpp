@@ -14,10 +14,10 @@ int main(int argc, char *argv[])
     char parentFolder[128] = "../samples/";
     char *fn = strcat(parentFolder, argv[1]);
     // Perform Autotune in C Major Scale
-    // Autotune *obj = new Autotune(1.0,  "A", 'm');
-    // obj->fillNoteTable();
-    // obj->process(fn);
-    // delete obj;
+    Autotune *obj = new Autotune(1.0,  "A", 'm');
+    obj->fillNoteTable();
+    obj->process(fn);
+    delete obj;
 
     // change second parameter to affect playback speed   x > 1 Makes audio slower, x < 1 makes audio faster
     //  TimeStretch::changeSpeed(fn, 1.15);

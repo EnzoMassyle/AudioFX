@@ -9,8 +9,9 @@
 #include <utils.h>
 #include <params.h>
 #include <fft.h>
-#include <semaphore.h>
 #include <random>
+#include <semaphore.h>
+#include <future>
 using namespace std;
 class Autotune
 {
