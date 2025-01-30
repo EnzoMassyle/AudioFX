@@ -17,7 +17,7 @@ public:
      *
      * Apply hamming window to v
      */
-    static void applyWindow(vector<double>& v);
+    static void applyWindow(vector<double> &v);
 
     /**
      * @param v -> vector
@@ -25,7 +25,14 @@ public:
      * Apply normalization factor to all audio samples
      */
     static void normalize(vector<vector<double>> &v);
-    
+
+    /**
+     * @param v -> vector
+     *
+     * Modify v to have entries in reverse order for each row
+     */
+    static void reverse(vector<vector<double>>& v);
+
     /**
      * @param v -> vector
      * @param g -> gain
@@ -39,7 +46,7 @@ public:
      * Convolve v1 and v2 using FFT. Result is stored in v1.
      */
     static void convolve(vector<double> &v1, vector<double> v2);
-    
+
     /**
      * @param n -> number
      * Return the next power of 2 that is >= n. If n is already a power of 2, n is returned

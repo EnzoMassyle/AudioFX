@@ -3,6 +3,7 @@
 #include "headers/timestretch.h"
 #include "headers/pitchshift.h"
 #include "headers/reverb.h"
+#include "headers/reverse.h"    
 int main(int argc, char *argv[])
 {
     if (argc != 2)
@@ -19,10 +20,13 @@ int main(int argc, char *argv[])
     // delete obj;
 
     // change second parameter to affect playback speed   x > 1 Makes audio slower, x < 1 makes audio faster
-     TimeStretch::changeSpeed(fn, 1.15);
+    //  TimeStretch::changeSpeed(fn, 1.15);
 
     // change second parameter to affect pitch x > 1 makes pitch higher x < 1 makes pitch lower
     // PitchShift::changePitch(fn, 0.9);
     // Reverb::convReverb(fn, "AIRY");
-\
+
+    /* Reverse */
+    // Reverse::reverse(fn);
+
 }

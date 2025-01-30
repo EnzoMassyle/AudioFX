@@ -35,7 +35,7 @@ void TimeStretch::stretchChannel(vector<double> samples, double shiftFactor, vec
             int randStart = max(0, start + grainStart(gen));
             int randEnd = grainSize(gen) + randStart;
             if (randEnd >= samples.size()) {
-                break;
+                continue;
             }
             int shiftedStart = randStart * shiftFactor;
             vector<double> audioSlice(samples.begin() + randStart, samples.begin() + randEnd);

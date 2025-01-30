@@ -29,16 +29,15 @@ void PitchShift::shiftChannel(vector<double> channel, double pitchFactor, vector
     vector<thread> threads;
     random_device device;
     mt19937 gen(device());
-    uniform_int_distribution grainStart(-550,550);
-    uniform_int_distribution grainSize(10000,12000);
-    for (int start = 0, end = CHUNK_SIZE; end < channel.size(); start += step, end += step)
+    uniform_int_distribution grainStart(-PITCH_OFFSET,PITCH_OFFSET);
+    uniform_int_distribution grainSize(PITCH_CHUNK_SZ,PITCH_CHUNK_SZ + 2000);
+    for (int start = 0 ; start < channel.size(); start += step)
     {
         int randStart = max(0, start + grainStart(gen));
-        int randEnd = grainSize(gen) + randStart;//min((int)samples.size(), end + grainStart(gen));
+        int randEnd = grainSize(gen) + randStart;
         if (randEnd >= channel.size()) {
-            break;
+            continue;
         }
-        
         vector<double> slice(channel.begin() + randStart, channel.begin() + randEnd);
         Utils::applyWindow(slice);
         threads.emplace_back(resampleGrain, slice, start, pitchFactor, ref(out));

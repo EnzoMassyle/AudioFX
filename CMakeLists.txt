@@ -22,6 +22,7 @@ add_executable(mc
     src/effects/filehandler.cpp
     src/effects/timestretch.cpp
     src/effects/pitchShift.cpp
+    src/effects/reverse.cpp
     src/utils.cpp
 )
 
