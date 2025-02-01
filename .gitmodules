@@ -1,3 +1,0 @@
-[submodule "src/headers/freeverb"]
-	path = src/headers/freeverb
-	url = https://github.com/sinshu/freeverb
