@@ -38,7 +38,7 @@ public:
      * Change the pitch of a audio file according to pitch factor using granular synthesis
      * (breaking up audio into chunks and resampling each chunk)
      */
-    static void changePitch(const char *fn, double pitchFactor);
+    static vector<vector<double>> changePitch(vector<vector<double>> samples, double pitchFactor);
 };
 
 #endif

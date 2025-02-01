@@ -13,18 +13,13 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 find_package(SndFile REQUIRED)
 find_package(FFTW3 CONFIG REQUIRED)
 
-# Add the executable with all source files
-add_executable(mc 
-    src/main.cpp
-    src/effects/autotune.cpp
-    src/effects/fft.cpp
-    src/effects/reverb.cpp
-    src/effects/filehandler.cpp
-    src/effects/timestretch.cpp
-    src/effects/pitchShift.cpp
-    src/effects/reverse.cpp
-    src/utils.cpp
+file(GLOB_RECURSE SRC_FILES 
+    src/*.cpp
+    src/effects/*.cpp
+    src/headers/freeverb/Components/*.cpp  # Include all freeverb component .cpp files
 )
+# Add the executable with all source files
+add_executable(mc ${SRC_FILES})
 
 # Include paths for header files
 target_include_directories(mc PRIVATE 
@@ -32,6 +27,7 @@ target_include_directories(mc PRIVATE
     src/effects              # Include the src/effects/ directory
     src/effects/filters      # Include the src/effects/filters/ directory, if needed
     src/headers
+    src/headers/freeverb/Components
 )
 
 # Link external libraries

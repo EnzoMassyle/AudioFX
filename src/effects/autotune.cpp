@@ -35,28 +35,27 @@ void Autotune::fillNoteTable()
     for (int octave = 0; octave < 8; octave++)
     {
         double freq = f0 * pow(2, (12 * (octave - 4)) / 12.0);
-        scaleNotes.push_back(freq);
+        this->scaleNotes.push_back(freq);
         for (int n : semitones)
         {
             double freq = f0 * pow(2, (n + 12 * (octave - 4)) / 12.0);
-            scaleNotes.push_back(freq);
+            this->scaleNotes.push_back(freq);
         }
     }
 }
 
-void Autotune::process(const char *fn)
+vector<vector<double>> Autotune::process(vector<vector<double>> samples, int sampleRate)
 {
-    SF_INFO info;
-    vector<vector<double>> samples = FileHandler::open(fn, info);
-    this->sampleRate = info.samplerate;
+    this->sampleRate = sampleRate;
+    int numChannels = samples.size();
     cout << "Processing..." << endl;
-    vector<vector<double>> output(info.channels, vector<double>(samples[0].size(), 0.0));
+    vector<vector<double>> output(samples.size(), vector<double>(samples[0].size(), 0.0));
 
     vector<thread> threads;
     // Process audio file in chunks. Will need to process each channel separately
-    for (int chan = 0; chan < info.channels; chan++)
+    for (int chan = 0; chan < numChannels; chan++)
     {
-        threads.emplace_back([this, samples, &info, &output, chan]()
+        threads.emplace_back([this, samples, &output, chan]()
                              { this->tuneChannel(samples[chan], output[chan]); });
     }
 
@@ -66,7 +65,7 @@ void Autotune::process(const char *fn)
     }
 
     Utils::normalize(output);
-    FileHandler::write(output, info);
+    return output;
 }
 void Autotune::tuneChannel(vector<double> channel, vector<double> &out)
 {
@@ -171,15 +170,15 @@ double Autotune::findShiftingFactor(double f)
     {
         return 0.0;
     }
-    double closestNote = scaleNotes[0];
+    double closestNote = this->scaleNotes[0];
     double smallestDif = fabs(closestNote - f);
 
-    for (int i = 0; i < scaleNotes.size(); i++)
+    for (int i = 0; i < this->scaleNotes.size(); i++)
     {
-        double dif = fabs(scaleNotes[i] - f);
+        double dif = fabs(this->scaleNotes[i] - f);
         if (dif < smallestDif)
         {
-            closestNote = scaleNotes[i];
+            closestNote = this->scaleNotes[i];
             smallestDif = dif;
         }
     }

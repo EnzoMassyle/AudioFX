@@ -1,5 +1,5 @@
-#ifndef TIMESHIFT_H
-#define TIMESHIFT_H
+#ifndef TIMESTRETCH_H
+#define TIMESTRETCH_H
 
 #include <iostream>
 #include <vector>
@@ -38,7 +38,7 @@ public:
      *
      * Perform time stretching algorithm on each channel independently
      */
-    static void changeSpeed(const char *fn, double shiftFactor);
+    static vector<vector<double>> changeSpeed(vector<vector<double>> samples, double shiftFactor);
 };
 
 #endif

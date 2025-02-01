@@ -16,9 +16,10 @@ using namespace std;
 class Autotune
 {
 private:
-    inline static vector<double> scaleNotes;
+    vector<double> scaleNotes;
     static map<char, array<int, 7>> intervals;
     static map<string, double> rootNotes;
+    int sampleRate;
 
 
     /**
@@ -51,7 +52,6 @@ public:
     double intensity;
     string note;
     char scale; // Major (M) or minor (m)
-    int sampleRate;
 
     /**
      * @param intensity -> Determines how strong to apply the autotune effect
@@ -61,12 +61,11 @@ public:
     Autotune(double intensity, string note, char scale);
 
     /**
-     * @param fn -> Audio file name
-     *
-     * Load file and analyze samples, Perform an overlap-add method where audio is broken up into slices. The signal is split up
-     * into overlapping frames, where each one is individually processed and summed together
+     * @param samples -> Audio samples separated by channel
+     * @param sampleRate -> sample rate
+     * Use granular synthesis approach to tune each audio grain to the nearest correct pitch on the provided musical scale
      */
-    void process(const char *);
+    vector<vector<double>> process(vector<vector<double>> samples, int sampleRate);
 
     /**
      * Fill note table depending on the musical scale used

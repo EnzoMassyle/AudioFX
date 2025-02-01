@@ -1,14 +1,14 @@
  
  #include <../headers/pitchshift.h>
  
-void PitchShift::changePitch(const char *fn, double pitchFactor)
+vector<vector<double>> PitchShift::changePitch(vector<vector<double>> samples, double pitchFactor)
 {
-    SF_INFO info;
-    vector<vector<double>> samples = FileHandler::open(fn, info);
-    vector<vector<double>> output(info.channels, vector<double>(samples[0].size(), 0.0));
+
+    int numChannels = samples.size();
+    vector<vector<double>> output(numChannels, vector<double>(samples[0].size(), 0.0));
     vector<thread> threads;
 
-    for (int chan = 0; chan < info.channels; chan++)
+    for (int chan = 0; chan < numChannels; chan++)
     {
         threads.emplace_back(shiftChannel, samples[chan], pitchFactor, ref(output[chan]));
     }
@@ -17,9 +17,7 @@ void PitchShift::changePitch(const char *fn, double pitchFactor)
     {
         t.join();
     }
-
-    Utils::normalize(output);
-    FileHandler::write(output, info);
+    return output;
 }
 
 

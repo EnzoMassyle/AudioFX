@@ -1,15 +1,12 @@
 #include <../headers/filehandler.h>
 
-SNDFILE *FileHandler::inFile;
-SNDFILE *FileHandler::outFile;
-double *FileHandler::buffer;
-vector<vector<double>> FileHandler::open(const char *fn, SF_INFO &info)
+vector<vector<double>> FileHandler::open(const char *fn)
 {
     const char *inFileName = fn;
     memset(&info, 0, sizeof(info));
     try
     {
-        if (!(FileHandler::inFile = sf_open(inFileName, SFM_READ, &info)))
+        if (!(FileHandler::inFile = sf_open(inFileName, SFM_READ, &this->info)))
         {   
             cout << inFileName << " not found" << endl;
             throw inFileName;
@@ -36,12 +33,11 @@ vector<vector<double>> FileHandler::open(const char *fn, SF_INFO &info)
     return samples;
 }
 
-void FileHandler::write(vector<vector<double>> output, SF_INFO& info)
+void FileHandler::write(vector<vector<double>> output, const char* writeName)
  {
-    const char *outFileName = "out.wav";
-    if (!(FileHandler::outFile = sf_open(outFileName, SFM_WRITE, &info)))
+    if (!(FileHandler::outFile = sf_open(writeName, SFM_WRITE, &this->info)))
         {
-            throw outFileName;
+            throw writeName;
         }
     cout << "Saving..." << endl;
     int idx = 0;
