@@ -5,8 +5,11 @@
 using namespace std;
 class Filter
 {
+protected: 
+    double prev;
 public:
     virtual ~Filter() {};
-    virtual vector<double> apply() const = 0;
+    virtual void process(vector<vector<double>>& samples) = 0;
+
 };
 #endif

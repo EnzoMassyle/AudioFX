@@ -1,0 +1,3 @@
+[submodule "src/headers/freeverb"]
+	path = src/headers/freeverb
+	url = git@github.com:EnzoMassyle/freeverb.git

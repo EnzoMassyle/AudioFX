@@ -1,4 +1,5 @@
 #include <freeverb/Components/revmodel.hpp>
+#include <filters/lp.h>
 #include <filehandler.h>
 #include <utils.h>
 #include <convreverb.h>
@@ -6,6 +7,7 @@
 #include <timestretch.h>
 #include <autotune.h>
 #include <vector>
+
 
 using namespace std;
 class AFX

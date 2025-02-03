@@ -10,9 +10,10 @@ vector<vector<double>> AFX::artificialReverb(vector<vector<double>> samples)
 
     int numSamples = samples[0].size();
     revmodel reverb;
-    reverb.setdry(0.3);
-    reverb.setwet(0.5);
-    Utils::gain(samples, 0.25);
+    reverb.setdry(0.8);
+    reverb.setwet(0.3);
+    reverb.setroomsize(0.8);
+    Utils::gain(samples, 0.000000000000000001);
 
     // Allocate buffers
     vector<double> inLeft(numSamples);
@@ -40,8 +41,10 @@ vector<vector<double>> AFX::artificialReverb(vector<vector<double>> samples)
             samples[1][i] = outRight[i];
         }
     }
-
-    Utils::gain(samples, 4);
+    LowPass lp = LowPass(0.1);
+    // lp.process(samples);
+    // Utils::gain(samples, 10000);
+    Utils::normalize(samples);
     return samples;
 }
 
