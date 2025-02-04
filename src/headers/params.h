@@ -1,7 +1,7 @@
 #ifndef PARAMS_H
 #define PARAMS_H
 
-#define CHUNK_SIZE 20000
+#define CHUNK_SIZE 80000
 #define TIME_CHUNK_SZ 10000
 #define TIME_OFFSET 400
 #define NUM_OVERLAP 2.5

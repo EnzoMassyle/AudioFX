@@ -19,6 +19,10 @@ public:
      */
     static void applyWindow(vector<double> &v);
 
+    static vector<double> generateWindow(int s);
+
+    static double sinc(double x);
+
     /**
      * @param v -> vector
      *

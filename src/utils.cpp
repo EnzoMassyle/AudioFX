@@ -9,6 +9,17 @@ void Utils::applyWindow(vector<double> &v)
     }
 }
 
+vector<double> Utils::generateWindow(int s)
+{
+    vector<double> window(s, 1.0);
+    applyWindow(window);
+    return window;
+}
+double Utils::sinc(double x)
+{
+    if (x == 0.0) return 1.0;
+    return sin(M_PI * x) / (M_PI * x);
+}
 void Utils::normalize(vector<vector<double>> &v)
 {
     // Calculate maximum peak

@@ -19,4 +19,5 @@ public:
     vector<vector<double>> timeStretch(vector<vector<double>> samples, double stretchFactor) { return TimeStretch::changeSpeed(samples, stretchFactor); };
     vector<vector<double>> reverse(vector<vector<double>> samples);
     vector<vector<double>> autotune(vector<vector<double>> samples, double intensity, string note, char scale, int sampleRate);
+    vector<vector<double>> changeTempo(vector<vector<double>> samples, double r, double sampleRate);
 };

@@ -25,12 +25,11 @@ vector<vector<double>> AFX::artificialReverb(vector<vector<double>> samples)
     for (int i = 0; i < numSamples; i++)
     {
         inLeft[i] = samples[0][i];
-        inRight[i] = (numChannels > 1) ? samples[1][i] : samples[0][i];  // Ensure stereo input
+        inRight[i] = (numChannels > 1) ? samples[1][i] : samples[0][i]; // Ensure stereo input
     }
 
     // Apply reverb
     reverb.processreplace(inLeft.data(), inRight.data(), outLeft.data(), outRight.data(), numSamples, 1);
-
 
     // Store processed output
     for (int i = 0; i < numSamples; i++)
@@ -72,4 +71,29 @@ vector<vector<double>> AFX::reverse(vector<vector<double>> samples)
     }
 
     return samples;
+}
+
+vector<vector<double>> AFX::changeTempo(vector<vector<double>> samples, double r, double sampleRate)
+{
+    int numChannels = samples.size();
+    int channelLength = samples[0].size();
+    int newChannelLength = channelLength / r;
+    vector<vector<double>> output(numChannels, vector<double>(newChannelLength, 0.0));
+
+
+    vector<double> window = Utils::generateWindow(32);
+    for (int chan = 0; chan < numChannels; chan++) 
+    {
+        for (int i = 0; i < newChannelLength; i++)
+        {
+            double center = i * r;
+            for (int j = max((int)center - 16, 0), k = 0; j < min((int)center + 16, channelLength); j++, k++)
+            {
+                output[chan][i] += samples[chan][j] * Utils::sinc(center - j) * window[k];
+            }
+        }
+    }
+
+
+    return output;
 }

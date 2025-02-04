@@ -14,7 +14,7 @@ vector<vector<double>> Reverb::convReverb(vector<vector<double>> samples, string
     int numChannels = samples.size();
     SF_INFO irInfo;
     // string outFile = "../samples/ir/" + Reverb::types.at(room);
-    string outFile = "../samples/ir/nuke.mp3";
+    string outFile = "../samples/ir/church.wav";
 
     FileHandler fh = FileHandler();
     vector<double> irSamples = fh.open(outFile.c_str())[0];
@@ -51,7 +51,7 @@ void Reverb::convolveChannel(vector<double> channel, vector<double> irSamples, v
     // mt19937 gen(device());
     // uniform_int_distribution grainStart(-PITCH_OFFSET,PITCH_OFFSET);
     // uniform_int_distribution grainSize(PITCH_CHUNK_SZ,PITCH_CHUNK_SZ + 2000);
-    int step = CHUNK_SIZE / 3;
+    int step = irSamples.size() / 4 ;
     vector<thread> threads;
     for (int start = 0 ; start < channel.size(); start += step)
     {
@@ -60,7 +60,7 @@ void Reverb::convolveChannel(vector<double> channel, vector<double> irSamples, v
         // if (randEnd >= channel.size()) {
         //     continue;
         // }
-        int end = start + CHUNK_SIZE;
+        int end = start + irSamples.size();
         if (end >= channel.size()) {
             continue;
         }

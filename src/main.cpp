@@ -21,6 +21,8 @@ int main(int argc, char *argv[])
 
     // samples = afx.artificialReverb(samples);
     samples = afx.convReverb(samples, "CHURCH");
+    samples = afx.changeTempo(samples, 0.9, fh.getSampleRate());
+    
 
 
     fh.write(samples);
