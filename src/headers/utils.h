@@ -45,7 +45,7 @@ public:
      *
      * Convolve v1 and v2 using FFT. Result is stored in v1.
      */
-    static void convolve(vector<double> &v1, vector<double> v2);
+    static vector<double> convolve(vector<double> v1, vector<double> v2);
 
     /**
      * @param n -> number

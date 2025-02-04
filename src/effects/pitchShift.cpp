@@ -23,7 +23,7 @@ vector<vector<double>> PitchShift::changePitch(vector<vector<double>> samples, d
 
 void PitchShift::shiftChannel(vector<double> channel, double pitchFactor, vector<double> &out)
 {
-    int step = CHUNK_SIZE / NUM_OVERLAP;
+    int step = PITCH_CHUNK_SZ / NUM_OVERLAP;
     vector<thread> threads;
     random_device device;
     mt19937 gen(device());

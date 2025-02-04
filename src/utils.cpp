@@ -45,7 +45,7 @@ void Utils::gain(vector<vector<double>> &v, double g)
     }
 }
 
-void Utils::convolve(vector<double> &v1, vector<double> v2)
+vector<double> Utils::convolve(vector<double> v1, vector<double> v2)
 {
     int N;
     if (v1.size() > v2.size())
@@ -57,7 +57,6 @@ void Utils::convolve(vector<double> &v1, vector<double> v2)
         N = nextPowerOfTwo(v2.size());
     }
     FFT handler = FFT(N);
-
     vector<complex<double>> z = handler.fft(v1);
     vector<complex<double>> w = handler.fft(v2);
 
@@ -69,6 +68,7 @@ void Utils::convolve(vector<double> &v1, vector<double> v2)
         z[i] = complex<double>(tempR, tempI);
     }
     v1 = handler.ifft(z);
+    return v1;
 }
 
 int Utils::nextPowerOfTwo(int n)
