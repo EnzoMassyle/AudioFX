@@ -56,7 +56,7 @@ void Utils::gain(vector<vector<double>> &v, double g)
     }
 }
 
-vector<double> Utils::convolve(vector<double> v1, vector<double> v2)
+vector<double> Utils::convolve(vector<double>& v1, vector<double> v2)
 {
     int N;
     if (v1.size() > v2.size())

@@ -10,9 +10,11 @@ vector<vector<double>> AFX::artificialReverb(vector<vector<double>> samples)
 
     int numSamples = samples[0].size();
     revmodel reverb;
-    reverb.setdry(0.8);
-    reverb.setwet(0.3);
-    reverb.setroomsize(0.8);
+    reverb.setdry(0.9);
+    reverb.setwet(0.25);
+    reverb.setroomsize(0.9);
+    reverb.setwidth(1.5);
+    reverb.setdamp(0.8);
     Utils::gain(samples, 0.1);
 
     // Allocate buffers
@@ -22,27 +24,21 @@ vector<vector<double>> AFX::artificialReverb(vector<vector<double>> samples)
     vector<double> outRight(numSamples);
 
     // Fill input buffers
-    for (int i = 0; i < numSamples; i++)
-    {
-        inLeft[i] = samples[0][i];
-        inRight[i] = (numChannels > 1) ? samples[1][i] : samples[0][i]; // Ensure stereo input
-    }
-
+    inLeft = samples[0];
+    inRight = (numChannels > 1) ? samples[1] : inLeft;
+    
     // Apply reverb
     reverb.processreplace(inLeft.data(), inRight.data(), outLeft.data(), outRight.data(), numSamples, 1);
 
     // Store processed output
-    for (int i = 0; i < numSamples; i++)
-    {
-        samples[0][i] = outLeft[i];
-        if (numChannels > 1)
-        {
-            samples[1][i] = outRight[i];
-        }
+    samples[0] = outLeft;
+    if(numChannels > 1) {
+        samples[1] = outRight;
     }
-    LowPass lp = LowPass(0.5);
+
+    LowPass lp = LowPass(0.35);
     lp.process(samples);
-    // Utils::gain(samples, 10000);
+    // Utils::gain(samples, 5);
     Utils::normalize(samples);
     return samples;
 }
@@ -71,29 +67,4 @@ vector<vector<double>> AFX::reverse(vector<vector<double>> samples)
     }
 
     return samples;
-}
-
-vector<vector<double>> AFX::changeTempo(vector<vector<double>> samples, double r, double sampleRate)
-{
-    int numChannels = samples.size();
-    int channelLength = samples[0].size();
-    int newChannelLength = channelLength / r;
-    vector<vector<double>> output(numChannels, vector<double>(newChannelLength, 0.0));
-
-
-    vector<double> window = Utils::generateWindow(32);
-    for (int chan = 0; chan < numChannels; chan++) 
-    {
-        for (int i = 0; i < newChannelLength; i++)
-        {
-            double center = i * r;
-            for (int j = max((int)center - 16, 0), k = 0; j < min((int)center + 16, channelLength); j++, k++)
-            {
-                output[chan][i] += samples[chan][j] * Utils::sinc(center - j) * window[k];
-            }
-        }
-    }
-
-
-    return output;
 }

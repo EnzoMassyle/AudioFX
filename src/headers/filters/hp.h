@@ -4,6 +4,11 @@
 #include "filter.h"
 class HighPass : public Filter
 {
-    /* TODO */
+    private:
+        double alpha;
+
+    public:
+        HighPass(double alpha);
+        void process(vector<vector<double>>& samples) override;
 };
 #endif

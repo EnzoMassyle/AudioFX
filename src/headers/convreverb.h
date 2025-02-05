@@ -10,6 +10,8 @@
 #include <future>
 #include <unordered_map>
 #include <string>
+#include <filters/lp.h>
+#include <random>
 class Reverb
 {
 private:
