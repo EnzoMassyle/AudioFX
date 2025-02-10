@@ -29,7 +29,7 @@ private:
      *
      * resample the audio chunk by performing linear interpolation
      */
-    static void resampleGrain(vector<double> samples, int start, double pitchFactor, vector<double> &out);
+    static void resampleSlice(vector<double> samples, vector<double> slice, int start, double pitchFactor, vector<double> &out);
 public:
     /**
      * @param fn -> file path

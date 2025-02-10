@@ -17,9 +17,39 @@ vector<double> Utils::generateWindow(int s)
 }
 double Utils::sinc(double x)
 {
-    if (x == 0.0) return 1.0;
+    if (x == 0.0)
+        return 1.0;
     return sin(M_PI * x) / (M_PI * x);
 }
+
+
+double Utils::lagrangeInterpolate(const std::vector<double> &samples, double t)
+{
+    int x0 = floor(t) - 2; // Choose the four closest sample indices
+    int x1 = x0 + 1;
+    int x2 = x0 + 2;
+    int x3 = x0 + 3;
+
+    if (x0 < 0 || x3 >= samples.size())
+    {
+        return 0.0; // Prevent out-of-bounds access
+    }
+
+    double y0 = samples[x0];
+    double y1 = samples[x1];
+    double y2 = samples[x2];
+    double y3 = samples[x3];
+
+    // Compute Lagrange basis polynomials
+    double L0 = ((t - x1) * (t - x2) * (t - x3)) / ((x0 - x1) * (x0 - x2) * (x0 - x3));
+    double L1 = ((t - x0) * (t - x2) * (t - x3)) / ((x1 - x0) * (x1 - x2) * (x1 - x3));
+    double L2 = ((t - x0) * (t - x1) * (t - x3)) / ((x2 - x0) * (x2 - x1) * (x2 - x3));
+    double L3 = ((t - x0) * (t - x1) * (t - x2)) / ((x3 - x0) * (x3 - x1) * (x3 - x2));
+
+    // Compute interpolated value
+    return y0 * L0 + y1 * L1 + y2 * L2 + y3 * L3;
+}
+
 void Utils::normalize(vector<vector<double>> &v)
 {
     // Calculate maximum peak
@@ -56,7 +86,7 @@ void Utils::gain(vector<vector<double>> &v, double g)
     }
 }
 
-vector<double> Utils::convolve(vector<double>& v1, vector<double> v2)
+vector<double> Utils::convolve(vector<double> &v1, vector<double> v2)
 {
     int N;
     if (v1.size() > v2.size())

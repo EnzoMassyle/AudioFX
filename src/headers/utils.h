@@ -20,6 +20,9 @@ public:
     static void applyWindow(vector<double> &v);
 
     static vector<double> generateWindow(int s);
+    
+    static double lagrangeInterpolate(const std::vector<double>& samples, double t);
+
 
     static double sinc(double x);
 

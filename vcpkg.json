@@ -4,8 +4,11 @@
   "dependencies": [
     {
       "name": "fftw3",
-      "features": ["threads"]
+      "features": [
+        "threads"
+      ]
     },
-    "libsndfile"
+    "libsndfile",
+    "pybind11"
   ]
 }

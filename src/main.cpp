@@ -20,11 +20,13 @@ int main(int argc, char *argv[])
 
     AFX afx = AFX();
     // samples = afx.pitchShift(samples, 0.9);
+    // samples = afx.reverse(samples);
     // samples = afx.timeStretch(samples, 1.15);
 
-    // samples = afx.artificialReverb(samples);
-    samples = afx.changeTempo(samples, 0.9);
-    samples = afx.convReverb(samples, "CAVE");
+    samples = afx.artificialReverb(samples);
+    // samples = afx.changeTempo(samples, 0.9);
+    // samples = afx.convReverb(samples, "CAVE");
+    // samples = afx.demix(samples, 1);
 
     
     auto end = std::chrono::high_resolution_clock::now(); // End timing

@@ -7,7 +7,7 @@
 #define NUM_OVERLAP 2.5
 
 /* Pitch Shifting */
-#define PITCH_CHUNK_SZ 7000
+#define PITCH_CHUNK_SZ 16384
 #define PITCH_OFFSET 200
 #define PITCH_OVERLAP 6
 

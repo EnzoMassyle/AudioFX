@@ -1,6 +1,6 @@
- 
- #include <../headers/pitchshift.h>
- 
+
+#include <../headers/pitchshift.h>
+
 vector<vector<double>> PitchShift::changePitch(vector<vector<double>> samples, double pitchFactor)
 {
 
@@ -20,25 +20,25 @@ vector<vector<double>> PitchShift::changePitch(vector<vector<double>> samples, d
     return output;
 }
 
-
 void PitchShift::shiftChannel(vector<double> channel, double pitchFactor, vector<double> &out)
 {
-    int step = PITCH_CHUNK_SZ / NUM_OVERLAP;
+    int step = PITCH_CHUNK_SZ / (NUM_OVERLAP / pitchFactor) ;
     vector<thread> threads;
     random_device device;
     mt19937 gen(device());
-    uniform_int_distribution grainStart(-PITCH_OFFSET,PITCH_OFFSET);
-    uniform_int_distribution grainSize(PITCH_CHUNK_SZ,PITCH_CHUNK_SZ + 2000);
-    for (int start = 0 ; start < channel.size(); start += step)
+    uniform_int_distribution grainStart(-PITCH_OFFSET, PITCH_OFFSET);
+    uniform_int_distribution grainSize(PITCH_CHUNK_SZ, PITCH_CHUNK_SZ + 2000);
+    for (int start = 0; start < channel.size(); start += step)
     {
         int randStart = max(0, start + grainStart(gen));
         int randEnd = grainSize(gen) + randStart;
-        if (randEnd >= channel.size()) {
+        if (randEnd >= channel.size())
+        {
             continue;
         }
         vector<double> slice(channel.begin() + randStart, channel.begin() + randEnd);
         Utils::applyWindow(slice);
-        threads.emplace_back(resampleGrain, slice, start, pitchFactor, ref(out));
+        threads.emplace_back(resampleSlice, channel, slice, start, pitchFactor, ref(out));
     }
 
     for (thread &t : threads)
@@ -47,23 +47,28 @@ void PitchShift::shiftChannel(vector<double> channel, double pitchFactor, vector
     }
 }
 
-void PitchShift::resampleGrain(vector<double> samples, int start, double pitchFactor, vector<double> &out)
-    {
-        vector<double> resampled(samples.size(), 0.0);
-        resampled.push_back(samples.back());
-        for (int i = 0; i < samples.size(); i++)
-        {
-            double exact = i * pitchFactor;
-            if (exact < samples.size()) {
-                int idx = (int)exact;
-                double frac = exact - idx;
-                double alpha = 1 - (exact - idx);
-                resampled[i] += alpha * samples[idx] + (1 - alpha) * samples[idx + 1];
-            }
-        }
 
-        for (int i = 0; i < samples.size(); i++)
-        {
-            out[i + start] += resampled[i];
-        }
+void PitchShift::resampleSlice(vector<double> samples, vector<double> slice, int start, double pitchFactor, vector<double> &out)
+{
+    int resampledSize = slice.size() * pitchFactor;  // Scale slice size by pitch
+    vector<double> resampled(resampledSize, 0.0);
+    vector<double> window = Utils::generateWindow(slice.size());  // Window matches grain size
+
+    for (int i = 0; i < resampledSize; i++)
+    {
+        double newIdx = (i * pitchFactor) + start;  // Compute correct fractional position
+        // **Lagrange Interpolation**
+        double interpolatedSample = Utils::lagrangeInterpolate(samples, newIdx);
+
+        // **Apply Grain Windowing**
+        resampled[i] = interpolatedSample * window[i % window.size()];
     }
+
+    // **Accumulate Resampled Data into Output Buffer**
+    for (int i = 0; i < resampledSize; i++)
+    {
+        out[start + i] += resampled[i];
+
+    }
+
+}
