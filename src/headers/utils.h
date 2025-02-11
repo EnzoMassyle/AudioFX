@@ -59,6 +59,25 @@ public:
      * Return the next power of 2 that is >= n. If n is already a power of 2, n is returned
      */
     static int nextPowerOfTwo(int n);
+
+
+    /**
+     * @param v -> vector of complex numbers
+     * @param k -> scalar
+     * 
+     * Perform scalar multiplication on each complex value
+     */
+    static vector<complex<double>> scaleComplex(vector<complex<double>> v, double k);
+
+    /**
+     * @param u -> complex vector
+     * @param v -> complex vector 
+     * 
+     * Perform element wise addition on complex numbers This method assumes u.size() == v.size() 
+     * 
+     */
+    static vector<complex<double>> addComplex(vector<complex<double>> u, vector<complex<double>> v);
+
 };
 
 #endif

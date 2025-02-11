@@ -22,8 +22,8 @@ int main(int argc, char *argv[])
     // samples = afx.pitchShift(samples, 0.9);
     // samples = afx.reverse(samples);
     // samples = afx.timeStretch(samples, 1.15);
-
-    samples = afx.artificialReverb(samples);
+    // samples = afx.autotune(samples, 1.0, "C", 'M', fh.getSampleRate());
+    // samples = afx.artificialReverb(samples);
     // samples = afx.changeTempo(samples, 0.9);
     // samples = afx.convReverb(samples, "CAVE");
     // samples = afx.demix(samples, 1);
@@ -34,8 +34,6 @@ int main(int argc, char *argv[])
     std::chrono::duration<double> elapsed = end - start; // Compute elapsed time
 
     std::cout << "Elapsed time: " << elapsed.count() << " seconds\n";
-
-
     fh.write(samples);
 
 }

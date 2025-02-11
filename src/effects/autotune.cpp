@@ -101,7 +101,7 @@ void Autotune::tuneChannel(vector<double> channel, vector<double> &out)
 
 void Autotune::tuneSlice(vector<double> slice, int start, vector<double> &out)
 {
-    int N = Utils::nextPowerOfTwo(CHUNK_SIZE);
+    int N = Utils::nextPowerOfTwo(AT_CHUNK_SZ);
     FFT handler = FFT(N);
     vector<complex<double>> shiftedOut(N, 0.0);
     for (int i = 0; i < N; i++)

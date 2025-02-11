@@ -121,3 +121,22 @@ int Utils::nextPowerOfTwo(int n)
     }
     return pow(2, p);
 }
+
+vector<complex<double>> Utils::scaleComplex(vector<complex<double>> v, double k)
+{
+    for (int i = 0; i < v.size(); i++)
+    {
+        v[i] *= k;
+    }
+    return v;
+}
+
+vector<complex<double>> Utils::addComplex(vector<complex<double>> u, vector<complex<double>> v)
+{
+    for (int i = 0; i < u.size(); i++)
+    {
+        // u[i] += complex(u[i].real() + v[i].real(), u[i].imag() + v[i].imag());
+        u[i] += v[i];
+    }
+    return u;
+}

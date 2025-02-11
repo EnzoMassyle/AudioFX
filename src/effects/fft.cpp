@@ -34,13 +34,16 @@ vector<complex<double>> FFT::fft(vector<double> v) {
         f[i][0] = i < v.size() ? v[i] : 0.0;
         f[i][1] = 0;
     }
-
+    // cout << "before " << endl;
     fftw_execute_dft(FFT::forward, f, f);
+    // cout << "after" << endl;
 
     vector<complex<double>> res(n);
     for (int i = 0; i < n; i++) {
+        // cout << i << " " << f << endl;
         res[i] = complex<double>(f[i][0], f[i][1]);
     }
+
     return res;
 }
 
