@@ -17,6 +17,7 @@ void FFT::preInit(int n) {
 void FFT::destroyPlan() {
     fftw_destroy_plan(FFT::forward);
     fftw_destroy_plan(FFT::backward);
+    fftw_free(dummy);
 }
 
 FFT::FFT(int n) {

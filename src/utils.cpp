@@ -135,7 +135,6 @@ vector<complex<double>> Utils::addComplex(vector<complex<double>> u, vector<comp
 {
     for (int i = 0; i < u.size(); i++)
     {
-        // u[i] += complex(u[i].real() + v[i].real(), u[i].imag() + v[i].imag());
         u[i] += v[i];
     }
     return u;

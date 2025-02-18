@@ -21,7 +21,7 @@ private:
      *
      * Use granular synthesis to increase/decrease the space between grains
      */
-    static void stretchChannel(vector<double> samples, double shiftFactor, vector<double> &out);
+    static void stretchChannel(const vector<double>& samples, double shiftFactor, vector<double> &out);
 
     /**
      * @param grain -> audio grain
@@ -30,7 +30,7 @@ private:
      *
      * shift grain to start at the position indicated by shiftedStart
      */
-    static void processSlice(vector<double> grain, int shiftedStart, vector<double> &out);
+    static void stretchFrame(const vector<double>& channel, int shiftedStart, double shiftFactor, vector<double> &out);
 public:
     /**
      * @param fn -> path to a audio file

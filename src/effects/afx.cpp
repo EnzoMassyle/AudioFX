@@ -69,28 +69,15 @@ vector<vector<double>> AFX::reverse(vector<vector<double>> samples)
     return samples;
 }
 
+
+vector<vector<double>> AFX::pitchShift(vector<vector<double>> samples, double pitchFactor)
+{
+    AFX afx = AFX();
+    samples = afx.changeTempo(samples, 1.0 / pitchFactor); // First resample to change pitch
+    return TimeStretch::changeSpeed(samples, pitchFactor);
+}
 vector<vector<double>> AFX::demix(vector<vector<double>> samples, bool vocals)
 {
-    // // Set up Python configuration
-    // PyStatus status;
-    // PyConfig config;
-    // PyConfig_InitPythonConfig(&config);
-
-    // // Set the Python home directory to your virtual environment
-    // const wchar_t* python_home = L"C:/Users/Enzo/Documents/funStuff/AudioFX/venv";
-    // status = PyConfig_SetString(&config, &config.home, python_home);
-    // if (PyStatus_Exception(status)) {
-    //     PyConfig_Clear(&config);
-    //     throw;
-    // }
-    
-    // status = Py_InitializeFromConfig(&config);
-    // PyConfig_Clear(&config);
-
-    // if (PyStatus_Exception(status)) {
-    //     std::cerr << "Failed to initialize Python with the correct home directory" << std::endl;
-    //     throw;
-    // }
     const char* command = "spleeter separate -p spleeter:5stems -o output ../samples/circles.mp3";
     int result = system(command);
     if (result == 0) {
@@ -98,27 +85,5 @@ vector<vector<double>> AFX::demix(vector<vector<double>> samples, bool vocals)
     } else {
         std::cerr << "Command failed with exit code: " << result << std::endl;
     }
-    // py::scoped_interpreter guard{};
-    // py::exec(R"(
-    //     import sys
-    //     sys.path.append("C:/Users/Enzo/Documents/funStuff/AudioFX/src/effects")  # Adjust this path!
-    //     sys.path.append("C:/Users/Enzo/Documents/funStuff/AudioFX/venv/Lib/site-packages")
-    //     print("Python sys.path:", sys.path)  # Debugging
-    //     print(sys.executable)
-    // )");
-    // py::module_ demix = py::module_::import("separate");
-    // py::exec(R"(
-    //     kwargs = dict(name="World", number=42)
-    //     message = "Hello, {name}! The answer is {number}".format(**kwargs)
-    //     print(message)
-    // )");
-    // int numChannels = samples.size();
-    // for (int chan = 0; chan < numChannels; chan++)
-    // {
-    //     cout << chan << endl;
-    //     // samples[chan] = demix.attr("demix")(samples,vocals).cast<vector<double>>();
-    // }
-    
-
     return samples;
 }

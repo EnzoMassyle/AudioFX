@@ -19,9 +19,9 @@ int main(int argc, char *argv[])
 
 
     AFX afx = AFX();
-    // samples = afx.pitchShift(samples, 0.9);
+    samples = afx.pitchShift(samples, 0.8);
     // samples = afx.reverse(samples);
-    // samples = afx.timeStretch(samples, 1.15);
+    // samples = afx.timeStretch(samples, 0.9);
     // samples = afx.autotune(samples, 1.0, "C", 'M', fh.getSampleRate());
     // samples = afx.artificialReverb(samples);
     // samples = afx.changeTempo(samples, 0.9);

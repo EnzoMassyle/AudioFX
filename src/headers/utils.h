@@ -78,6 +78,8 @@ public:
      */
     static vector<complex<double>> addComplex(vector<complex<double>> u, vector<complex<double>> v);
 
+
+
 };
 
 #endif
