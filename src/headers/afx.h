@@ -15,6 +15,7 @@ class AFX
 public:
     vector<vector<double>> convReverb(vector<vector<double>> samples, string room = "CHURCH") { return Reverb::convReverb(samples, room);};
     vector<vector<double>> pitchShift(vector<vector<double>> samples, double pitchFactor);
+    vector<vector<double>> pitchShift(vector<vector<double>> samples, int semitones) {return pitchShift(samples, pow(2, (semitones / 12.0)));};
     vector<vector<double>> timeStretch(vector<vector<double>> samples, double stretchFactor) { return TimeStretch::changeSpeed(samples, stretchFactor); };
     vector<vector<double>> changeTempo(vector<vector<double>> samples, double r) {return Tempo::changeTempo(samples, r);};
     vector<vector<double>> artificialReverb(vector<vector<double>> samples);

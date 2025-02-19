@@ -69,13 +69,14 @@ vector<vector<double>> AFX::reverse(vector<vector<double>> samples)
     return samples;
 }
 
-
 vector<vector<double>> AFX::pitchShift(vector<vector<double>> samples, double pitchFactor)
 {
     AFX afx = AFX();
+    pitchFactor = 1 / pitchFactor;
     samples = afx.changeTempo(samples, 1.0 / pitchFactor); // First resample to change pitch
     return TimeStretch::changeSpeed(samples, pitchFactor);
 }
+
 vector<vector<double>> AFX::demix(vector<vector<double>> samples, bool vocals)
 {
     const char* command = "spleeter separate -p spleeter:5stems -o output ../samples/circles.mp3";

@@ -8,8 +8,8 @@ class Tempo
 {
 private:
     static int sliceSize;
-    static void changeTempoChannel(vector<double> channel, double r, vector<double> &out);
-    static void changeTempoSlice(vector<double> channel, int sliceStart, double r, vector<double> &out);
+    static void changeTempoChannel(const vector<double>& channel, double r, vector<double> &out);
+    static void changeTempoSlice(const vector<double>& channel, int sliceStart, double r, vector<double> &out);
 public:
     static vector<vector<double>> changeTempo(vector<vector<double>> samples, double r);
 };

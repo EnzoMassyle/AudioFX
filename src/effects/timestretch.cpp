@@ -1,8 +1,10 @@
 #include <../headers/timestretch.h>
 
+
 vector<vector<double>> TimeStretch::changeSpeed(vector<vector<double>> samples, double shiftFactor)
 {
     int numChannels = samples.size();
+
     vector<vector<double>> output(numChannels, vector<double>(samples[0].size() / shiftFactor, 0.0));
     vector<thread> threads;
 
@@ -23,13 +25,14 @@ vector<vector<double>> TimeStretch::changeSpeed(vector<vector<double>> samples, 
 void TimeStretch::stretchChannel(const vector<double>& channel, double shiftFactor, vector<double>& out)
 {
     vector<thread> threads;
-    int hopSize = 750000;
-
-    for (int i = 0; i < channel.size(); i += hopSize)
+    int hopSize = 100000;
+    for (int i = 0, j = 0; i < channel.size(); i += hopSize, j++)
     {
-        int end = min(i + hopSize , (int)channel.size() - 1);
-        vector<double> slice(channel.begin() + i, channel.begin() + end);
-        threads.emplace_back(stretchFrame, slice, (double) i / shiftFactor, shiftFactor, ref(out));
+        int end = min(i + hopSize , (int)channel.size());
+        int start = max(0, i - 2000); // Ensure smooth overlap when parallel processing
+        vector<double> slice(channel.begin() + start, channel.begin() + end);
+
+        threads.emplace_back(stretchFrame, slice, (double) start / shiftFactor, shiftFactor,  ref(out));
     }
 
     for (thread& t : threads)
@@ -58,8 +61,9 @@ void TimeStretch::stretchFrame(const vector<double>& channel, int shiftedStart, 
 
     int newBinCnt = round(n / shiftFactor);
     vector<vector<complex<double>>> newStftBins(newBinCnt, vector<complex<double>>(frameSize));
-    vector<double> lastPhases(frameSize);
+    vector<complex<double>> lastPhasors(frameSize);
     vector<double> phaseSum(frameSize, 0.0);
+    
     for (int i = 0; i < newBinCnt; i++)
     {
         double og = i * shiftFactor;
@@ -74,16 +78,23 @@ void TimeStretch::stretchFrame(const vector<double>& channel, int shiftedStart, 
         /* Ensure phase coherence */
         for (int j = 0; j < frameSize; j++)
         {
-            /* TODO use a data structure, to save the phase information from the previous frame's edge to align with the beginning of new frame */
             double phaseDiff = arg(newStftBins[i][j]);
             double lastPhase = 0.0;
             double lastMagnitude = 0.0;
-            if (i > 0)
+            if (i == 0)
+            {
+                phaseSum[j] = arg(newStftBins[i][j]);
+            }
+            else
             {
                 lastPhase = arg(newStftBins[i-1][j]);
                 lastMagnitude = abs(newStftBins[i-1][j]);
                 phaseDiff -= lastPhase;
+            }
 
+            if (i == newBinCnt - 1)
+            {
+                lastPhasors[j] = newStftBins[i][j];
             }
 
             /* Transient detection, if transient, do nothing to keep timbre */
@@ -95,9 +106,12 @@ void TimeStretch::stretchFrame(const vector<double>& channel, int shiftedStart, 
                 while (phaseDiff < -M_PI)
                     phaseDiff += 2 * M_PI;
 
-                newStftBins[i][j] = polar(abs(newStftBins[i][j]), lastPhase + phaseDiff);
+                phaseSum[j] += phaseDiff;
+
+                newStftBins[i][j] = polar(abs(newStftBins[i][j]), phaseSum[j]);
             }
         }
+
     }
     for (int start = 0, i = 0; start < out.size() && i < newBinCnt; start += hopSize, i++)
     {
@@ -110,14 +124,3 @@ void TimeStretch::stretchFrame(const vector<double>& channel, int shiftedStart, 
     }
     
 }
-
-// void TimeStretch::processSlice(vector<double> grain, int shiftedStart, vector<double> &out)
-// {
-//     for (int i = 0; i < grain.size(); i++)
-//     {
-//         if (i + shiftedStart < out.size())
-//         {
-//             out[i + shiftedStart] += grain[i];
-//         }
-//     }
-// }

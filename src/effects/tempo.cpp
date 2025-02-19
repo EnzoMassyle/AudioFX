@@ -1,5 +1,7 @@
 #include <../headers/tempo.h>
+#include <mutex> 
 
+mutex m;
 int Tempo::sliceSize = 750000;
 vector<vector<double>> Tempo::changeTempo(vector<vector<double>> samples, double r)
 {
@@ -20,7 +22,7 @@ vector<vector<double>> Tempo::changeTempo(vector<vector<double>> samples, double
     }
     return output;
 }
-void Tempo::changeTempoChannel(vector<double> channel, double r, vector<double> &out)
+void Tempo::changeTempoChannel(const vector<double>& channel, double r, vector<double> &out)
 {
     int newChannelLength = channel.size() / r;
     vector<thread> threads;
@@ -35,11 +37,12 @@ void Tempo::changeTempoChannel(vector<double> channel, double r, vector<double> 
     }
 }
 
-void Tempo::changeTempoSlice(vector<double> channel, int sliceStart, double r, vector<double> &out)
+void Tempo::changeTempoSlice(const vector<double>& channel, int sliceStart, double r, vector<double> &out)
 {
     vector<double> window = Utils::generateWindow(32);
     for (int i = sliceStart; i < sliceStart + Tempo::sliceSize; i++)
     {
+        if (i >= out.size()) break;
         double center = i * r;
         for (int j = max((int)center - 16, 0), k = 0; j < min((int)center + 16, (int)channel.size()); j++, k++)
         {
