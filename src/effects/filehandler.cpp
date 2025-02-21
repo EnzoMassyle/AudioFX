@@ -1,9 +1,21 @@
 #include <../headers/filehandler.h>
 
+FileHandler::FileHandler()
+{
+    buffer = (double *)malloc(BUFFER_LEN * sizeof(double));
+    memset(&info, 0, sizeof(info));
+}
+
+FileHandler::~FileHandler()
+{
+    free(buffer);
+    sf_close(FileHandler::inFile);
+    sf_close(FileHandler::outFile);
+}
+
 vector<vector<double>> FileHandler::open(const char *fn)
 {
     const char *inFileName = fn;
-    memset(&info, 0, sizeof(info));
     try
     {
         if (!(FileHandler::inFile = sf_open(inFileName, SFM_READ, &this->info)))
@@ -16,7 +28,6 @@ vector<vector<double>> FileHandler::open(const char *fn)
     {
         cout << fn << " not found" << endl;
     }
-    buffer = (double *)malloc(BUFFER_LEN * sizeof(double));
     vector<vector<double>> samples(info.channels);
     int readcount;
     while ((readcount = (int)sf_read_double(FileHandler::inFile, buffer, BUFFER_LEN)))
@@ -29,17 +40,15 @@ vector<vector<double>> FileHandler::open(const char *fn)
             }
         }
     }
-    cout << "Successfully read " << inFileName << endl;
     return samples;
 }
 
-void FileHandler::write(vector<vector<double>> output, const char* writeName)
+void FileHandler::write(const vector<vector<double>> &output, const char* writeName)
  {
     if (!(FileHandler::outFile = sf_open(writeName, SFM_WRITE, &this->info)))
         {
             throw writeName;
         }
-    cout << "Saving..." << endl;
     int idx = 0;
     for (int i = 0; i < output[0].size(); i++)
     {
@@ -53,8 +62,4 @@ void FileHandler::write(vector<vector<double>> output, const char* writeName)
             }
         }
     }
-    cout << "Done!" << endl;
-    free(buffer);
-    sf_close(FileHandler::inFile);
-    sf_close(FileHandler::outFile);
 }

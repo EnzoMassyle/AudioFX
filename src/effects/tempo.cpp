@@ -1,16 +1,13 @@
 #include <../headers/tempo.h>
-#include <mutex> 
-
-mutex m;
-int Tempo::sliceSize = 750000;
-vector<vector<double>> Tempo::changeTempo(vector<vector<double>> samples, double r)
+vector<vector<double>> Tempo::changeTempo(const vector<vector<double>>& samples, double r)
 {
+    assert(samples.size() > 0);
     int numChannels = samples.size();
     int channelLength = samples[0].size();
     int newChannelLength = channelLength / r;
     vector<vector<double>> output(numChannels, vector<double>(newChannelLength, 0.0));
+
     vector<thread> threads;
-    vector<double> window = Utils::generateWindow(32);
     for (int chan = 0; chan < numChannels; chan++)
     {
         threads.emplace_back(changeTempoChannel, samples[chan], r, ref(output[chan]));
@@ -24,11 +21,12 @@ vector<vector<double>> Tempo::changeTempo(vector<vector<double>> samples, double
 }
 void Tempo::changeTempoChannel(const vector<double>& channel, double r, vector<double> &out)
 {
+    int hopSize = channel.size() / (thread::hardware_concurrency() - 1);
     int newChannelLength = channel.size() / r;
     vector<thread> threads;
-    for (int i = 0; i < newChannelLength; i += Tempo::sliceSize)
+    for (int i = 0; i < newChannelLength; i += hopSize)
     {
-        threads.emplace_back(changeTempoSlice, channel, i, r, ref(out));
+        threads.emplace_back(changeTempoSlice, channel, i, hopSize, r, ref(out));
     }
 
     for (thread &t : threads)
@@ -37,12 +35,11 @@ void Tempo::changeTempoChannel(const vector<double>& channel, double r, vector<d
     }
 }
 
-void Tempo::changeTempoSlice(const vector<double>& channel, int sliceStart, double r, vector<double> &out)
+void Tempo::changeTempoSlice(const vector<double>& channel, int sliceStart, int hopSize, double r, vector<double> &out)
 {
     vector<double> window = Utils::generateWindow(32);
-    for (int i = sliceStart; i < sliceStart + Tempo::sliceSize; i++)
+    for (int i = sliceStart; i < sliceStart + hopSize && i < out.size(); i++)
     {
-        if (i >= out.size()) break;
         double center = i * r;
         for (int j = max((int)center - 16, 0), k = 0; j < min((int)center + 16, (int)channel.size()); j++, k++)
         {

@@ -1,6 +1,6 @@
 #include <../headers/afx.h>
 
-vector<vector<double>> AFX::artificialReverb(vector<vector<double>> samples)
+vector<vector<double>> AFX::artificialReverb(vector<vector<double>>& samples)
 {
     int numChannels = samples.size();
     if (samples.empty() || samples[0].empty())
@@ -43,14 +43,14 @@ vector<vector<double>> AFX::artificialReverb(vector<vector<double>> samples)
     return samples;
 }
 
-vector<vector<double>> AFX::autotune(vector<vector<double>> samples, double intensity, string note, char scale, int sampleRate)
+vector<vector<double>> AFX::autotune(const vector<vector<double>>& samples, double intensity, string note, char scale, int sampleRate)
 {
     Autotune autotune = Autotune(intensity, note, scale);
     autotune.fillNoteTable();
     return autotune.process(samples, sampleRate);
 };
 
-vector<vector<double>> AFX::reverse(vector<vector<double>> samples)
+vector<vector<double>> AFX::reverse(vector<vector<double>>& samples)
 {
     for (int chan = 0; chan < samples.size(); chan++)
     {
@@ -69,15 +69,14 @@ vector<vector<double>> AFX::reverse(vector<vector<double>> samples)
     return samples;
 }
 
-vector<vector<double>> AFX::pitchShift(vector<vector<double>> samples, double pitchFactor)
+vector<vector<double>> AFX::pitchShift(vector<vector<double>>& samples, int semitones)
 {
-    AFX afx = AFX();
-    pitchFactor = 1 / pitchFactor;
-    samples = afx.changeTempo(samples, 1.0 / pitchFactor); // First resample to change pitch
+    double pitchFactor = 1 / pow(2, (semitones / 12.0));
+    samples = Tempo::changeTempo(samples, 1.0 / pitchFactor); // First resample to change pitch
     return TimeStretch::changeSpeed(samples, pitchFactor);
 }
 
-vector<vector<double>> AFX::demix(vector<vector<double>> samples, bool vocals)
+vector<vector<double>> AFX::demix(const vector<vector<double>>& samples, bool vocals)
 {
     const char* command = "spleeter separate -p spleeter:5stems -o output ../samples/circles.mp3";
     int result = system(command);

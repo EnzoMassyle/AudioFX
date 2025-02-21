@@ -23,33 +23,6 @@ double Utils::sinc(double x)
 }
 
 
-double Utils::lagrangeInterpolate(const std::vector<double> &samples, double t)
-{
-    int x0 = floor(t) - 2; // Choose the four closest sample indices
-    int x1 = x0 + 1;
-    int x2 = x0 + 2;
-    int x3 = x0 + 3;
-
-    if (x0 < 0 || x3 >= samples.size())
-    {
-        return 0.0; // Prevent out-of-bounds access
-    }
-
-    double y0 = samples[x0];
-    double y1 = samples[x1];
-    double y2 = samples[x2];
-    double y3 = samples[x3];
-
-    // Compute Lagrange basis polynomials
-    double L0 = ((t - x1) * (t - x2) * (t - x3)) / ((x0 - x1) * (x0 - x2) * (x0 - x3));
-    double L1 = ((t - x0) * (t - x2) * (t - x3)) / ((x1 - x0) * (x1 - x2) * (x1 - x3));
-    double L2 = ((t - x0) * (t - x1) * (t - x3)) / ((x2 - x0) * (x2 - x1) * (x2 - x3));
-    double L3 = ((t - x0) * (t - x1) * (t - x2)) / ((x3 - x0) * (x3 - x1) * (x3 - x2));
-
-    // Compute interpolated value
-    return y0 * L0 + y1 * L1 + y2 * L2 + y3 * L3;
-}
-
 void Utils::normalize(vector<vector<double>> &v)
 {
     // Calculate maximum peak
@@ -86,7 +59,7 @@ void Utils::gain(vector<vector<double>> &v, double g)
     }
 }
 
-vector<double> Utils::convolve(vector<double> &v1, vector<double> v2)
+void Utils::convolve(vector<double> &v1, const vector<double>& v2)
 {
     int N;
     if (v1.size() > v2.size())
@@ -109,7 +82,6 @@ vector<double> Utils::convolve(vector<double> &v1, vector<double> v2)
         z[i] = complex<double>(tempR, tempI);
     }
     v1 = handler.ifft(z);
-    return v1;
 }
 
 int Utils::nextPowerOfTwo(int n)
@@ -122,20 +94,22 @@ int Utils::nextPowerOfTwo(int n)
     return pow(2, p);
 }
 
-vector<complex<double>> Utils::scaleComplex(vector<complex<double>> v, double k)
+vector<complex<double>> Utils::scaleComplex(const vector<complex<double>>& v, double k)
 {
+    vector<complex<double>> out(v.size());
     for (int i = 0; i < v.size(); i++)
     {
-        v[i] *= k;
+        out[i] = v[i] * k;
     }
-    return v;
+    return out;
 }
 
-vector<complex<double>> Utils::addComplex(vector<complex<double>> u, vector<complex<double>> v)
+vector<complex<double>> Utils::addComplex(const vector<complex<double>> &u, const vector<complex<double>> &v)
 {
+    vector<complex<double>> out(v.size());
     for (int i = 0; i < u.size(); i++)
     {
-        u[i] += v[i];
+        out[i] = u[i] + v[i];
     }
-    return u;
+    return out;
 }

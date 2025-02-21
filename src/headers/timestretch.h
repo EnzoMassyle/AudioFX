@@ -3,11 +3,10 @@
 
 #include <iostream>
 #include <vector>
-#include <sndfile.h>
-#include <filehandler.h>
+#include <cassert>
 #include <utils.h>
 #include <params.h>
-#include <random>
+
 
 
 using namespace std;

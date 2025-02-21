@@ -1,7 +1,7 @@
 #include <../headers/filters/median.h>
 
 
-// CLEAN UP
+// TODO CLEAN UP
 void MedianF::process(vector<vector<double>>& samples)
 {
     double window[5];

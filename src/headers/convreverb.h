@@ -26,7 +26,6 @@ public:
      * Perform fast-convolution with FFT between audio samples and an impulse response
      */
     static vector<vector<double>> convReverb(vector<vector<double>> samples, string room = "CHURCH");
-    static void convolveChannel(vector<double> channel, vector<double> irSamples, vector<double>& out);
 };
 
 #endif

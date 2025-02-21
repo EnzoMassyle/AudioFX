@@ -17,6 +17,9 @@ private:
     SF_INFO info;
 
 public:
+
+    FileHandler();
+    ~FileHandler();
     /**
      * @param fn -> file path to an audio sample
      * @param info -> metadata of audio file 
@@ -30,7 +33,7 @@ public:
      *
      * Write data from output to an output file
      */
-    void write(vector<vector<double>> output, const char* writeName = "out.wav");
+    void write(const vector<vector<double>> &output, const char* writeName = "out.wav");
 
     int getSampleRate() { return info.samplerate; }
     int getNumChannels() {return info.channels;}

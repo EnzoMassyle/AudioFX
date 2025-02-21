@@ -22,8 +22,8 @@ class FFT {
     public:
         FFT(int n);
         ~FFT();
-        vector<complex<double>> fft(vector<double> v);
-        vector<double> ifft(vector<complex<double>> c);
+        vector<complex<double>> fft(const vector<double>& v);
+        vector<double> ifft(const vector<complex<double>>& c);
         static void preInit(int n);
         static void destroyPlan();
 };

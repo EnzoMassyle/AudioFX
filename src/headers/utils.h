@@ -20,8 +20,6 @@ public:
     static void applyWindow(vector<double> &v);
 
     static vector<double> generateWindow(int s);
-    
-    static double lagrangeInterpolate(const std::vector<double>& samples, double t);
 
 
     static double sinc(double x);
@@ -33,12 +31,6 @@ public:
      */
     static void normalize(vector<vector<double>> &v);
 
-    /**
-     * @param v -> vector
-     *
-     * Modify v to have entries in reverse order for each row
-     */
-    static void reverse(vector<vector<double>>& v);
 
     /**
      * @param v -> vector
@@ -52,7 +44,7 @@ public:
      *
      * Convolve v1 and v2 using FFT. Result is stored in v1.
      */
-    static vector<double> convolve(vector<double>& v1, vector<double> v2);
+    static void  convolve(vector<double>& v1, const vector<double>& v2);
 
     /**
      * @param n -> number
@@ -67,7 +59,7 @@ public:
      * 
      * Perform scalar multiplication on each complex value
      */
-    static vector<complex<double>> scaleComplex(vector<complex<double>> v, double k);
+    static vector<complex<double>> scaleComplex(const vector<complex<double>>& v, double k);
 
     /**
      * @param u -> complex vector
@@ -76,7 +68,7 @@ public:
      * Perform element wise addition on complex numbers This method assumes u.size() == v.size() 
      * 
      */
-    static vector<complex<double>> addComplex(vector<complex<double>> u, vector<complex<double>> v);
+    static vector<complex<double>> addComplex(const vector<complex<double>>& u, const vector<complex<double>>& v);
 
 
 

@@ -1,6 +1,6 @@
 #include <../headers/convreverb.h>
 unordered_map<string, string> Reverb::types = {
-    {"CHURCH", "church.wav"},
+    {"CHURCH", "churchShort.mp3"},
     {"CAVE", "cave.wav"},
     {"AIRY", "airy.wav"}};
 
@@ -12,16 +12,17 @@ vector<vector<double>> Reverb::convReverb(vector<vector<double>> samples, string
     }
     int numChannels = samples.size();
     SF_INFO irInfo;
-    string outFile = "../samples/ir/churchShort.mp3";
+    string irFile = "../samples/ir/" + types.at(room);
 
     FileHandler fh = FileHandler();
-    vector<double> irSamples = fh.open(outFile.c_str())[0];
+    vector<double> irSamples = fh.open(irFile.c_str())[0];
     vector<thread> threads;
     vector<vector<double>> output(numChannels, vector<double>(samples[0].size(), 0.0));
     int sizes[numChannels];
     for (int chan = 0; chan < numChannels; chan++)
     {
         sizes[chan] = samples[chan].size();
+        cout << chan << endl;
         threads.emplace_back(Utils::convolve, ref(samples[chan]), irSamples);
     }
 

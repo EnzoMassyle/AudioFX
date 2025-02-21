@@ -44,7 +44,7 @@ void Autotune::fillNoteTable()
     }
 }
 
-vector<vector<double>> Autotune::process(vector<vector<double>> samples, int sampleRate)
+vector<vector<double>> Autotune::process(const vector<vector<double>>& samples, int sampleRate)
 {
     this->sampleRate = sampleRate;
     int numChannels = samples.size();
@@ -67,7 +67,7 @@ vector<vector<double>> Autotune::process(vector<vector<double>> samples, int sam
     Utils::normalize(output);
     return output;
 }
-void Autotune::tuneChannel(vector<double> channel, vector<double> &out)
+void Autotune::tuneChannel(const vector<double>& channel, vector<double> &out)
 {
     random_device device;
     mt19937 gen(device());

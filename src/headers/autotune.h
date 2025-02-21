@@ -38,7 +38,7 @@ private:
      * 
      * Perform autotune algorithm to a singular channel of audio
      */
-    void tuneChannel(vector<double> channel, vector<double>&out);
+    void tuneChannel(const vector<double>& channel, vector<double>&out);
 
     /**
      * @param f -> frequency
@@ -65,7 +65,7 @@ public:
      * @param sampleRate -> sample rate
      * Use granular synthesis approach to tune each audio grain to the nearest correct pitch on the provided musical scale
      */
-    vector<vector<double>> process(vector<vector<double>> samples, int sampleRate);
+    vector<vector<double>> process(const vector<vector<double>>& samples, int sampleRate);
 
     /**
      * Fill note table depending on the musical scale used
