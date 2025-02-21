@@ -7,8 +7,6 @@
 #include <utils.h>
 #include <params.h>
 
-
-
 using namespace std;
 class TimeStretch
 {
@@ -18,18 +16,20 @@ private:
      * @param shiftFactor -> amount to stretch/compress audio
      * @param out -> modified audio
      *
-     * Use granular synthesis to increase/decrease the space between grains
+     * Use phase vocoder to stretch/compress audio samples
      */
-    static void stretchChannel(const vector<double>& samples, double shiftFactor, vector<double> &out);
+    static void stretchChannel(const vector<double> &channel, double shiftFactor, vector<double> &out);
 
     /**
-     * @param grain -> audio grain
+     * @param frame -> frame of audio samples
      * @param shiftedStart -> new start to audio grain
+     * @param shiftFactor -> amount to stretch/compress audio
      * @param out -> modified audio
      *
-     * shift grain to start at the position indicated by shiftedStart
+     * Stretch/compress a singular frame of audio
      */
-    static void stretchFrame(const vector<double>& channel, int shiftedStart, double shiftFactor, vector<double> &out);
+    static void stretchFrame(const vector<double> &frame, int shiftedStart, double shiftFactor, vector<double> &out);
+
 public:
     /**
      * @param fn -> path to a audio file
@@ -37,7 +37,7 @@ public:
      *
      * Perform time stretching algorithm on each channel independently
      */
-    static vector<vector<double>> changeSpeed(vector<vector<double>> samples, double shiftFactor);
+    static vector<vector<double>> changeSpeed(const vector<vector<double>> &samples, double shiftFactor);
 };
 
 #endif

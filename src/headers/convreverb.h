@@ -3,15 +3,11 @@
 
 #include <iostream>
 #include <vector>
-#include <sndfile.h>
-#include "filehandler.h"
-#include "utils.h"
 #include <thread>
-#include <future>
-#include <unordered_map>
 #include <string>
 #include <filters/lp.h>
-#include <random>
+#include <filehandler.h>
+#include <utils.h>
 class Reverb
 {
 private:
@@ -25,7 +21,7 @@ public:
      * 
      * Perform fast-convolution with FFT between audio samples and an impulse response
      */
-    static vector<vector<double>> convReverb(vector<vector<double>> samples, string room = "CHURCH");
+    static vector<vector<double>> convReverb(vector<vector<double>> samples, string room);
 };
 
 #endif

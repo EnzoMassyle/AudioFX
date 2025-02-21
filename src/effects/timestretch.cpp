@@ -1,7 +1,6 @@
 #include <../headers/timestretch.h>
 
-
-vector<vector<double>> TimeStretch::changeSpeed(vector<vector<double>> samples, double shiftFactor)
+vector<vector<double>> TimeStretch::changeSpeed(const vector<vector<double>> &samples, double shiftFactor)
 {
     assert(samples.size() > 0);
     int numChannels = samples.size();
@@ -24,36 +23,35 @@ vector<vector<double>> TimeStretch::changeSpeed(vector<vector<double>> samples, 
     return output;
 }
 
-void TimeStretch::stretchChannel(const vector<double>& channel, double shiftFactor, vector<double>& out)
+void TimeStretch::stretchChannel(const vector<double> &channel, double shiftFactor, vector<double> &out)
 {
     vector<thread> threads;
     int hopSize = channel.size() / (thread::hardware_concurrency() - 1);
     for (int i = 0, j = 0; i < channel.size(); i += hopSize, j++)
     {
-        int end = min(i + hopSize , (int)channel.size());
+        int end = min(i + hopSize, (int)channel.size());
         int start = max(0, i - 2000); // Ensure smooth overlap when parallel processing
         vector<double> slice(channel.begin() + start, channel.begin() + end);
 
-        threads.emplace_back(stretchFrame, slice, (double) start / shiftFactor, shiftFactor,  ref(out));
+        threads.emplace_back(stretchFrame, slice, (double)start / shiftFactor, shiftFactor, ref(out));
     }
 
-    for (thread& t : threads)
+    for (thread &t : threads)
     {
         t.join();
     }
-    
 }
-void TimeStretch::stretchFrame(const vector<double>& channel, int shiftedStart, double shiftFactor, vector<double> &out)
+void TimeStretch::stretchFrame(const vector<double> &frame, int shiftedStart, double shiftFactor, vector<double> &out)
 {
-    int n = round(((channel.size()) / HOP_SZ) + 1);
+    int n = round(((frame.size()) / HOP_SZ) + 1);
     vector<vector<complex<double>>> stftBins(n, vector<complex<double>>(FRAME_SZ));
 
     FFT handler = FFT(Utils::nextPowerOfTwo(FRAME_SZ));
 
-    for (int start = 0, j = 0; start < channel.size() && j < n; start += HOP_SZ, j++)
+    for (int start = 0, j = 0; start < frame.size() && j < n; start += HOP_SZ, j++)
     {
-        int end = min(start + FRAME_SZ, (int)channel.size());
-        vector<double> slice(channel.begin() + start, channel.begin() + end);
+        int end = min(start + FRAME_SZ, (int)frame.size());
+        vector<double> slice(frame.begin() + start, frame.begin() + end);
         Utils::applyWindow(slice);
         stftBins[j] = handler.fft(slice);
     }
@@ -61,14 +59,13 @@ void TimeStretch::stretchFrame(const vector<double>& channel, int shiftedStart, 
     int newBinCnt = round(n / shiftFactor);
     vector<vector<complex<double>>> newStftBins(newBinCnt, vector<complex<double>>(FRAME_SZ));
     vector<double> phaseSum(FRAME_SZ, 0.0);
-    
+
     for (int i = 0; i < newBinCnt; i++)
     {
         double og = i * shiftFactor;
         int low = (floor(og) < n) ? floor(og) : n - 1;
         int high = (ceil(og) < n) ? ceil(og) : n - 1;
         double alpha = og - low;
-
 
         newStftBins[i] = Utils::addComplex(Utils::scaleComplex(stftBins[low], 1 - alpha), Utils::scaleComplex(stftBins[high], alpha));
 
@@ -81,13 +78,13 @@ void TimeStretch::stretchFrame(const vector<double>& channel, int shiftedStart, 
 
             if (i > 0)
             {
-                lastPhase = arg(newStftBins[i-1][j]);
-                lastMagnitude = abs(newStftBins[i-1][j]);
+                lastPhase = arg(newStftBins[i - 1][j]);
+                lastMagnitude = abs(newStftBins[i - 1][j]);
                 phaseDiff -= lastPhase;
             }
 
             /* Transient detection, if transient, do nothing to keep timbre */
-            if (abs(newStftBins[i][j]) <= 2.0 * lastMagnitude) 
+            if (abs(newStftBins[i][j]) <= 2.0 * lastMagnitude)
             {
                 /* Perform phase unwrapping */
                 while (phaseDiff > M_PI)
@@ -100,16 +97,14 @@ void TimeStretch::stretchFrame(const vector<double>& channel, int shiftedStart, 
                 newStftBins[i][j] = polar(abs(newStftBins[i][j]), phaseSum[j]);
             }
         }
-
     }
     for (int start = 0, i = 0; i < newBinCnt; start += HOP_SZ, i++)
     {
         vector<double> inverse = handler.ifft(newStftBins[i]);
         Utils::applyWindow(inverse);
-        for (int j = 0; j < inverse.size() && j +  shiftedStart + start < out.size(); j++)
+        for (int j = 0; j < inverse.size() && j + shiftedStart + start < out.size(); j++)
         {
             out[j + shiftedStart + start] += inverse[j];
         }
     }
-    
 }

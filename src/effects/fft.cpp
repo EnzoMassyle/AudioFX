@@ -27,7 +27,7 @@ FFT::FFT(int n)
 {
     this->n = n;
     call_once(flag, preInit, n);
-    f = (fftw_complex *)fftw_malloc(sizeof(fftw_complex) * n);
+    this->f = (fftw_complex *)fftw_malloc(sizeof(fftw_complex) * n);
 }
 
 FFT::~FFT()
@@ -42,12 +42,12 @@ vector<complex<double>> FFT::fft(const vector<double> &v)
         f[i][0] = i < v.size() ? v[i] : 0.0;
         f[i][1] = 0;
     }
-    fftw_execute_dft(FFT::forward, f, f);
+    fftw_execute_dft(FFT::forward, this->f, this->f);
 
     vector<complex<double>> res(n);
     for (int i = 0; i < n; i++)
     {
-        res[i] = complex<double>(f[i][0], f[i][1]);
+        res[i] = complex<double>(this->f[i][0], this->f[i][1]);
     }
 
     return res;
@@ -58,13 +58,13 @@ vector<double> FFT::ifft(const vector<complex<double>> &c)
     vector<double> res(n);
     for (int i = 0; i < n; i++)
     {
-        f[i][0] = i < c.size() ? c[i].real() : 0.0;
-        f[i][1] = i < c.size() ? c[i].imag() : 0.0;
+        this->f[i][0] = i < c.size() ? c[i].real() : 0.0;
+        this->f[i][1] = i < c.size() ? c[i].imag() : 0.0;
     }
     fftw_execute_dft(FFT::backward, f, f);
     for (int i = 0; i < n; i++)
     {
-        res[i] = f[i][0];
+        res[i] = this->f[i][0];
     }
     return res;
 }

@@ -3,15 +3,11 @@
 #include <iostream>
 #include <map>
 #include <vector>
-#include <sndfile.h>
 #include <thread>
-#include <filehandler.h>
 #include <utils.h>
 #include <params.h>
 #include <fft.h>
 #include <random>
-#include <semaphore.h>
-#include <future>
 using namespace std;
 class Autotune
 {

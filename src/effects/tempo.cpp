@@ -1,10 +1,10 @@
 #include <../headers/tempo.h>
+
 vector<vector<double>> Tempo::changeTempo(const vector<vector<double>>& samples, double r)
 {
     assert(samples.size() > 0);
     int numChannels = samples.size();
-    int channelLength = samples[0].size();
-    int newChannelLength = channelLength / r;
+    int newChannelLength = samples[0].size()/ r;
     vector<vector<double>> output(numChannels, vector<double>(newChannelLength, 0.0));
 
     vector<thread> threads;
@@ -26,7 +26,7 @@ void Tempo::changeTempoChannel(const vector<double>& channel, double r, vector<d
     vector<thread> threads;
     for (int i = 0; i < newChannelLength; i += hopSize)
     {
-        threads.emplace_back(changeTempoSlice, channel, i, hopSize, r, ref(out));
+        threads.emplace_back(changeTempoFrame, channel, i, hopSize, r, ref(out));
     }
 
     for (thread &t : threads)
@@ -35,10 +35,10 @@ void Tempo::changeTempoChannel(const vector<double>& channel, double r, vector<d
     }
 }
 
-void Tempo::changeTempoSlice(const vector<double>& channel, int sliceStart, int hopSize, double r, vector<double> &out)
+void Tempo::changeTempoFrame(const vector<double>& channel, int frameStart, int frameSize, double r, vector<double> &out)
 {
     vector<double> window = Utils::generateWindow(32);
-    for (int i = sliceStart; i < sliceStart + hopSize && i < out.size(); i++)
+    for (int i = frameStart; i < frameStart + frameSize && i < out.size(); i++)
     {
         double center = i * r;
         for (int j = max((int)center - 16, 0), k = 0; j < min((int)center + 16, (int)channel.size()); j++, k++)
