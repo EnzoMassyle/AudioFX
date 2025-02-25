@@ -12,7 +12,7 @@ class TimeStretch
 {
 private:
     /**
-     * @param samples -> audio samples
+     * @param channel -> channel of audio samples
      * @param shiftFactor -> amount to stretch/compress audio
      * @param out -> modified audio
      *

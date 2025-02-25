@@ -5,9 +5,11 @@
 #include <vector>
 #include <thread>
 #include <string>
+#include <unordered_map>
 #include <filters/lp.h>
 #include <filehandler.h>
 #include <utils.h>
+
 class Reverb
 {
 private:

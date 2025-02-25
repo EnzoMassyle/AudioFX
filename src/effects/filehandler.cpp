@@ -4,13 +4,24 @@ FileHandler::FileHandler()
 {
     buffer = (double *)malloc(BUFFER_LEN * sizeof(double));
     memset(&info, 0, sizeof(info));
+    inFile = nullptr;
+    outFile = nullptr;
 }
 
 FileHandler::~FileHandler()
 {
     free(buffer);
-    sf_close(FileHandler::inFile);
-    sf_close(FileHandler::outFile);
+
+    if (inFile)
+    {
+        sf_close(FileHandler::inFile);
+    }
+
+    if (outFile)
+    {
+        sf_close(FileHandler::outFile);
+    }
+
 }
 
 vector<vector<double>> FileHandler::open(const char *fn)

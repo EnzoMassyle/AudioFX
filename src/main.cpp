@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 
 
     AFX afx = AFX();
-    samples = afx.pitchShift(samples, 5);
+    // samples = afx.pitchShift(samples, 5);
     // samples = afx.reverse(samples);
     // samples = afx.timeStretch(samples, 0.8);
     // samples = afx.autotune(samples, 1.0, "C", 'M', fh.getSampleRate());
@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
     // samples = afx.changeTempo(samples, 1.3);
     // samples = afx.convReverb(samples, "CHURCH");
     // samples = afx.demix(samples, 1);
+    samples = afx.harmony(samples);
     
     auto end = std::chrono::high_resolution_clock::now(); // End timing
 

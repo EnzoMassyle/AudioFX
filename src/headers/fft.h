@@ -5,6 +5,7 @@
 #include <fftw3.h>
 #include <complex>
 #include <thread>
+#include <mutex>
 using namespace std;
 typedef fftw_complex cpx;
 
