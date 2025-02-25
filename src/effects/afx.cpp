@@ -69,7 +69,7 @@ vector<vector<double>> AFX::reverse(vector<vector<double>>& samples)
     return samples;
 }
 
-vector<vector<double>> AFX::pitchShift(vector<vector<double>> samples, int semitones)
+vector<vector<double>> AFX::pitchShift(vector<vector<double>> samples, double semitones)
 {
     double pitchFactor = 1 / pow(2, (semitones / 12.0));
     samples = Tempo::changeTempo(samples, 1.0 / pitchFactor); // First resample to change pitch
@@ -89,31 +89,20 @@ vector<vector<double>> AFX::demix(const vector<vector<double>>& samples, bool vo
 }
 
 
-vector<vector<double>> AFX::harmony(vector<vector<double>> samples)
+vector<vector<double>> AFX::layer(vector<vector<double>> samples, double semitones, double g)
 {
-    int numChannels = samples.size();
-    int channelLength = samples[0].size();
-    vector<vector<vector<double>>> shiftedSamples(2);
-    vector<vector<double>> out(numChannels, vector<double>(channelLength, 0.0));
-
-    // shiftedSamples[0] = AFX::pitchShift(samples, -12);s
-    shiftedSamples[0] = AFX::pitchShift(samples, 1);
-    shiftedSamples[1] = AFX::pitchShift(samples, 2);
-
-    for (int i = 0; i < shiftedSamples.size(); i++)
+    AFX afx = AFX();
+    vector<vector<double>> out = samples;
+    samples = afx.pitchShift(samples, semitones);
+    Utils::gain(samples, g);
+    for (int chan = 0; chan < samples.size(); chan++)
     {
-        for (int chan = 0; chan < numChannels; chan++)
+        for (int i = 0; i < samples[0].size() && i < out[chan].size(); i++)
         {
-            for (int k = 0; k < channelLength && k < out[chan].size(); k++)
-            {
-                out[chan][k] += shiftedSamples[i][chan][k];
-                // cout << out[chan][k] << endl;
-            }
+            out[chan][i] += samples[chan][i];
         }
     }
-
     Utils::normalize(out);
 
     return out;
-
 }

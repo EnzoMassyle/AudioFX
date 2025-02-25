@@ -1,17 +1,16 @@
-#ifndef LS_H
-#define LS_H
+#ifndef BP_H
+#define BP_H
 
 #include "filter.h"
-class LowShelf : public Filter
+class BellFilter : public Filter
 {
     private:
         double g;
         double wc;
         double a0, a1, a2, b0, b1, b2;
-    
 
     public:
-        LowShelf(double gain, double cutoffFreq, double sampleRate);
+        BellFilter(double gain, double cutoffFreq, double sampleRate, double qFactor);
         void process(vector<vector<double>>& samples) override;
 };
 #endif

@@ -8,6 +8,8 @@
 #include <params.h>
 #include <fft.h>
 #include <random>
+#include <tempo.h>
+#include <timestretch.h>
 using namespace std;
 class Autotune
 {

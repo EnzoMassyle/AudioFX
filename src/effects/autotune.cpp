@@ -1,5 +1,5 @@
 #include <../headers/autotune.h>
-
+#include <afx.h>
 map<char, array<int, 7>> Autotune::intervals = {
     {'M', {2, 4, 5, 7, 9, 11, 12}},
     {'m', {2, 3, 5, 7, 8, 10, 12}}};
@@ -69,27 +69,25 @@ vector<vector<double>> Autotune::process(const vector<vector<double>>& samples, 
 }
 void Autotune::tuneChannel(const vector<double>& channel, vector<double> &out)
 {
-    random_device device;
-    mt19937 gen(device());
-    uniform_int_distribution grainStart(-AT_OFFSET,AT_OFFSET);
-    uniform_int_distribution grainSize(AT_CHUNK_SZ,AT_CHUNK_SZ + 3000);
-    int step = AT_CHUNK_SZ / AT_OVERLAP;
+    // random_device device;
+    // mt19937 gen(device());
+    // uniform_int_distribution grainStart(-AT_OFFSET,AT_OFFSET);
+    // uniform_int_distribution grainSize(AT_CHUNK_SZ,AT_CHUNK_SZ + 3000);
+    // int step = AT_CHUNK_SZ / AT_OVERLAP;
 
+    int frameSize = 5000;
+    int hopSize = 1000;
     vector<thread> threads;
 
-    for (int start = 0; start < channel.size(); start += step)
+    for (int start = 0; start < channel.size(); start += hopSize)
     {
-        int randStart = max(0, start + grainStart(gen));
-        int randEnd = grainSize(gen) + randStart;
-        if (randEnd >= channel.size()) {
-            continue;
-        }
-        vector<double> audioSlice(channel.begin() + randStart, channel.begin() + randEnd);
+        int end = min(start + frameSize, (int)channel.size());
+        vector<double> audioSlice(channel.begin() + start, channel.begin() + end);
         Utils::applyWindow(audioSlice);
         threads.emplace_back(
-            [this, randStart, audioSlice, &out]()
+            [this, start, audioSlice, &out]()
             {
-                this->tuneSlice(audioSlice, randStart, ref(out));
+                this->tuneSlice(audioSlice, start, ref(out));
             });
     }
 
@@ -137,7 +135,24 @@ void Autotune::tuneSlice(vector<double> slice, int start, vector<double> &out)
         return;
     }
 
+    
+    // cout << shiftFactor << endl;
     // Apply shifting factor. if the new bin is a fraction, properly distribute energy to lower and upper bin
+    // vector<vector<double>> temp;
+
+    // temp.push_back(handler.ifft(sliceFreq));
+    // temp[0].resize(originalSize);
+    // AFX afx = AFX();
+    // temp = afx.pitchShift(temp, 1);
+    // // AFX
+    // // temp = Tempo::changeTempo(temp, shiftFactor);
+    // // temp = TimeStretch::changeSpeed(temp, shiftFactor);
+    // // cout << "hi" << temp[0].size() << endl;;
+    // // temp[0].resize(originalSize);
+    // // 
+    // // temp = Tempo::changeTempo(temp, 1 / shiftFactor);
+    // // temp = TimeStretch::changeSpeed(temp, 1 / shiftFactor);
+
     for (int i = 0; i < N; i++)
     {
         double newBin = (i * shiftFactor);
@@ -156,10 +171,15 @@ void Autotune::tuneSlice(vector<double> slice, int start, vector<double> &out)
 
     slice = handler.ifft(shiftedOut);
     slice.resize(originalSize);
+    // temp[0].resize(originalSize);
     Utils::applyWindow(slice);
-
     for (int i = 0; i < slice.size(); i++)
     {
+        // cout << temp[0][i] << endl;
+        // if (i + start > out.size())
+        // {
+        //     cout << "." << endl;
+        // }
         out[i + start] += slice[i];
     }
 }

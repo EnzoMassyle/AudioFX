@@ -1,6 +1,6 @@
 #include <../headers/convreverb.h>
 unordered_map<string, string> Reverb::types = {
-    {"CHURCH", "churchShort.mp3"},
+    {"CHURCH", "church.wav"},
     {"CAVE", "cave.wav"},
     {"AIRY", "airy.wav"}};
 

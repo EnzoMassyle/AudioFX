@@ -19,6 +19,8 @@ private:
      */
     static void changeTempoFrame(const vector<double>& channel, int frameStart, int frameSize, double r, vector<double> &out);
 
+    
+public:
     /**
      * @param channel -> singular channel of audio samples
      * @param r -> resampling factor
@@ -27,7 +29,6 @@ private:
      * resample a single channel of audio
      */
     static void changeTempoChannel(const vector<double>& channel, double r, vector<double> &out);
-public:
     /**
      * @param samples -> vector of audio samples separated by channel
      * @param r -> resampling factor
