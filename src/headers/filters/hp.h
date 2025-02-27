@@ -1,14 +1,14 @@
 #ifndef HP_H
 #define HP_H
 
-#include "filter.h"
-class HighPass : public Filter
+#include "biquad.h"
+#include <cassert>
+class HighPass : public Biquad
 {
-    private:
-        double alpha;
-
+    private: 
+        double f0, fs;
+        void setCoefficients();
     public:
-        HighPass(double alpha);
-        void process(vector<vector<double>>& samples) override;
+        HighPass(double cutoffFreq, int sampleRate, double q);
 };
 #endif

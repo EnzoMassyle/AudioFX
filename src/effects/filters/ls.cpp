@@ -1,30 +1,20 @@
 #include <../headers/filters/ls.h>
 #include <iostream>
-LowShelf::LowShelf(double gain, double cutoffFreq, double sampleRate)
+#include <cassert>
+LowShelf::LowShelf(double gain, double cutoffFreq, int sampleRate, double slope)
 {
-    this->g = gain;
-    this->wc = (cutoffFreq * 2* M_PI) / sampleRate;
-    double alpha = tan(wc / 2);
-    double beta = sqrt(this->g);
+    assert(slope > 0);
+    double a = pow(10, gain / 40.0);
+    double wc = (cutoffFreq * 2 *  M_PI) / sampleRate;
+    double alpha = (sin(wc) * sqrt((a + (1/a)) * ((1 / slope) - 1) + 2)) / 2;
+    double beta = cos(wc); 
+    double gamma = sqrt(a);
 
-    this-> a0 = alpha + beta;
-    this-> a1 = alpha - beta / this->a0;
-    this->b0 = (this->g * (alpha + beta)) / this->a0;
-    this->b1 = (this->g * (alpha - beta)) / this->a0; 
-}
 
-void LowShelf::process(vector<vector<double>>& samples)
-{
-    for (int chan = 0; chan < samples.size(); chan++)
-    {
-        double prevX = samples[chan][0];
-        double prevY = 0.0;
-        for(int i = 0; i < samples[chan].size(); i++)
-        {
-            double temp = samples[chan][i];
-            samples[chan][i] = (this->b0 * samples[chan][i]) + (b1 * prevX) - (a1 * prevY);
-            prevX = temp;
-            prevY = samples[chan][i];
-        }
-    }
+    this->a0 = (a + 1) + (a - 1) * beta + 2 * gamma * alpha;
+    this->a1 = (-2 * ((a-1) + (a+1)*beta)) / this->a0;
+    this->a2 = ((a + 1) + (a-1) * beta - 2 * gamma * alpha) / this->a0;
+    this->b0 = (a * ((a+1) - (a-1) * beta + 2 * gamma * alpha)) / this->a0;
+    this->b1 = (2 * a *((a-1) - (a+1)*beta)) / this->a0;
+    this->b2 = (a * ((a + 1) - (a-1) * beta - 2 * gamma * alpha)) / this->a0;
 }

@@ -1,14 +1,14 @@
 #ifndef LP_H
 #define LP_H
 
-#include "filter.h"
-class LowPass : public Filter
+#include "biquad.h"
+#include <cassert>
+class LowPass : public Biquad
 {
     private:
-        double alpha;
-
+        double f0, fs;
+        void setCoefficients();
     public:
-        LowPass(double alpha);
-        void process(vector<vector<double>>& samples) override;
+        LowPass(double cutoffFreq, int sampleRate, double q);
 };
 #endif

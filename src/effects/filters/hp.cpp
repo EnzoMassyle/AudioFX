@@ -1,23 +1,16 @@
-#include <../../headers/filters/hp.h>
-
-HighPass::HighPass(double alpha)
+#include "../../headers/filters/hp.h"
+HighPass::HighPass(double cutoffFreq, int sampleRate, double q)
 {
-    this->alpha = alpha;
-}
+    assert(q > 0);
+    double wc = (cutoffFreq * 2 *  M_PI) / sampleRate;
+    double alpha = sin(wc) / (2 * q);
+    double beta = cos(wc); 
 
-void HighPass::process(vector<vector<double>>& samples)
-{
-    for (int chan = 0; chan < samples.size(); chan++) 
-    {
-        vector<double> copy = samples[chan];
-        if (samples[chan].size() > 0)
-        {
-            this->prev = samples[chan][0];
-        }
-        for (int i = 1; i < samples[chan].size(); i++)
-        {
-            samples[chan][i] = (this->alpha) * (this->prev + copy[i] - copy[i-1]);
-            this->prev = samples[chan][i];
-        }
-    }
+    this->a0 = 1 + alpha;
+    this->a1 = (-2*beta) / this->a0;
+    this->a2 = (1 - alpha) / this->a0;
+    this->b0 = ((1 + beta) / 2) / this->a0;
+    this->b1 = (-1 - beta) / this->a0;
+    this->b2 = ((1 + beta) / 2) / this->a0;
+    
 }

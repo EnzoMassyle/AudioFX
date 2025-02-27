@@ -2,10 +2,7 @@
 #include "headers/afx.h"   
 #include "headers/filehandler.h"
 #include <chrono>
-#include <headers/filters/ls.h>
-#include <headers/filters/hs.h>
-#include <headers/filters/bell.h>
-#include <headers/filters/lp.h>
+#include "headers/eq.h"
 int main(int argc, char *argv[])
 {
 
@@ -23,8 +20,8 @@ int main(int argc, char *argv[])
 
 
     AFX afx = AFX();
-    samples = afx.changeTempo(samples, 0.9);
-    samples = afx.convReverb(samples);
+    // samples = afx.changeTempo(samples, 0.9);
+    // samples = afx.convReverb(samples);
     // samples = afx.pitchShift(samples, 5);
     // samples = afx.reverse(samples);
     // samples = afx.timeStretch(samples, 0.8);
@@ -33,28 +30,13 @@ int main(int argc, char *argv[])
     // samples = afx.changeTempo(samples, 1.3);
     // samples = afx.convReverb(samples, "CHURCH");
     // samples = afx.demix(samples, 1);
-    // samples = afx.layer(samples, 0.2, 0.5);
-    // samples = afx.layer(samples, -0.2, 0.5);
+    // samples = afx.layer(samples, 4.0, 0.25);
+    // samples = afx.layer(samples, 7.0, 0.1);
     // samples = afx.layer(samples, -12, 0.1);
-    LowShelf ls = LowShelf(1.2, 100, fh.getSampleRate());
-    LowPass lp = LowPass(0.9);
-    
-    ls.process(samples);
-    lp.process(samples);
-    // HighShelf hs = HighShelf(3.0 ,5000, fh.getSampleRate());
-    // hs.process(samples);
-    // vector<vector<double>> impulse;
-    // impulse.push_back(vector<double>{1,2,3,4});
-    // BellFilter bell = BellFilter(2.0, 10000, fh.getSampleRate(), 1.0);
-    // BellFilter bell2 = BellFilter(2.0, 50, fh.getSampleRate(), 1.0);
-    // bell.process(samples);
-    // bell2.process(samples);
 
-    // for (int i = 0; i < impulse[0].size(); i++)
-    // {
-    //     cout << impulse[0][i] << " ";
-    // }
-    
+    EQ eq = EQ(fh.getSampleRate());
+    eq.applyEQ(samples);
+
     auto end = std::chrono::high_resolution_clock::now(); // End timing
 
     std::chrono::duration<double> elapsed = end - start; // Compute elapsed time

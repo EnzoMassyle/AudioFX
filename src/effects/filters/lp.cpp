@@ -1,20 +1,17 @@
-#include <../../headers/filters/lp.h>
-
-LowPass::LowPass(double alpha)
+#include "../../headers/filters/lp.h"
+#include<iostream>
+LowPass::LowPass(double cutoffFreq, int sampleRate, double q)
 {
-    this->prev = 0.0;
-    this->alpha = alpha;
+    assert(q > 0);
 
-}
+    double wc = (cutoffFreq * 2 *  M_PI) / sampleRate;
+    double alpha = sin(wc) / (2 * q);
+    double beta = cos(wc); 
 
-void LowPass::process(vector<vector<double>>& samples)
-{
-    for (int chan = 0; chan < samples.size(); chan++) 
-    {
-        for (int i = 0; i < samples[chan].size(); i++)
-        {
-            samples[chan][i] = (this->alpha) * samples[chan][i] + (1-this->alpha) * this->prev;
-            this->prev = samples[chan][i];
-        }
-    }
+    this->a0 = 1 + alpha;
+    this->a1 = (-2*beta) / this->a0;
+    this->a2 = (1 - alpha) / this->a0;
+    this->b0 = ((1 - beta) / 2) / this->a0;
+    this->b1 = (1 - beta) / this->a0;
+    this->b2 = ((1 - beta) / 2) / this->a0;
 }

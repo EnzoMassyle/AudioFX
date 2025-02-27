@@ -16,4 +16,8 @@
 
 #define FRAME_SZ 4096
 #define HOP_SZ 1024
+
+/* EQ */
+#define NUM_GAIN_FILTERS 6
+#define NUM_FILTERS 8
 #endif

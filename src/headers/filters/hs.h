@@ -1,17 +1,14 @@
 #ifndef HS_H
 #define HS_H
 
-#include "filter.h"
-class HighShelf : public Filter
+#include "biquad.h"
+#include <cassert>
+class HighShelf : public Biquad
 {
-    private:
-        double g;
-        double wc;
-        double a0, a1, a2, b0, b1, b2;
-    
-
+    private: 
+        double f0, fs, s;
+        void setCoefficients();
     public:
-        HighShelf(double gain, double cutoffFreq, double sampleRate);
-        void process(vector<vector<double>>& samples) override;
+        HighShelf(double gain, double cutoffFreq, double sampleRate, double slope);   
 };
 #endif

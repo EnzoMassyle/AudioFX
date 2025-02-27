@@ -35,8 +35,8 @@ vector<vector<double>> Reverb::convReverb(vector<vector<double>> samples, string
     {
         samples[chan].resize(sizes[chan]);
     }
-    LowPass lp = LowPass(0.3);
-    lp.process(samples);
+    // LowPass lp = LowPass(0.3);
+    // lp.process(samples);
     Utils::normalize(samples);
     return samples;
 }
