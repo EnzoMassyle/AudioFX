@@ -6,9 +6,9 @@
 class LowPass : public Biquad
 {
     private:
-        double f0, fs;
-        void setCoefficients();
+        double q;
     public:
         LowPass(double cutoffFreq, int sampleRate, double q);
+        void setCoefficients(double f0) override;
 };
 #endif

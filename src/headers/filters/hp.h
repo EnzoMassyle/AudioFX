@@ -6,9 +6,9 @@
 class HighPass : public Biquad
 {
     private: 
-        double f0, fs;
-        void setCoefficients();
+        double q;
     public:
-        HighPass(double cutoffFreq, int sampleRate, double q);
+        HighPass(double cutoffFreq, int sampleRate, double qualityFactor);
+        void setCoefficients(double f0) override;
 };
 #endif

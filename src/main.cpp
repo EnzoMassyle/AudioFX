@@ -33,9 +33,10 @@ int main(int argc, char *argv[])
     // samples = afx.layer(samples, 4.0, 0.25);
     // samples = afx.layer(samples, 7.0, 0.1);
     // samples = afx.layer(samples, -12, 0.1);
-
-    EQ eq = EQ(fh.getSampleRate());
-    eq.applyEQ(samples);
+    
+    EQ eq = afx.createEQ(fh.getSampleRate());
+    
+    // eq.applyEQ(samples);
 
     auto end = std::chrono::high_resolution_clock::now(); // End timing
 

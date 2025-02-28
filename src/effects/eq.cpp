@@ -2,7 +2,7 @@
 
 EQ::EQ(int sr)
 {
-    this->filters = new Filter*[NUM_FILTERS];
+    this->filters = new Biquad*[NUM_FILTERS];
 
     assert(this->filters != nullptr);
     this->sampleRate = sr;
@@ -15,7 +15,7 @@ EQ::EQ(int sr)
 
 EQ::EQ(int sr, double* g, int lenG)
 {
-    this->filters = new Filter*[NUM_FILTERS];
+    this->filters = new Biquad*[NUM_FILTERS];
     assert(this->filters != nullptr);
     assert(lenG == NUM_GAIN_FILTERS);
 

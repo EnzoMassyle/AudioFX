@@ -12,28 +12,40 @@
 #include <cassert>
 
 #include <params.h>
-class EQ {
+class EQ
+{
     // Filter bands
-    private:
-        int sampleRate;
-        double gains[NUM_GAIN_FILTERS];
-        Filter** filters = nullptr;
-        void addFilters();
-    public: 
-        EQ(int sr);
-        EQ(int sr, double* g, int lenG);
-        ~EQ();
+private:
+    int sampleRate;
+    double gains[NUM_GAIN_FILTERS];
+    Biquad **filters = nullptr;
+    void addFilters();
 
-        void applyEQ(vector<vector<double>>& samples);
+public:
+    EQ(int sr);
+    EQ(int sr, double *g, int lenG);
+    ~EQ();
 
-        void setLowPass(double cutoffFreq);
-        void setHighPass(double cutoffFreq);
-        void setLowShelf(double gain);
-        void setHighShelf(double gain);
-        void setBell1(double gain);
-        void setBell2(double gain);
-        void setBell3(double gain);
-        void setBell4(double gain);
+    void applyEQ(vector<vector<double>> &samples);
+
+    /* Setters */
+    void setHighPass(double cutoffFreq) { this->filters[0]->setCoefficients(cutoffFreq); }
+    void setLowShelf(double gain) { this->filters[1]->setCoefficients(gain); }
+    void setBell1(double gain) { this->filters[2]->setCoefficients(gain); }
+    void setBell2(double gain) {this->filters[3]->setCoefficients(gain);}
+    void setBell3(double gain) {this->filters[4]->setCoefficients(gain);}
+    void setBell4(double gain) {this->filters[5]->setCoefficients(gain);}
+    void setHighShelf(double gain) { this->filters[6]->setCoefficients(gain); }
+    void setLowPass(double cutoffFreq){this->filters[7]->setCoefficients(cutoffFreq);}
+
+    /* Preset setters */
+    void bassBoost();
+    void trebelBoost();
+    void vocalBoost();
+    void louder();
+    void speech();
+    void lofi();
+    void telephone();
 };
 
-#endif 
+#endif

@@ -36,8 +36,6 @@ vector<vector<double>> AFX::artificialReverb(vector<vector<double>>& samples)
         samples[1] = outRight;
     }
 
-    MedianF filter = MedianF();
-    filter.process(samples);
     Utils::normalize(samples);
 
     return samples;
