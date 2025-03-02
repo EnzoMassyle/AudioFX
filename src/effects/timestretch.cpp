@@ -1,6 +1,6 @@
 #include <../headers/timestretch.h>
 
-vector<vector<double>> TimeStretch::changeSpeed(vector<vector<double>> samples, double shiftFactor)
+vector<vector<double>> TimeStretch::changeSpeed(const vector<vector<double>>& samples, double shiftFactor)
 {
     assert(samples.size() > 0);
     int numChannels = samples.size();
@@ -20,8 +20,14 @@ vector<vector<double>> TimeStretch::changeSpeed(vector<vector<double>> samples, 
         t.join();
     }
     Utils::normalize(output);
+    if (FFT::planExists)
+    {
+        FFT::destroyPlan();
+    }
     return output;
 }
+
+
 
 void TimeStretch::stretchChannel(const vector<double> &channel, double shiftFactor, vector<double> &out)
 {

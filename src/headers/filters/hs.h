@@ -6,9 +6,9 @@
 class HighShelf : public Biquad
 {
     private: 
-        double f0, s;
+        double f0;
     public:
         HighShelf(double gain, double cutoffFreq, double sampleRate, double slope);
-        void setCoefficients(double gain) override;
+        void setCoefficients(double gain, double slope) override;
 };
 #endif

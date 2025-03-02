@@ -4,7 +4,7 @@ unordered_map<string, string> Reverb::types = {
     {"CAVE", "cave.wav"},
     {"AIRY", "airy.wav"}};
 
-vector<vector<double>> Reverb::convReverb(vector<vector<double>> samples, string room)
+vector<vector<double>> Reverb::convReverb(vector<vector<double>>& samples, string room)
 {
     if (Reverb::types.find(room) == Reverb::types.end())
     {
@@ -13,16 +13,17 @@ vector<vector<double>> Reverb::convReverb(vector<vector<double>> samples, string
     int numChannels = samples.size();
     SF_INFO irInfo;
     string irFile = "../samples/ir/" + types.at(room);
+    
 
     FileHandler fh = FileHandler();
     vector<double> irSamples = fh.open(irFile.c_str())[0];
     vector<thread> threads;
     vector<vector<double>> output(numChannels, vector<double>(samples[0].size(), 0.0));
+
     int sizes[numChannels];
     for (int chan = 0; chan < numChannels; chan++)
     {
         sizes[chan] = samples[chan].size();
-        cout << chan << endl;
         threads.emplace_back(Utils::convolve, ref(samples[chan]), irSamples);
     }
 
@@ -35,8 +36,9 @@ vector<vector<double>> Reverb::convReverb(vector<vector<double>> samples, string
     {
         samples[chan].resize(sizes[chan]);
     }
-    // LowPass lp = LowPass(0.3);
-    // lp.process(samples);
+
     Utils::normalize(samples);
+    FFT::destroyPlan();
     return samples;
+    
 }

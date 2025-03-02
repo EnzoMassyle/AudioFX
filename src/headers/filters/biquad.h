@@ -13,7 +13,7 @@ class Biquad : public Filter
         double fs;
     public:
         void process(vector<vector<double>>& samples) override;
-        virtual void setCoefficients(double) = 0;
+        virtual void setCoefficients(double, double) = 0;
 };
 
 

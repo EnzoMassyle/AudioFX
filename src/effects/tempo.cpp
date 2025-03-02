@@ -47,3 +47,22 @@ void Tempo::changeTempoFrame(const vector<double>& channel, int frameStart, int 
         }
     }
 }
+
+vector<double> Tempo::changeTempo(const vector<double>& samples, double r)
+{
+    vector<double> out(samples.size(), 0.0);
+    int hopSize = samples.size() / (thread::hardware_concurrency() - 1);
+    int newChannelLength = samples.size() / r;
+    vector<thread> threads;
+    for (int i = 0; i < newChannelLength; i += hopSize)
+    {
+        threads.emplace_back(changeTempoFrame, samples, i, hopSize, r, ref(out));
+    }
+
+    for (thread &t : threads)
+    {
+        t.join();
+    }
+    
+    return out;
+}

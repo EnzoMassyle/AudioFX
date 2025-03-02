@@ -21,8 +21,10 @@ private:
     static cpx *dummy;
     static once_flag flag;
     static shared_ptr<void> plan;
-
+    static mutex m;
+    
 public:
+    static bool planExists;
     /**
      * @param n -> FFT size
      *

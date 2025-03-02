@@ -6,14 +6,17 @@ fftw_plan FFT::backward;
 cpx *FFT::dummy;
 once_flag FFT::flag;
 shared_ptr<void> FFT::plan;
+mutex FFT::m;
+bool FFT::planExists = false;
 
 void FFT::preInit(int n)
 {
     FFT::dummy = (fftw_complex *)fftw_malloc(sizeof(fftw_complex) * n);
     FFT::forward = fftw_plan_dft_1d(n, FFT::dummy, FFT::dummy, FFTW_FORWARD, FFTW_ESTIMATE);
     FFT::backward = fftw_plan_dft_1d(n, FFT::dummy, FFT::dummy, FFTW_BACKWARD, FFTW_ESTIMATE);
-    plan = shared_ptr<void>(nullptr, [](void *)
-                            { destroyPlan(); });
+    // plan = shared_ptr<void>(nullptr, [](void *)
+    //                         { destroyPlan(); });
+    FFT::planExists = true;
 }
 
 void FFT::destroyPlan()
@@ -21,11 +24,19 @@ void FFT::destroyPlan()
     fftw_destroy_plan(FFT::forward);
     fftw_destroy_plan(FFT::backward);
     fftw_free(dummy);
+    FFT::planExists = false;
+
 }
 
 FFT::FFT(int n)
 {
     this->n = n;
+    FFT::m.lock();
+    if (!FFT::planExists)
+    {
+        preInit(n);
+    }
+    FFT::m.unlock();
     call_once(flag, preInit, n);
     this->f = (fftw_complex *)fftw_malloc(sizeof(fftw_complex) * n);
 }
@@ -33,6 +44,7 @@ FFT::FFT(int n)
 FFT::~FFT()
 {
     fftw_free(f);
+
 }
 
 vector<complex<double>> FFT::fft(const vector<double> &v)

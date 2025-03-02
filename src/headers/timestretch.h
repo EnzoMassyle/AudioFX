@@ -38,7 +38,8 @@ public:
      *
      * Perform time stretching algorithm on each channel independently
      */
-    static vector<vector<double>> changeSpeed(vector<vector<double>> samples, double shiftFactor);
+    static vector<vector<double>> changeSpeed(const vector<vector<double>>& samples, double shiftFactor);
+
 };
 
 #endif

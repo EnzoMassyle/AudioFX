@@ -45,6 +45,12 @@ public:
 
     /**
      * @param v -> vector
+     *
+     * Apply normalization factor, result is stored in v
+     */
+    static void normalize(vector<double> &v);
+    /**
+     * @param v -> vector
      * @param g -> gain
      * 
      * Apply gain to vector, result is stored in v
@@ -82,6 +88,7 @@ public:
      * Perform element wise addition on complex numbers This method assumes u.size() == v.size() 
      */
     static vector<complex<double>> addComplex(const vector<complex<double>>& u, const vector<complex<double>>& v);
+
 
 };
 

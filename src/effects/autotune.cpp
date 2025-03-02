@@ -63,25 +63,20 @@ vector<vector<double>> Autotune::process(const vector<vector<double>>& samples, 
     {
         t.join();
     }
-
+    if (FFT::planExists)
+    {
+        FFT::destroyPlan();
+    }
     Utils::normalize(output);
     return output;
 }
 void Autotune::tuneChannel(const vector<double>& channel, vector<double> &out)
 {
-    // random_device device;
-    // mt19937 gen(device());
-    // uniform_int_distribution grainStart(-AT_OFFSET,AT_OFFSET);
-    // uniform_int_distribution grainSize(AT_CHUNK_SZ,AT_CHUNK_SZ + 3000);
-    // int step = AT_CHUNK_SZ / AT_OVERLAP;
-
-    int frameSize = 5000;
-    int hopSize = 1000;
     vector<thread> threads;
 
-    for (int start = 0; start < channel.size(); start += hopSize)
+    for (int start = 0; start < channel.size(); start += AT_HOP_SZ)
     {
-        int end = min(start + frameSize, (int)channel.size());
+        int end = min(start + AT_FRAME_SZ, (int)channel.size());
         vector<double> audioSlice(channel.begin() + start, channel.begin() + end);
         Utils::applyWindow(audioSlice);
         threads.emplace_back(
@@ -99,7 +94,7 @@ void Autotune::tuneChannel(const vector<double>& channel, vector<double> &out)
 
 void Autotune::tuneSlice(vector<double> slice, int start, vector<double> &out)
 {
-    int N = Utils::nextPowerOfTwo(AT_CHUNK_SZ);
+    int N = Utils::nextPowerOfTwo(AT_FRAME_SZ);
     FFT handler = FFT(N);
     vector<complex<double>> shiftedOut(N, 0.0);
     for (int i = 0; i < N; i++)
@@ -127,7 +122,6 @@ void Autotune::tuneSlice(vector<double> slice, int start, vector<double> &out)
     {
         slice = handler.ifft(sliceFreq);
         slice.resize(originalSize);
-        Utils::applyWindow(slice);
         for (int i = 0; i < slice.size(); i++)
         {
             out[i + start] += slice[i];
@@ -135,53 +129,17 @@ void Autotune::tuneSlice(vector<double> slice, int start, vector<double> &out)
         return;
     }
 
-    
-    // cout << shiftFactor << endl;
-    // Apply shifting factor. if the new bin is a fraction, properly distribute energy to lower and upper bin
-    // vector<vector<double>> temp;
 
-    // temp.push_back(handler.ifft(sliceFreq));
-    // temp[0].resize(originalSize);
-    // AFX afx = AFX();
-    // temp = afx.pitchShift(temp, 1);
-    // // AFX
-    // // temp = Tempo::changeTempo(temp, shiftFactor);
-    // // temp = TimeStretch::changeSpeed(temp, shiftFactor);
-    // // cout << "hi" << temp[0].size() << endl;;
-    // // temp[0].resize(originalSize);
-    // // 
-    // // temp = Tempo::changeTempo(temp, 1 / shiftFactor);
-    // // temp = TimeStretch::changeSpeed(temp, 1 / shiftFactor);
-
-    for (int i = 0; i < N; i++)
-    {
-        double newBin = (i * shiftFactor);
-        int lower = floor(newBin);
-        int upper = ceil(newBin);
-        double frac = newBin - lower;
-        if (lower >= 0 && lower < N / 2)
-        {
-            shiftedOut[lower] += sliceFreq[i] * (1.0 - frac);
-        }
-        if (upper >= 0 && upper < N / 2)
-        {
-            shiftedOut[upper] += sliceFreq[i] * frac;
-        }
-    }
-
-    slice = handler.ifft(shiftedOut);
+    slice = handler.ifft(sliceFreq);
     slice.resize(originalSize);
-    // temp[0].resize(originalSize);
-    Utils::applyWindow(slice);
+    slice = Tempo::changeTempo(slice, shiftFactor);
+
     for (int i = 0; i < slice.size(); i++)
     {
-        // cout << temp[0][i] << endl;
-        // if (i + start > out.size())
-        // {
-        //     cout << "." << endl;
-        // }
+        if (i + start >= out.size()) break;
         out[i + start] += slice[i];
     }
+ 
 }
 
 double Autotune::findShiftingFactor(double f)

@@ -26,26 +26,29 @@ double Utils::sinc(double x)
 void Utils::normalize(vector<vector<double>> &v)
 {
     // Calculate maximum peak
-    double peak = 0.0;
     for (int i = 0; i < v.size(); i++)
     {
-        for (int j = 0; j < v[i].size(); j++)
-        {
-            peak = fmax(peak, abs(v[i][j]));
-        }
+        Utils::normalize(v[i]);
     }
-    // apply normalization
-    if (peak > 0.0)
-    {
-        double normalizationFactor = 1.0 / peak;
+}
+
+void Utils::normalize(vector<double>& v)
+{
+        // Calculate maximum peak
+        double peak = 0.0;
         for (int i = 0; i < v.size(); i++)
         {
-            for (int j = 0; j < v[i].size(); j++)
+            peak = fmax(peak, abs(v[i]));
+        }
+        // apply normalization
+        if (peak > 0.0)
+        {
+            double normalizationFactor = 1.0 / peak;
+            for (int i = 0; i < v.size(); i++)
             {
-                v[i][j] *= normalizationFactor;
+                v[i] *= normalizationFactor;
             }
         }
-    }
 }
 
 void Utils::gain(vector<vector<double>> &v, double g)
@@ -76,10 +79,7 @@ void Utils::convolve(vector<double> &v1, const vector<double>& v2)
 
     for (int i = 0; i < N; i++)
     {
-        // Multiply two complex numbers: (a + bi) * (c + di) = (ac−bd) + (ad+bc)i
-        double tempR = (z[i].real() * w[i].real()) - (z[i].imag() * w[i].imag());
-        double tempI = (z[i].real() * w[i].imag()) + (z[i].imag() * w[i].real());
-        z[i] = complex<double>(tempR, tempI);
+        z[i] *= w[i];
     }
     v1 = handler.ifft(z);
 }
@@ -113,3 +113,5 @@ vector<complex<double>> Utils::addComplex(const vector<complex<double>> &u, cons
     }
     return out;
 }
+
+

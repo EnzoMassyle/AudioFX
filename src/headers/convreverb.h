@@ -6,7 +6,8 @@
 #include <thread>
 #include <string>
 #include <unordered_map>
-#include <filters/lp.h>
+#include <filters/hp.h>
+#include "eq.h"
 #include <filehandler.h>
 #include <utils.h>
 
@@ -23,7 +24,7 @@ public:
      * 
      * Perform fast-convolution with FFT between audio samples and an impulse response
      */
-    static vector<vector<double>> convReverb(vector<vector<double>> samples, string room);
+    static vector<vector<double>> convReverb(vector<vector<double>>& samples, string room);
 };
 
 #endif

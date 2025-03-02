@@ -1,18 +1,16 @@
 #include "../../headers/filters/hp.h"
 HighPass::HighPass(double cutoffFreq, int sampleRate, double q)
 {
-    assert(q > 0);
     this->fs = sampleRate;
-    this->q = q;
-
-    this->setCoefficients(cutoffFreq);
+    this->setCoefficients(cutoffFreq, q);
     
 }
 
-void HighPass::setCoefficients(double f0)
+void HighPass::setCoefficients(double f0, double q)
 {
+    assert(q > 0);
     double wc = (f0 * 2 *  M_PI) / this->fs;
-    double alpha = sin(wc) / (2 * this->q);
+    double alpha = sin(wc) / (2 * q);
     double beta = cos(wc); 
 
     this->a0 = 1 + alpha;

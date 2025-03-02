@@ -5,7 +5,6 @@
 #include "headers/eq.h"
 int main(int argc, char *argv[])
 {
-
     if (argc != 2)
     {
         cout << "Please provide one file to process! " << endl;
@@ -18,25 +17,12 @@ int main(int argc, char *argv[])
     FileHandler fh = FileHandler();
     vector<vector<double>> samples = fh.open(fn);
 
-
     AFX afx = AFX();
-    // samples = afx.changeTempo(samples, 0.9);
-    // samples = afx.convReverb(samples);
-    // samples = afx.pitchShift(samples, 5);
-    // samples = afx.reverse(samples);
-    // samples = afx.timeStretch(samples, 0.8);
-    // samples = afx.autotune(samples, 1.0, "C", 'M', fh.getSampleRate());
-    // samples = afx.artificialReverb(samples);
-    // samples = afx.changeTempo(samples, 1.3);
-    // samples = afx.convReverb(samples, "CHURCH");
-    // samples = afx.demix(samples, 1);
-    // samples = afx.layer(samples, 4.0, 0.25);
-    // samples = afx.layer(samples, 7.0, 0.1);
-    // samples = afx.layer(samples, -12, 0.1);
+
+    /* Perform sound transformations here */
+    samples = afx.pitchShift(samples, 5);
+
     
-    EQ eq = afx.createEQ(fh.getSampleRate());
-    
-    // eq.applyEQ(samples);
 
     auto end = std::chrono::high_resolution_clock::now(); // End timing
 

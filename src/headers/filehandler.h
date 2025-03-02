@@ -34,8 +34,8 @@ public:
      */
     void write(const vector<vector<double>> &output, const char *writeName = "out.wav");
 
+    /* Getters */
     int getSampleRate() { return info.samplerate; }
-
     int getNumChannels() { return info.channels; }
 };
 #endif

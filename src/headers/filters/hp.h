@@ -5,10 +5,8 @@
 #include <cassert>
 class HighPass : public Biquad
 {
-    private: 
-        double q;
     public:
         HighPass(double cutoffFreq, int sampleRate, double qualityFactor);
-        void setCoefficients(double f0) override;
+        void setCoefficients(double f0, double q) override;
 };
 #endif

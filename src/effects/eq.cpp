@@ -13,7 +13,7 @@ EQ::EQ(int sr)
     this->addFilters();
 }
 
-EQ::EQ(int sr, double* g, int lenG)
+EQ::EQ(int sr, double g[], int lenG)
 {
     this->filters = new Biquad*[NUM_FILTERS];
     assert(this->filters != nullptr);
