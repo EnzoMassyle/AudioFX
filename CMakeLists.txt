@@ -34,4 +34,4 @@ target_link_libraries(afx PRIVATE
     SndFile::sndfile 
     FFTW3::fftw3
 )
-install(DIRECTORY include/ DESTINATION afx)
+install(DIRECTORY include/ DESTINATION share/afx)
