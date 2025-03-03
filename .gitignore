@@ -35,5 +35,3 @@ src/CMakeUserPresets.json
 samples/
 venv/
 Markdown-3.7.dist-info/
-src/effects/__pycache__/
-src/effects/pretrained_models/
