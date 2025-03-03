@@ -1,13 +1,6 @@
 cmake_minimum_required(VERSION 3.27)
 project(afx VERSION 1.0.0 LANGUAGES CXX)
 
-# Set C++ Standard
-# set(CMAKE_CXX_STANDARD 17)
-# set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# # Debugging
-# set(CMAKE_BUILD_TYPE Debug)
-
 
 # Find external libraries
 find_package(SndFile REQUIRED)
@@ -39,7 +32,6 @@ target_link_libraries(afx
     PUBLIC 
     SndFile::sndfile 
     FFTW3::fftw3
-    # afx::afx
 )
 
 include(GNUInstallDirs)
@@ -52,7 +44,7 @@ install(TARGETS afx
 )
 
 set_target_properties(afx PROPERTIES EXPORT_NAME AFX)
-install(DIRECTORY include/ DESTINATION share/afx)
+install(DIRECTORY include/ DESTINATION include)
 install(EXPORT afx-targets
     FILE
         afxTargets.cmake
