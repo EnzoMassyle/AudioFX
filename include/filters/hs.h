@@ -2,7 +2,6 @@
 #define HS_H
 
 #include "biquad.h"
-#include <cassert>
 class HighShelf : public Biquad
 {
     private: 

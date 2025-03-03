@@ -1,11 +1,11 @@
 #ifndef FILEHANDLER_H
 #define FILEHANDLER_H
 
+#include <iostream>
 #include <sndfile.h>
 #include <vector>
-#include <iostream>
 #include <cstring>
-#include <params.h>
+#include "params.h"
 
 using namespace std;
 class FileHandler

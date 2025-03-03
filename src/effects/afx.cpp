@@ -1,5 +1,4 @@
-#include <../headers/afx.h>
-
+#include "afx.h"
 
 vector<vector<double>> AFX::autotune(const vector<vector<double>>& samples, double intensity, string note, char scale, int sr)
 {

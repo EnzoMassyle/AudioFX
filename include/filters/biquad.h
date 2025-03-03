@@ -2,8 +2,7 @@
 #define BIQUAD_H
 
 #include "filter.h"
-
-
+#include <cassert>
 class Biquad : public Filter
 {
     protected: 

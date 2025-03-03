@@ -1,4 +1,4 @@
-#include <../headers/timestretch.h>
+#include "timestretch.h"
 
 vector<vector<double>> TimeStretch::changeSpeed(const vector<vector<double>>& samples, double shiftFactor)
 {

@@ -1,11 +1,10 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <iostream>
 #include <vector>
+#include <cmath>
 #include "fft.h"
 #include "params.h"
-#include <cmath>
 
 using namespace std;
 

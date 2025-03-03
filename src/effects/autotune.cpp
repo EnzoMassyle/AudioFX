@@ -1,5 +1,4 @@
-#include <../headers/autotune.h>
-#include <afx.h>
+#include "autotune.h"
 map<char, array<int, 7>> Autotune::intervals = {
     {'M', {2, 4, 5, 7, 9, 11, 12}},
     {'m', {2, 3, 5, 7, 8, 10, 12}}};
@@ -48,11 +47,9 @@ vector<vector<double>> Autotune::process(const vector<vector<double>>& samples, 
 {
     this->sampleRate = sampleRate;
     int numChannels = samples.size();
-    cout << "Processing..." << endl;
     vector<vector<double>> output(samples.size(), vector<double>(samples[0].size(), 0.0));
 
     vector<thread> threads;
-    // Process audio file in chunks. Will need to process each channel separately
     for (int chan = 0; chan < numChannels; chan++)
     {
         threads.emplace_back([this, samples, &output, chan]()

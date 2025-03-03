@@ -1,4 +1,4 @@
-#include <../headers/tempo.h>
+#include "tempo.h"
 
 vector<vector<double>> Tempo::changeTempo(const vector<vector<double>>& samples, double r)
 {

@@ -6,10 +6,9 @@
 #include <thread>
 #include <string>
 #include <unordered_map>
-#include <filters/hp.h>
 #include "eq.h"
-#include <filehandler.h>
-#include <utils.h>
+#include "filehandler.h"
+#include "utils.h"
 
 class Reverb
 {

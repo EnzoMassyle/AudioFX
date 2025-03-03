@@ -1,8 +1,6 @@
 #include <iostream>
-#include "headers/afx.h"   
-#include "headers/filehandler.h"
+#include "afx.h"   
 #include <chrono>
-#include "headers/eq.h"
 int main(int argc, char *argv[])
 {
     if (argc != 2)

@@ -2,7 +2,6 @@
 #define LP_H
 
 #include "biquad.h"
-#include <cassert>
 class LowPass : public Biquad
 {
     public:

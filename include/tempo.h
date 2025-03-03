@@ -2,9 +2,9 @@
 #define TEMPO_H
 
 #include <vector>
-#include <utils.h>
 #include <thread>
 #include <cassert>
+#include "utils.h"
 class Tempo
 {
 private:

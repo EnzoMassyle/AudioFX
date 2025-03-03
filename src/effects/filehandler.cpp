@@ -1,4 +1,4 @@
-#include <../headers/filehandler.h>
+#include "filehandler.h"
 
 FileHandler::FileHandler()
 {

@@ -1,4 +1,4 @@
-#include <../headers/eq.h>
+#include "eq.h"
 
 EQ::EQ(int sr)
 {

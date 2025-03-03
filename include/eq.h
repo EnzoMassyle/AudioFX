@@ -1,17 +1,15 @@
 #ifndef EQ_H
 #define EQ_H
 
-#include <iostream>
 #include <vector>
-#include "filters/filter.h"
-#include <filters/bell.h>
-#include <filters/hp.h>
-#include <filters/lp.h>
-#include <filters/hs.h>
-#include <filters/ls.h>
 #include <cassert>
-
-#include <params.h>
+#include "filters/filter.h"
+#include "filters/bell.h"
+#include "filters/hp.h"
+#include "filters/lp.h"
+#include "filters/hs.h"
+#include "filters/ls.h"
+#include "params.h"
 class EQ
 {
 private:

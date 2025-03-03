@@ -1,5 +1,4 @@
-#include "../headers/fft.h"
-#include <iostream>
+#include "fft.h"
 
 fftw_plan FFT::forward;
 fftw_plan FFT::backward;

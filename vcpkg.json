@@ -1,7 +1,11 @@
 {
-  "name": "mc",
+  "name": "afx",
   "version": "1.0.0",
-  "dependencies": [
+  "description" : "An easy to use audio processing library",
+  "homepage": "https://github.com/EnzoMassyle/AudioFX",
+  "license" : "MIT",
+  "dependencies":
+  [
     {
       "name": "fftw3",
       "features": [

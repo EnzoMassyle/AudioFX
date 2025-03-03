@@ -1,4 +1,4 @@
-#include <../headers/convreverb.h>
+#include "convreverb.h"
 unordered_map<string, string> Reverb::types = {
     {"CHURCH", "church.wav"},
     {"CAVE", "cave.wav"},

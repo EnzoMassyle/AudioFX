@@ -1,11 +1,10 @@
 #ifndef TIMESTRETCH_H
 #define TIMESTRETCH_H
 
-#include <iostream>
 #include <vector>
 #include <cassert>
-#include <utils.h>
-#include <params.h>
+#include "utils.h"
+#include "params.h"
 
 using namespace std;
 class TimeStretch

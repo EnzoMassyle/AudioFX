@@ -1,5 +1,5 @@
 
-#include "../../headers/filters/biquad.h"
+#include "filters/biquad.h"
 
 
 void Biquad::process(vector<vector<double>>& samples)

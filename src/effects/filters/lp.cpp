@@ -1,4 +1,4 @@
-#include "../../headers/filters/lp.h"
+#include "filters/lp.h"
 LowPass::LowPass(double cutoffFreq, int sampleRate, double q)
 {
     this->fs = sampleRate;

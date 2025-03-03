@@ -1,7 +1,4 @@
-#include <../headers/filters/hs.h>
-
-
-#include <../headers/filters/bell.h>
+#include "filters/bell.h"
 #include <iostream>
 BellFilter::BellFilter(double gain, double cutoffFreq, double sampleRate, double bandwidth)
 {

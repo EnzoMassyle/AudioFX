@@ -1,4 +1,4 @@
-#include "../../headers/filters/hs.h"
+#include "filters/hs.h"
 
 HighShelf::HighShelf(double gain, double cutoffFreq, double sampleRate, double slope)
 {

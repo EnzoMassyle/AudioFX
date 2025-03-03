@@ -2,7 +2,6 @@
 #define HP_H
 
 #include "biquad.h"
-#include <cassert>
 class HighPass : public Biquad
 {
     public:

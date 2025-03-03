@@ -1,6 +1,4 @@
-#include <../headers/filters/ls.h>
-#include <iostream>
-#include <cassert>
+#include <filters/ls.h>
 LowShelf::LowShelf(double gain, double cutoffFreq, int sampleRate, double slope)
 {
     assert(slope > 0);

@@ -1,15 +1,12 @@
 #ifndef AUTOTUNE_H
 #define AUTOTUNE_H
-#include <iostream>
 #include <map>
 #include <vector>
 #include <thread>
-#include <utils.h>
-#include <params.h>
-#include <fft.h>
-#include <random>
-#include <tempo.h>
-#include <timestretch.h>
+#include "utils.h"
+#include "params.h"
+#include "fft.h"
+#include "tempo.h"
 using namespace std;
 class Autotune
 {

@@ -1,4 +1,4 @@
-#include "../../headers/filters/hp.h"
+#include "filters/hp.h"
 HighPass::HighPass(double cutoffFreq, int sampleRate, double q)
 {
     this->fs = sampleRate;

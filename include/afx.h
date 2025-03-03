@@ -1,4 +1,4 @@
-#include "filters/lp.h"
+#include <vector>
 #include "filehandler.h"
 #include "utils.h"
 #include "convreverb.h"
@@ -7,7 +7,6 @@
 #include "tempo.h"
 #include "eq.h"
 
-#include <vector>
 
 
 using namespace std;
