@@ -1,28 +1,33 @@
 cmake_minimum_required(VERSION 3.27)
-project(afx VERSION 1.0.0)
+project(afx VERSION 1.0.0 LANGUAGES CXX)
 
 # Set C++ Standard
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# set(CMAKE_CXX_STANDARD 17)
+# set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Debugging
-set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_CXX_FLAGS_DEBUG "-g")
+# # Debugging
+# set(CMAKE_BUILD_TYPE Debug)
+
 
 # Find external libraries
 find_package(SndFile REQUIRED)
 find_package(FFTW3 CONFIG REQUIRED)
 
 file(GLOB_RECURSE SRC_FILES =
-    src/*.cpp
-    src/effects/*.cpp
-    src/effects/filters/*.cpp
+src/*.cpp
+src/effects/*.cpp
+src/effects/filters/*.cpp
 )
 
 # Add the executable with all source files
 add_library(afx SHARED ${SRC_FILES})
-target_include_directories(afx PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(afx 
+PUBLIC 
+$<INSTALL_INTERFACE:include>
+$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+)
 
+target_compile_features(afx PRIVATE cxx_std_17)
 install(TARGETS afx
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
@@ -30,8 +35,53 @@ install(TARGETS afx
 )
 
 # Link external libraries
-target_link_libraries(afx PRIVATE 
+target_link_libraries(afx 
+    PUBLIC 
     SndFile::sndfile 
     FFTW3::fftw3
+    # afx::afx
 )
+
+include(GNUInstallDirs)
+set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/AFX)
+
+install(TARGETS afx
+    EXPORT afx-targets
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+set_target_properties(afx PROPERTIES EXPORT_NAME AFX)
 install(DIRECTORY include/ DESTINATION share/afx)
+install(EXPORT afx-targets
+    FILE
+        afxTargets.cmake
+    NAMESPACE
+        AFX::
+    DESTINATION
+        ${INSTALL_CONFIGDIR}
+)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/AFXConfigVersion.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+
+configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/afxConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/afxConfig.cmake
+    INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/afxConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/afxConfigVersion.cmake
+    DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+export(EXPORT afx-targets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/afxTargets.cmake
+    NAMESPACE AFX::)
+
+export(PACKAGE AFX)
