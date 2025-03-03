@@ -44,7 +44,7 @@ install(TARGETS afx
 )
 
 set_target_properties(afx PROPERTIES EXPORT_NAME AFX)
-install(DIRECTORY include/ DESTINATION include)
+install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(EXPORT afx-targets
     FILE
         afxTargets.cmake
