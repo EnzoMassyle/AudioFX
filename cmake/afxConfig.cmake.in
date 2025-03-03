@@ -7,7 +7,7 @@ find_dependency(SndFile REQUIRED)
 list(REMOVE_AT CMAKE_MODULE_PATH -1)
 
 if(NOT TARGET afx::afx)
-    include("${Dir}/afxTargets.cmake")
+    include("${DIR}/afxTargets.cmake")
 endif()
 
 set(AFX_LIBRARIES afx::afx)
