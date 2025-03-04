@@ -46,7 +46,15 @@ install(TARGETS afx
 
 set_target_properties(afx PROPERTIES EXPORT_NAME AFX)
 install(DIRECTORY include/ DESTINATION share/AFX)
-install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/AFX)
+install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+
+install(
+    DIRECTORY ${CMAKE_SOURCE_DIR}/include/  # Ensure it matches your structure
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"  # Only copy header files
+)
+
 install(EXPORT afx-targets
     FILE
         afxTargets.cmake
