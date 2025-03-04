@@ -57,7 +57,7 @@ install(
 
 install(
     DIRECTORY ${CMAKE_SOURCE_DIR}/include/  # Copy from the same source
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/debug  # Install to 'debug/include/'
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/../debug  # Install to 'debug/include/'
     CONFIGURATIONS Debug
     FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
 )
