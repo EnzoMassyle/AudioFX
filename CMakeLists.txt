@@ -13,7 +13,7 @@ src/effects/filters/*.cpp
 )
 
 # Add the executable with all source files
-add_library(afx SHARED ${SRC_FILES})
+add_library(afx ${SRC_FILES})
 target_include_directories(afx 
 PUBLIC 
 $<INSTALL_INTERFACE:include>
