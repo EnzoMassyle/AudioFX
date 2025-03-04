@@ -51,15 +51,8 @@ install(DIRECTORY include/ DESTINATION share/AFX)
 install(
     DIRECTORY ${CMAKE_SOURCE_DIR} include/  # Ensure it matches your structure
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    CONFIGURATIONS Release
+    CONFIGURATIONS Debug Release
     FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"  # Only copy header files
-)
-
-install(
-    DIRECTORY ${CMAKE_SOURCE_DIR}/include/  # Copy from the same source
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/../debug  # Install to 'debug/include/'
-    CONFIGURATIONS Debug
-    FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
 )
 
 install(EXPORT afx-targets
