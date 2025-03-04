@@ -35,7 +35,8 @@ target_link_libraries(afx
 )
 
 include(GNUInstallDirs)
-set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/AFX)
+set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_DATADIR}/AFX)
+
 
 install(TARGETS afx
     EXPORT afx-targets
@@ -53,6 +54,7 @@ install(EXPORT afx-targets
     DESTINATION
         ${INSTALL_CONFIGDIR}
 )
+
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
