@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.vcpkg_triplet }}
+    runs-on: ${{ matrix.os }}
 
     strategy:
       # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
@@ -34,6 +34,7 @@ jobs:
           - vcpkg_triplet: x86-windows
             c_compiler: cl
             cpp_compiler: cl
+            os: windows-latest
           - vcpkg_triplet: x64-windows
             c_compiler: cl
             cpp_compiler: cl
