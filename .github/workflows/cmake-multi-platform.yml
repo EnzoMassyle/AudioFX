@@ -26,6 +26,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         build_type: [Release]
         include:
+          # Windows 
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
@@ -54,27 +55,18 @@ jobs:
             c_compiler: cl
             cpp_compiler: cl
             vcpkg_triplet: arm64_windows_static_md
+
+          # Linux
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
             vcpkg_triplet: x64-linux-release
+
+          # Mac
           - os: macos-latest
             c_compiler: clang
             cpp_compiler: clang++
             vcpkg_triplet: x64-osx-release
-        exclude:
-          - os: windows-latest
-            c_compiler: gcc
-          - os: windows-latest
-            c_compiler: clang
-          - os: macos-latest
-            c_compiler: cl
-          - os: macos-latest
-            c_compiler: gcc
-          - os: ubuntu-latest
-            c_compiler: cl
-          - os: ubuntu-latest
-            c_compiler: clang
             
 
     steps:
