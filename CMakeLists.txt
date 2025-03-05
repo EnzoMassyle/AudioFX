@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.27)
 project(afx VERSION 1.0.0 LANGUAGES CXX)
 
+if(WIN32)
+    add_definitions(-DPLATFORM_WINDOWS)
+elseif(APPLE)
+    add_definitions(-DPLATFORM_MACOS)
+elseif(UNIX)
+    add_definitions(-DPLATFORM_LINUX)
+endif()
 
 # Find external libraries
 find_package(SndFile REQUIRED)
