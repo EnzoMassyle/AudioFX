@@ -23,7 +23,7 @@ jobs:
       #
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        # os: [ubuntu-latest, macos-latest, windows-latest]
         build_type: [Release]
         include:
           # Windows 
@@ -46,15 +46,15 @@ jobs:
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
-            vcpkg_triplet: x64-windows-static_md
+            vcpkg_triplet: x64-windows-static-md
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
-            vcpkg_triplet: arm64_windows
+            vcpkg_triplet: arm64-windows
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
-            vcpkg_triplet: arm64_windows_static_md
+            vcpkg_triplet: arm64-windows-static-md
 
           # Linux
           - os: ubuntu-latest
