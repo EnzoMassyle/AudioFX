@@ -53,16 +53,12 @@ jobs:
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
-    - name: Install vcpkg
-      run: |
-          git clone https://github.com/microsoft/vcpkg.git
-          ./vcpkg/bootstrap-vcpkg.sh
           
     - name: vcpkg-action
       uses: johnwason/vcpkg-action@v6
       id: vcpkg
       with:
-        pkgs: ${{ matrix.config.vcpkg_triplet }}
+        pkgs: boost-date-time
         triplet: ${{ matrix.config.vcpkg_triplet }}
         cache-key: ${{ matrix.config.os }}
         revision: master
