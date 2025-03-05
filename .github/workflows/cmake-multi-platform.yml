@@ -42,10 +42,17 @@ jobs:
         exclude:
           - os: windows-latest
             c_compiler: gcc
-          - os: macos-11
+          - os: windows-latest
             c_compiler: clang
+          - os: macos-11
+            c_compiler: cl
+          - os: macos-11
+            c_compiler: gcc
           - os: ubuntu-latest
             c_compiler: cl
+          - os: ubuntu-latest
+            c_compiler: clang
+            
 
     steps:
     - uses: actions/checkout@v4
