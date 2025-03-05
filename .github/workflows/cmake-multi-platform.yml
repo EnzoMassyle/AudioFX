@@ -61,8 +61,8 @@ jobs:
       uses: johnwason/vcpkg-action@v6
       id: vcpkg
       with:
-        triplet: ${{ matrix.include.os.vcpkg_triplet }}
-        cache-key: ${{ matrix.include.os }}
+        triplet: ${{ matrix.vcpkg_triplet }}
+        cache-key: ${{ matrix.os }}
         revision: master
         token: ${{ github.token }}
         github-binarycache: true
