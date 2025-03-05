@@ -12,7 +12,7 @@ void BellFilter::setCoefficients(double gain, double bw)
 {
     assert(bw > 0);
     double a = pow(10, gain / 40.0);
-    double wc = (this->f0 * 2 * M_PI) / this->fs;
+    double wc = (this->f0 * 2 * PI) / this->fs;
     double alpha = sin(wc) * (bw / 2.0);
 
     this->a0 = 1 + (alpha / a);

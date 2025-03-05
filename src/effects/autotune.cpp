@@ -1,7 +1,8 @@
 #include "autotune.h"
-map<char, array<int, 7>> Autotune::intervals = {
-    {'M', {2, 4, 5, 7, 9, 11, 12}},
-    {'m', {2, 3, 5, 7, 8, 10, 12}}};
+map<char, vector<int>> Autotune::intervals = {
+    {'M', vector<int>(initializer_list<int>{4, 5, 7, 9, 11, 12})},
+    {'m', vector<int>(initializer_list<int>{3, 5, 7, 8, 10, 12})}
+};
 
 map<string, double> Autotune::rootNotes = {
     {"C", 261.63},
@@ -30,7 +31,7 @@ void Autotune::fillNoteTable()
     double f0 = rootNotes[this->note];
     double n0 = 69;
 
-    array<int, 7> semitones = intervals[this->scale];
+    vector<int> semitones = intervals[this->scale];
     for (int octave = 0; octave < 8; octave++)
     {
         double freq = f0 * pow(2, (12 * (octave - 4)) / 12.0);

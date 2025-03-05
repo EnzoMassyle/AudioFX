@@ -5,7 +5,7 @@ void Utils::applyWindow(vector<double> &v)
 {
     for (int i = 0; i < v.size(); i++)
     {
-        v[i] *= 0.5 * (1 - cos((2 * M_PI * i) / (v.size() - 1)));
+        v[i] *= 0.5 * (1 - cos((2 * PI * i) / (v.size() - 1)));
     }
 }
 
@@ -19,7 +19,7 @@ double Utils::sinc(double x)
 {
     if (x == 0.0)
         return 1.0;
-    return sin(M_PI * x) / (M_PI * x);
+    return sin(PI * x) / (PI * x);
 }
 
 

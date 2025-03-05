@@ -9,6 +9,7 @@
 #define FRAME_SZ 4096
 #define HOP_SZ 1024
 
+#define PI 3.1415926535897932385
 /* EQ */
 #define NUM_GAIN_FILTERS 6
 #define NUM_FILTERS 8

@@ -2,6 +2,7 @@
 #define BP_H
 
 #include "biquad.h"
+
 class BellFilter : public Biquad
 {
     private: 

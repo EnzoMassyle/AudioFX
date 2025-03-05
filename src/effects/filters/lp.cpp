@@ -9,7 +9,7 @@ LowPass::LowPass(double cutoffFreq, int sampleRate, double q)
 void LowPass::setCoefficients(double f0, double q)
 {
     assert(q > 0);
-    double wc = (f0 * 2 *  M_PI) / this->fs;
+    double wc = (f0 * 2 *  PI) / this->fs;
     double alpha = sin(wc) / (2 * q);
     double beta = cos(wc); 
 

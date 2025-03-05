@@ -12,7 +12,7 @@ class Autotune
 {
 private:
     vector<double> scaleNotes;
-    static map<char, array<int, 7>> intervals;
+    static map<char, vector<int>> intervals;
     static map<string, double> rootNotes;
     int sampleRate;
 

@@ -2,6 +2,7 @@
 #define FILTER_H
 
 #include <vector>
+#include "params.h"
 using namespace std;
 class Filter
 {

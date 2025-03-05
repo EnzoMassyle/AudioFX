@@ -20,7 +20,7 @@ vector<vector<double>> Reverb::convReverb(vector<vector<double>>& samples, strin
     vector<thread> threads;
     vector<vector<double>> output(numChannels, vector<double>(samples[0].size(), 0.0));
 
-    int sizes[numChannels];
+    vector<int> sizes(numChannels);
     for (int chan = 0; chan < numChannels; chan++)
     {
         sizes[chan] = samples[chan].size();

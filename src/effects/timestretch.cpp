@@ -93,10 +93,10 @@ void TimeStretch::stretchFrame(const vector<double> &frame, int shiftedStart, do
             if (abs(newStftBins[i][j]) <= 2.0 * lastMagnitude)
             {
                 /* Perform phase unwrapping */
-                while (phaseDiff > M_PI)
-                    phaseDiff -= 2 * M_PI;
-                while (phaseDiff < -M_PI)
-                    phaseDiff += 2 * M_PI;
+                while (phaseDiff > PI)
+                    phaseDiff -= 2 * PI;
+                while (phaseDiff < -PI)
+                    phaseDiff += 2 * PI;
 
                 phaseSum[j] += phaseDiff;
 

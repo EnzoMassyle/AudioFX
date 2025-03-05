@@ -18,7 +18,8 @@ int main(int argc, char *argv[])
     AFX afx = AFX();
 
     /* Perform sound transformations here */
-    samples = afx.pitchShift(samples, 5);
+    // samples = afx.pitchShift(samples, 5);
+    // samples = afx.convReverb(samples);
 
     
 

@@ -19,8 +19,6 @@ private:
 
     // these vars are needed for multi-threading
     static cpx *dummy;
-    static once_flag flag;
-    static shared_ptr<void> plan;
     static mutex m;
     
 public:
