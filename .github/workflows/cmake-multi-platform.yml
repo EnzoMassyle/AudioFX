@@ -62,7 +62,7 @@ jobs:
       uses: johnwason/vcpkg-action@v6
       id: vcpkg
       with:
-        pkgs: sndfile-fftw
+        pkgs: ${{ matrix.config.vcpkg_triplet }}
         triplet: ${{ matrix.config.vcpkg_triplet }}
         cache-key: ${{ matrix.config.os }}
         revision: master
