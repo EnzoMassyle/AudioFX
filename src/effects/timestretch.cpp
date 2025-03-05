@@ -39,7 +39,7 @@ void TimeStretch::stretchChannel(const vector<double> &channel, double shiftFact
         int start = max(0, i - 2000); // Ensure smooth overlap when parallel processing
         vector<double> slice(channel.begin() + start, channel.begin() + end);
 
-        threads.emplace_back(stretchFrame, slice, (double)start / shiftFactor, shiftFactor, ref(out));
+        threads.emplace_back(stretchFrame, slice, start / shiftFactor, shiftFactor, ref(out));
     }
 
     for (thread &t : threads)
