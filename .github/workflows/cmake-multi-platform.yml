@@ -65,7 +65,6 @@ jobs:
       uses: johnwason/vcpkg-action@v6
       id: vcpkg
       with:
-        pkgs: boost-date-time
         triplet: ${{ matrix.config.vcpkg_triplet }}
         cache-key: ${{ matrix.config.os }}
         revision: master
