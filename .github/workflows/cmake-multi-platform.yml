@@ -31,6 +31,30 @@ jobs:
             c_compiler: cl
             cpp_compiler: cl
             vcpkg_triplet: x64-windows-release
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
+            vcpkg_triplet: x86-windows
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
+            vcpkg_triplet: x64-windows
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
+            vcpkg_triplet: x64-windows-static
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
+            vcpkg_triplet: x64-windows-static_md
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
+            vcpkg_triplet: arm64_windows
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
+            vcpkg_triplet: arm64_windows_static_md
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
