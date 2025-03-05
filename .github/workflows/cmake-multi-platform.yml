@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.vcpkg_triplet }}
 
     strategy:
       # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
@@ -23,50 +23,49 @@ jobs:
       #
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
-        # os: [ubuntu-latest, macos-latest, windows-latest]
+        vcpkg_triplet: [x64-windows-release, x86-windows, x64-windows,  x64-windows-static, x64-windows-static-md, arm64-windows, arm64-windows-static-md, x64-linux-release, x64-osx-release]
         build_type: [Release]
         include:
           # Windows 
-          - os: windows-latest
+          - vcpkg_triplet: x64-windows-release
             c_compiler: cl
             cpp_compiler: cl
-            vcpkg_triplet: x64-windows-release
-          - os: windows-latest
+            os: windows-latest
+          - vcpkg_triplet: x86-windows
             c_compiler: cl
             cpp_compiler: cl
-            vcpkg_triplet: x86-windows
-          - os: windows-latest
+          - vcpkg_triplet: x64-windows
             c_compiler: cl
             cpp_compiler: cl
-            vcpkg_triplet: x64-windows
-          - os: windows-latest
+            os: windows-latest
+          - vcpkg_triplet: x64-windows-static
             c_compiler: cl
             cpp_compiler: cl
-            vcpkg_triplet: x64-windows-static
-          - os: windows-latest
+            os: windows-latest
+          - vcpkg_triplet: x64-windows-static-md
             c_compiler: cl
             cpp_compiler: cl
-            vcpkg_triplet: x64-windows-static-md
-          - os: windows-latest
+            os: windows-latest
+          - vcpkg_triplet: arm64-windows
             c_compiler: cl
             cpp_compiler: cl
-            vcpkg_triplet: arm64-windows
-          - os: windows-latest
+            os: windows-latest
+          - vcpkg_triplet: arm64-windows-static-md
             c_compiler: cl
             cpp_compiler: cl
-            vcpkg_triplet: arm64-windows-static-md
+            os: windows-latest
 
           # Linux
-          - os: ubuntu-latest
+          - vcpkg_triplet: x64-linux-release
             c_compiler: gcc
             cpp_compiler: g++
-            vcpkg_triplet: x64-linux-release
+            os: ubuntu-latest
 
           # Mac
-          - os: macos-latest
+          - vcpkg_triplet: x64-osx-release
             c_compiler: clang
             cpp_compiler: clang++
-            vcpkg_triplet: x64-osx-release
+            os: macos-latest
             
 
     steps:
