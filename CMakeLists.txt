@@ -23,7 +23,6 @@ src/effects/filters/*.cpp
 )
 
 
-
 add_library(afx ${SRC_FILES})
 # add_executable(afx ${SRC_FILES})
 target_compile_definitions(afx PUBLIC ASSET="${CMAKE_INSTALL_DATADIR}/assets")
@@ -33,19 +32,20 @@ $<INSTALL_INTERFACE:include>
 $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
 )
 
+
 target_compile_features(afx PRIVATE cxx_std_17)
 install(TARGETS afx
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin
-    )
-    
+ARCHIVE DESTINATION lib
+LIBRARY DESTINATION lib
+RUNTIME DESTINATION bin
+)
+
 
 # Link external libraries
 target_link_libraries(afx 
-    PUBLIC 
-    SndFile::sndfile 
-    FFTW3::fftw3
+PUBLIC 
+SndFile::sndfile 
+FFTW3::fftw3
 )
 
 include(GNUInstallDirs)
@@ -53,22 +53,20 @@ set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_DATADIR}/cmake/AFX)
 
 
 install(TARGETS afx
-    EXPORT afx-targets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+EXPORT afx-targets
+LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
 set_target_properties(afx PROPERTIES EXPORT_NAME AFX)
 install(DIRECTORY ${CMAKE_SOURCE_DIR} include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(DIRECTORY ${CMAKE_SOURCE_DIR} assets/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/assets)
 
+add_custom_target(copy_assets
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/cmake/copy-assets.cmake
+)
+add_dependencies(afx copy_assets)
 
-
-# install(
-#     DIRECTORY ${CMAKE_SOURCE_DIR} include/  # Ensure it matches your structure
-#     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-#     CONFIGURATIONS Debug Releases
-# )
 
 install(EXPORT afx-targets
     FILE
@@ -103,5 +101,5 @@ export(EXPORT afx-targets
     NAMESPACE AFX::)
 
 export(PACKAGE AFX)
-# message(STATUS "AFX Headers will be installed to: ${CMAKE_BINARY_DIR}")
+# message(STATUS "AFX Headers will be installed to: ${CMAKE_SOURCE_DIR}")
 
