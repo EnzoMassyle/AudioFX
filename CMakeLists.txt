@@ -24,8 +24,8 @@ src/effects/filters/*.cpp
 
 
 
-# add_library(afx ${SRC_FILES})
-add_executable(afx ${SRC_FILES})
+add_library(afx ${SRC_FILES})
+# add_executable(afx ${SRC_FILES})
 target_compile_definitions(afx PUBLIC ASSET="${CMAKE_INSTALL_DATADIR}/assets")
 target_include_directories(afx 
 PUBLIC 
