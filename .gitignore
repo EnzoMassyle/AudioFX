@@ -28,7 +28,8 @@ Makefile
 *.so
 *.dll
 *.dylib
-
+*.wav
+assets/*.wav
 
 src/CMakeUserPresets.json
 

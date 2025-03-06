@@ -12,11 +12,10 @@ vector<vector<double>> Reverb::convReverb(vector<vector<double>>& samples, strin
     }
     int numChannels = samples.size();
     SF_INFO irInfo;
-    string irFile = "../samples/ir/" + types.at(room);
     
 
     FileHandler fh = FileHandler();
-    vector<double> irSamples = fh.open(irFile.c_str())[0];
+    vector<double> irSamples = fh.open(types.at(room).c_str())[0];
     vector<thread> threads;
     vector<vector<double>> output(numChannels, vector<double>(samples[0].size(), 0.0));
 
