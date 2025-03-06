@@ -13,8 +13,8 @@ elseif(UNIX)
 endif()
 
 # Find external libraries
-find_package(FFTW3 CONFIG REQUIRED)
-find_package(SndFile CONFIG REQUIRED)
+find_package(FFTW3 REQUIRED)
+find_package(SndFile REQUIRED)
 
 file(GLOB_RECURSE SRC_FILES =
 src/*.cpp
