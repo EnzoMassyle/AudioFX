@@ -90,7 +90,7 @@ jobs:
           - vcpkg_triplet: arm-neon-android
             c_compiler: clang
             cpp_compiler: clang++
-            os: ubtuntu-latest
+            os: ubuntu-latest
             
           - vcpkg_triplet: x64-android
             c_compiler: clang
