@@ -4,11 +4,13 @@
 #include <iostream>
 #include <vector>
 #include <thread>
+#include <filesystem>
 #include <string>
 #include <unordered_map>
 #include "eq.h"
 #include "filehandler.h"
 #include "utils.h"
+
 
 class Reverb
 {

@@ -1,11 +1,12 @@
 #include "convreverb.h"
 unordered_map<string, string> Reverb::types = {
-    {"CHURCH", "../" + string(ASSET) + "/ir/church.wav"},
-    {"CAVE", "../" + string(ASSET) + "/ir/cave.wav"},
-    {"AIRY", "../" + string(ASSET) + "/ir/airy.wav"}};
+    {"CHURCH", "assets/ir/church.wav"},
+    {"CAVE", "assets/ir/cave.wav"},
+    {"AIRY", "assets/ir/airy.wav"}};
 
 vector<vector<double>> Reverb::convReverb(vector<vector<double>>& samples, string room)
 {
+    cout << filesystem::current_path() << endl;
     if (Reverb::types.find(room) == Reverb::types.end())
     {
         cout << room << " is not a valid type" << endl;
