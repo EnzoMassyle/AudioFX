@@ -38,8 +38,13 @@ install(TARGETS afx
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin
-)
-
+    )
+    
+add_custom_command(
+        TARGET afx PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/assets ${CMAKE_BINARY_DIR}/assets
+    )
 # Link external libraries
 target_link_libraries(afx 
     PUBLIC 
@@ -59,7 +64,8 @@ install(TARGETS afx
 
 set_target_properties(afx PROPERTIES EXPORT_NAME AFX)
 install(DIRECTORY ${CMAKE_SOURCE_DIR} include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install(DIRECTORY ${CMAKE_SOURCE_DIR} assets/ DESTINATION ${CMAKE_BINARY_DIR}/assets)
+install(DIRECTORY ${CMAKE_SOURCE_DIR} assets/ DESTINATION ${INSTALL_CONFIGDIR}/assets)
+
 
 
 # install(
