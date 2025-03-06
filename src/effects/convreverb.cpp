@@ -1,8 +1,8 @@
 #include "convreverb.h"
 unordered_map<string, string> Reverb::types = {
-    {"CHURCH", "assets/ir/church.wav"},
-    {"CAVE", "assets/ir/cave.wav"},
-    {"AIRY", "assets/ir/airy.wav"}};
+    {"CHURCH", string(ASSET) + "/ir/church.wav"},
+    {"CAVE", string(ASSET) + "/ir/cave.wav"},
+    {"AIRY", string(ASSET) + "/ir/airy.wav"}};
 
 vector<vector<double>> Reverb::convReverb(vector<vector<double>>& samples, string room)
 {
