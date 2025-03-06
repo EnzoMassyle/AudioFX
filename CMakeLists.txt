@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(WIN32)
     add_definitions(-DPLATFORM_WINDOWS)
+elseif(ANDROID)
+    add_definitions(-DPlATFORM_ANDROID)
 elseif(APPLE)
     add_definitions(-DPLATFORM_MACOS)
 elseif(UNIX)
@@ -13,8 +15,8 @@ elseif(UNIX)
 endif()
 
 # Find external libraries
-find_package(FFTW3 REQUIRED)
-find_package(SndFile REQUIRED)
+find_package(FFTW3 CONFIG REQUIRED)
+find_package(SndFile CONFIG REQUIRED)
 
 file(GLOB_RECURSE SRC_FILES =
 src/*.cpp
