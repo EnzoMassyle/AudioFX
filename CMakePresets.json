@@ -6,7 +6,9 @@
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
-                "CMAKE_TOOLCHAIN_FILE": "$env{VC_PKG}/scripts/buildsystems/vcpkg.cmake"
+                "CMAKE_TOOLCHAIN_FILE": "$env{VC_PKG}/scripts/buildsystems/vcpkg.cmake",
+                "BINARYDIR": "${sourceDir}/build"
+
             }
         },
         {
