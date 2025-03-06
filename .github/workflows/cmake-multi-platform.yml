@@ -23,10 +23,10 @@ jobs:
       #
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
-        vcpkg_triplet: [x64-windows-release, x86-windows, x64-windows,  x64-windows-static, x64-windows-static-md, arm64-windows, arm64-windows-static-md, x64-linux-release, x64-osx-release]
+        vcpkg_triplet: [x64-windows-release, x86-windows, x64-windows,  x64-windows-static, x64-windows-static-md, arm64-windows, arm64-windows-static-md, x64-uwp, arm64-uwp, x64-linux-release, x64-linux, x64-osx-release, x64-osx, arm64-osx, arm-neon-android, x64-android, arm64-android]
         build_type: [Release]
         include:
-          # Windows 
+          # cl  
           - vcpkg_triplet: x64-windows-release
             c_compiler: cl
             cpp_compiler: cl
@@ -55,18 +55,52 @@ jobs:
             c_compiler: cl
             cpp_compiler: cl
             os: windows-latest
+          - vcpkg_triplet: x64-uwp
+            c_compiler: cl
+            cpp_compiler: cl
+            os: windows-latest
+          - vcpkg_triplet: arm64-uwp
+            c_compiler: cl
+            cpp_compiler: cl
+            os: windows-latest
 
-          # Linux
+          # gnu
           - vcpkg_triplet: x64-linux-release
             c_compiler: gcc
             cpp_compiler: g++
             os: ubuntu-latest
+          - vcpkg_triplet: x64-linux
+            c_compiler: gcc
+            cpp_compiler: g++
+            os: ubuntu-latest
 
-          # Mac
+          # clang
           - vcpkg_triplet: x64-osx-release
             c_compiler: clang
             cpp_compiler: clang++
             os: macos-latest
+          - vcpkg_triplet: x64-osx
+            c_compiler: clang
+            cpp_compiler: clang++
+            os: macos-latest
+          - vcpkg_triplet: arm64-osx
+            c_compiler: clang
+            cpp_compiler: clang++
+            os: macos-latest
+          - vcpkg_triplet: arm-neon-android
+            c_compiler: clang
+            cpp_compiler: clang++
+            os: ubtuntu-latest
+            
+          - vcpkg_triplet: x64-android
+            c_compiler: clang
+            cpp_compiler: clang++
+            os: ubuntu-latest
+            
+          - vcpkg_triplet: arm64-android
+            c_compiler: clang
+            cpp_compiler: clang++
+            os: ubuntu-latest
             
 
     steps:
