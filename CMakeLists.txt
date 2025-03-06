@@ -25,7 +25,6 @@ src/effects/filters/*.cpp
 
 add_library(afx ${SRC_FILES})
 # add_executable(afx ${SRC_FILES})
-target_compile_definitions(afx PUBLIC ASSET="${CMAKE_INSTALL_DATADIR}/assets")
 target_include_directories(afx 
 PUBLIC 
 $<INSTALL_INTERFACE:include>
@@ -60,7 +59,7 @@ ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 
 set_target_properties(afx PROPERTIES EXPORT_NAME AFX)
 install(DIRECTORY ${CMAKE_SOURCE_DIR} include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install(DIRECTORY ${CMAKE_SOURCE_DIR} assets/ DESTINATION ${BINARY_DIR}/assets)
+
 
 install(EXPORT afx-targets
     FILE
@@ -95,5 +94,5 @@ export(EXPORT afx-targets
     NAMESPACE AFX::)
 
 export(PACKAGE AFX)
-# message(STATUS "AFX Headers will be installed to: ${CMAKE_SOURCE_DIR}")
+message(STATUS "AFX Headers will be installed to: ${CMAKE_INSTALL_INCLUDEDIR}")
 

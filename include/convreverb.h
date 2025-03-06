@@ -11,12 +11,8 @@
 #include "filehandler.h"
 #include "utils.h"
 
-
 class Reverb
 {
-private:
-    static unordered_map<string, string> types;
-
 public:
 
     /**
@@ -25,7 +21,7 @@ public:
      * 
      * Perform fast-convolution with FFT between audio samples and an impulse response
      */
-    static vector<vector<double>> convReverb(vector<vector<double>>& samples, string room);
+    static vector<vector<double>> convReverb(vector<vector<double>>& samples, const vector<vector<double>>& irSamples);
 };
 
 #endif

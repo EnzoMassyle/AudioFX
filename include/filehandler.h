@@ -5,16 +5,27 @@
 #include <sndfile.h>
 #include <vector>
 #include <cstring>
+#include <map>
 #include "params.h"
 
 using namespace std;
+
+class AudioFile
+{
+    public:
+        vector<vector<double>> samples;
+        SF_INFO info;
+        SNDFILE* file;
+        AudioFile(vector<vector<double>> samples, SF_INFO info, SNDFILE* f);
+
+        /* Close file */
+        ~AudioFile();
+};
 class FileHandler
 {
 private:
-    SNDFILE *inFile;
-    SNDFILE *outFile;
     double *buffer;
-    SF_INFO info;
+    map<const char*, SNDFILE*> files;
 
 public:
     FileHandler();
@@ -25,17 +36,14 @@ public:
      *
      * Attempt to open audio file. If successful, fill vector with audio samples
      */
-    vector<vector<double>> open(const char *fn);
+    AudioFile open(const char *fn);
 
     /**
      * @param output -> vector filled with audio samples
      *
      * Write data from output to an output file
      */
-    void write(const vector<vector<double>> &output, const char *writeName = "out.wav");
+    void write(AudioFile af, const char *writeName = "out.wav");
 
-    /* Getters */
-    int getSampleRate() { return info.samplerate; }
-    int getNumChannels() { return info.channels; }
 };
 #endif

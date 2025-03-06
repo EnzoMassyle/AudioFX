@@ -9,24 +9,21 @@ int main(int argc, char *argv[])
         cout << "Please provide one file to process! " << endl;
         return 0;
     }
-    cout << "asset dir: " << string(ASSET) << endl;
     auto start = std::chrono::high_resolution_clock::now();
     // char parentFolder[128] = "../samples/";
     // char *fn = strcat(parentFolder, argv[1]);
 
     FileHandler fh = FileHandler();
-    vector<vector<double>> samples = fh.open(argv[1]);
-
+    AudioFile af = fh.open(argv[1]);
     AFX afx = AFX();
 
     /* Perform sound transformations here */
     // samples = afx.layer(samples, -0.5, 0.5);
     // samples = afx.layer(samples, 0.5, 0.5);
     // samples = afx.layer(samples, 1, 0.15);
-    // samples = afx.layer(samples, -1, 0.15);
-    samples = afx.convReverb(samples, "AIRY");
+    // af.samples = afx.layer(af.samples, -1, 0.15);
     //hello 
-    // samples = afx.pitchShift(samples, 2);
+    // af.samples = afx.pitchShift(af.samples, 2);
 
     // EQ eq = afx.createEQ();
     // eq.setBell2(1.3);
@@ -44,6 +41,6 @@ int main(int argc, char *argv[])
     std::chrono::duration<double> elapsed = end - start; // Compute elapsed time
 
     std::cout << "Elapsed time: " << elapsed.count() << " seconds\n";
-    fh.write(samples);
+    fh.write(af);
 
 }

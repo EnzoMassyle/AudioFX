@@ -1,35 +1,38 @@
 #include "filehandler.h"
 
+
+AudioFile::AudioFile(vector<vector<double>> samples, SF_INFO info, SNDFILE* f)
+{
+    this->samples = samples;
+    this->info = info;
+    this->file = f;
+    
+}
+
+AudioFile::~AudioFile()
+{
+    sf_close(this->file);
+}
+
 FileHandler::FileHandler()
 {
     buffer = (double *)malloc(BUFFER_LEN * sizeof(double));
-    memset(&info, 0, sizeof(info));
-    inFile = nullptr;
-    outFile = nullptr;
 }
 
 FileHandler::~FileHandler()
 {
     free(buffer);
-
-    if (inFile)
-    {
-        sf_close(FileHandler::inFile);
-    }
-
-    if (outFile)
-    {
-        sf_close(FileHandler::outFile);
-    }
-
 }
 
-vector<vector<double>> FileHandler::open(const char *fn)
+AudioFile FileHandler::open(const char* fn)
 {
     const char *inFileName = fn;
+    SF_INFO info;
+    memset(&info, 0, sizeof(info));
+    SNDFILE* inFile;
     try
     {
-        if (!(FileHandler::inFile = sf_open(inFileName, SFM_READ, &this->info)))
+        if (!(inFile = sf_open(inFileName, SFM_READ, &info)))
         {   
             cout << inFileName << " not found" << endl;
             throw inFileName;
@@ -41,7 +44,7 @@ vector<vector<double>> FileHandler::open(const char *fn)
     }
     vector<vector<double>> samples(info.channels);
     int readcount;
-    while ((readcount = (int)sf_read_double(FileHandler::inFile, buffer, BUFFER_LEN)))
+    while ((readcount = (int)sf_read_double(inFile, buffer, BUFFER_LEN)))
     {
         for (int chan = 0; chan < info.channels; chan++)
         {
@@ -51,26 +54,32 @@ vector<vector<double>> FileHandler::open(const char *fn)
             }
         }
     }
-    return samples;
+
+
+    AudioFile af = AudioFile(samples, info, inFile);
+    return af;
 }
 
-void FileHandler::write(const vector<vector<double>> &output, const char* writeName)
+void FileHandler::write(AudioFile af, const char* writeName)
  {
-    if (!(FileHandler::outFile = sf_open(writeName, SFM_WRITE, &this->info)))
+    SNDFILE* outFile;
+    if (!(outFile = sf_open(writeName, SFM_WRITE, &af.info)))
         {
             throw writeName;
         }
     int idx = 0;
-    for (int i = 0; i < output[0].size(); i++)
+    for (int i = 0; i < af.samples[0].size(); i++)
     {
-        for (int chan = 0; chan < output.size(); chan++)
+        for (int chan = 0; chan < af.samples.size(); chan++)
         {
-            buffer[idx++] = output[chan][i];
+            buffer[idx++] = af.samples[chan][i];
             if (idx == BUFFER_LEN)
             {
-                sf_write_double(FileHandler::outFile, buffer, BUFFER_LEN);
+                sf_write_double(outFile, buffer, BUFFER_LEN);
                 idx = 0;
             }
         }
     }
+
+    sf_close(outFile);
 }

@@ -41,7 +41,7 @@ public:
      * 
      * Apply convolution based reverb to audio samples based on an impulse response. They can be found in samples/ir
      */
-    vector<vector<double>> convReverb(vector<vector<double>>& samples, string room = "CHURCH") {return Reverb::convReverb(samples, room);};
+    vector<vector<double>> convReverb(vector<vector<double>>& samples, const vector<vector<double>>& irSamples) {return Reverb::convReverb(samples, irSamples);};
     /**
      * @param samples -> audio samples separated by channel
      * 

@@ -1,22 +1,8 @@
 #include "convreverb.h"
-unordered_map<string, string> Reverb::types = {
-    {"CHURCH", "assets/ir/church.wav"},
-    {"CAVE", "assets/ir/cave.wav"},
-    {"AIRY", "assets/ir/airy.wav"}};
-
-vector<vector<double>> Reverb::convReverb(vector<vector<double>>& samples, string room)
+#include <filesystem>
+vector<vector<double>> Reverb::convReverb(vector<vector<double>>& samples, const vector<vector<double>> & irSamples)
 {
-    cout << filesystem::current_path() << endl;
-    if (Reverb::types.find(room) == Reverb::types.end())
-    {
-        cout << room << " is not a valid type" << endl;
-    }
     int numChannels = samples.size();
-    SF_INFO irInfo;
-    
-
-    FileHandler fh = FileHandler();
-    vector<double> irSamples = fh.open(types.at(room).c_str())[0];
     vector<thread> threads;
     vector<vector<double>> output(numChannels, vector<double>(samples[0].size(), 0.0));
 
@@ -24,7 +10,7 @@ vector<vector<double>> Reverb::convReverb(vector<vector<double>>& samples, strin
     for (int chan = 0; chan < numChannels; chan++)
     {
         sizes[chan] = samples[chan].size();
-        threads.emplace_back(Utils::convolve, ref(samples[chan]), irSamples);
+        threads.emplace_back(Utils::convolve, ref(samples[chan]), irSamples[0]);
     }
 
     for (thread &t : threads)
