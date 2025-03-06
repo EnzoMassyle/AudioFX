@@ -59,7 +59,7 @@ install(TARGETS afx
 
 set_target_properties(afx PROPERTIES EXPORT_NAME AFX)
 install(DIRECTORY ${CMAKE_SOURCE_DIR} include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install(DIRECTORY ${CMAKE_SOURCE_DIR} assets/ DESTINATION ${CMAKE_SOURCE_DIR}/build/assets)
+install(DIRECTORY ${CMAKE_SOURCE_DIR} assets/ DESTINATION ${CMAKE_BINARY_DIR}/assets)
 
 
 # install(
@@ -101,5 +101,5 @@ export(EXPORT afx-targets
     NAMESPACE AFX::)
 
 export(PACKAGE AFX)
-# message(STATUS "AFX Headers will be installed to: ${CMAKE_BUILD_RPATH}")
+# message(STATUS "AFX Headers will be installed to: ${CMAKE_BINARY_DIR}")
 
