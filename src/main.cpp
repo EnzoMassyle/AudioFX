@@ -20,21 +20,22 @@ int main(int argc, char *argv[])
     AFX afx = AFX();
 
     /* Perform sound transformations here */
-    samples = afx.layer(samples, -0.5, 0.5);
-    samples = afx.layer(samples, 0.5, 0.5);
-    samples = afx.layer(samples, 1, 0.15);
-    samples = afx.layer(samples, -1, 0.15);
+    // samples = afx.layer(samples, -0.5, 0.5);
+    // samples = afx.layer(samples, 0.5, 0.5);
+    // samples = afx.layer(samples, 1, 0.15);
+    // samples = afx.layer(samples, -1, 0.15);
     samples = afx.convReverb(samples, "AIRY");
-    samples = afx.pitchShift(samples, 2);
+    //hello 
+    // samples = afx.pitchShift(samples, 2);
 
-    EQ eq = afx.createEQ();
-    eq.setBell2(1.3);
-    eq.setHighPass(100);
-    eq.setBell3(1.2);
-    eq.setHighShelf(1.2);
-    eq.applyEQ(samples);
+    // EQ eq = afx.createEQ();
+    // eq.setBell2(1.3);
+    // eq.setHighPass(100);
+    // eq.setBell3(1.2);
+    // eq.setHighShelf(1.2);
+    // eq.applyEQ(samples);
 
-    Utils::normalize(samples);
+    // Utils::normalize(samples);
 
     
 
