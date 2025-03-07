@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.27)
-project(afx VERSION 1.0.0 LANGUAGES CXX)
+project(fxaudio VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -25,17 +25,17 @@ src/effects/filters/*.cpp
 )
 
 
-add_library(afx ${SRC_FILES})
-# add_executable(afx ${SRC_FILES})
-target_include_directories(afx 
+add_library(fxaudio ${SRC_FILES})
+# add_executable(fxaudio ${SRC_FILES})
+target_include_directories(fxaudio 
 PUBLIC 
 $<INSTALL_INTERFACE:include>
 $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
 )
 
 
-target_compile_features(afx PRIVATE cxx_std_17)
-install(TARGETS afx
+target_compile_features(fxaudio PRIVATE cxx_std_17)
+install(TARGETS fxaudio
 ARCHIVE DESTINATION lib
 LIBRARY DESTINATION lib
 RUNTIME DESTINATION bin
@@ -43,18 +43,18 @@ RUNTIME DESTINATION bin
 
 
 # Link external libraries
-target_link_libraries(afx 
+target_link_libraries(fxaudio 
 PUBLIC 
 SndFile::sndfile 
 FFTW3::fftw3
 )
 
 include(GNUInstallDirs)
-set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_DATADIR}/cmake/AFX)
+set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_DATADIR}/cmake/FXAUDIO)
 
 
-install(TARGETS afx
-EXPORT afx-targets
+install(TARGETS fxaudio
+EXPORT fxaudio-targets
 LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
@@ -62,11 +62,11 @@ ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 install(DIRECTORY ${CMAKE_SOURCE_DIR} include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 
-install(EXPORT afx-targets
+install(EXPORT fxaudio-targets
     FILE
-        afxTargets.cmake
+        fxaudioTargets.cmake
     NAMESPACE
-        AFX::
+        FXAUDIO::
     DESTINATION
         ${INSTALL_CONFIGDIR}
 )
@@ -74,26 +74,26 @@ install(EXPORT afx-targets
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/afxConfigVersion.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/fxaudioConfigVersion.cmake
     VERSION ${PROJECT_VERSION}
     COMPATIBILITY AnyNewerVersion
 )
 
-configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/afxConfig.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/afxConfig.cmake
+configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/fxaudioConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/fxaudioConfig.cmake
     INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
 )
 
 install(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/afxConfig.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/afxConfigVersion.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/fxaudioConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/fxaudioConfigVersion.cmake
     DESTINATION ${INSTALL_CONFIGDIR}
 )
 
-export(EXPORT afx-targets
-    FILE ${CMAKE_CURRENT_BINARY_DIR}/afxTargets.cmake
-    NAMESPACE AFX::)
+export(EXPORT fxaudio-targets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/fxaudioTargets.cmake
+    NAMESPACE FXAUDIO::)
 
-export(PACKAGE AFX)
-message(STATUS "AFX Headers will be installed to: ${CMAKE_INSTALL_INCLUDEDIR}")
+export(PACKAGE FXAUDIO)
+message(STATUS "FXAUDIO Headers will be installed to: ${CMAKE_INSTALL_INCLUDEDIR}")
 
