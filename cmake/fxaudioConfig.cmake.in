@@ -7,7 +7,7 @@ find_dependency(SndFile REQUIRED)
 list(REMOVE_AT CMAKE_MODULE_PATH -1)
 
 if(NOT TARGET fxaudio::fxaudio)
-    include("${DIR}/fxaudio.cmake")
+    include("${DIR}/fxaudioTargets.cmake")
 endif()
 
 set(FXAUDIO_LIBRARIES fxaudio::fxaudio)
