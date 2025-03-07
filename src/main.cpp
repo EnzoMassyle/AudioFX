@@ -1,5 +1,5 @@
 #include <iostream>
-#include "afx.h"   
+#include "fxaudio.h"   
 #include <chrono>
 
 int main(int argc, char *argv[])

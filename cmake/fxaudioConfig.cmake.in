@@ -6,8 +6,8 @@ find_dependency(FFTW3 REQUIRED)
 find_dependency(SndFile REQUIRED)
 list(REMOVE_AT CMAKE_MODULE_PATH -1)
 
-if(NOT TARGET afx::afx)
-    include("${DIR}/afxTargets.cmake")
+if(NOT TARGET fxaudio::fxaudio)
+    include("${DIR}/fxaudio.cmake")
 endif()
 
-set(AFX_LIBRARIES afx::afx)
+set(FXAUDIO_LIBRARIES fxaudio::fxaudio)
