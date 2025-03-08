@@ -4,6 +4,10 @@ This project is an open-source C++ library enabling developers to transform audi
 # Key Features and Technologies used
 This project is written in C++. Currently the basic flow of the program is processing a sound file and applying some audio processing technique to it. time stretching pitch shifting reverb and autotune have a working implementation.  
 
+
+# Whats next
+I have just finished this starting version of this library and will work on providing documentation soon!
+
 <!-- # How to Use
 To use this application, put any voice samples in the samples folder. In src/main.cpp, apply audio processing to a given .mp3 or .wav file
 
