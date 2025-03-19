@@ -1,10 +1,12 @@
-#include "eq.h"
+#include "../../include/eq.h"
 
 EQ::EQ(int sr)
 {
     this->filters = new Biquad*[NUM_FILTERS];
 
-    assert(this->filters != nullptr);
+    if (this->filters == nullptr) {
+        throw "Heap allocation error";
+    }
     this->sampleRate = sr;
     for (int i = 0; i < NUM_GAIN_FILTERS; i++)
     {
@@ -16,8 +18,12 @@ EQ::EQ(int sr)
 EQ::EQ(int sr, double g[], int lenG)
 {
     this->filters = new Biquad*[NUM_FILTERS];
-    assert(this->filters != nullptr);
-    assert(lenG == NUM_GAIN_FILTERS);
+    if (this->filters == nullptr) {
+        throw "Heap allocation error";
+    }
+    if (lenG != NUM_GAIN_FILTERS) {
+        throw "array of gains is not the correct length";
+    }
 
     for (int i = 0; i < NUM_GAIN_FILTERS; i++)
     {
@@ -29,7 +35,6 @@ EQ::EQ(int sr, double g[], int lenG)
 
 void EQ::addFilters()
 {
-    assert(this->filters != nullptr);
     this->filters[0] = new HighPass(20, this->sampleRate, 0.707); 
     this->filters[1] = new LowShelf(this->gains[0], 75, this->sampleRate, 1.0);
     this->filters[2] = new BellFilter(this->gains[1], 100, this->sampleRate, 0.6);

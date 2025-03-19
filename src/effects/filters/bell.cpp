@@ -1,5 +1,5 @@
-#include "filters/bell.h"
-#include <iostream>
+#include "../../../include/filters/bell.h"
+
 BellFilter::BellFilter(double gain, double cutoffFreq, double sampleRate, double bandwidth)
 {
     this->f0 = cutoffFreq;
@@ -10,7 +10,8 @@ BellFilter::BellFilter(double gain, double cutoffFreq, double sampleRate, double
 
 void BellFilter::setCoefficients(double gain, double bw)
 {
-    assert(bw > 0);
+    // check for bw = 0?
+    
     double a = pow(10, gain / 40.0);
     double wc = (this->f0 * 2 * PI) / this->fs;
     double alpha = sin(wc) * (bw / 2.0);

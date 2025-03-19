@@ -1,4 +1,4 @@
-#include "filters/hs.h"
+#include "../../../include/filters/hs.h"
 
 HighShelf::HighShelf(double gain, double cutoffFreq, double sampleRate, double slope)
 {
@@ -10,7 +10,9 @@ HighShelf::HighShelf(double gain, double cutoffFreq, double sampleRate, double s
 
 void HighShelf::setCoefficients(double gain, double slope)
 {
-    assert(slope > 0);
+    if (slope <= 0) {
+        throw "invalid slope";
+    }
     double a = pow(10, gain / 40.0);
     double wc = (this->f0 * 2 *  PI) / this->fs;
     double alpha = (sin(wc) * sqrt((a + (1/a)) * ((1 / slope) - 1) + 2)) / 2;

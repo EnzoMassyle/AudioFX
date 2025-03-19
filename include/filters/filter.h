@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <cmath>
-#include "params.h"
+#include "../params.h"
 using namespace std;
 class Filter
 {

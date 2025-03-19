@@ -1,4 +1,4 @@
-#include "filehandler.h"
+#include "../../include/filehandler.h"
 
 
 AudioFile::AudioFile(vector<vector<double>> samples, SF_INFO info, SNDFILE* f)

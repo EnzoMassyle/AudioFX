@@ -1,8 +1,10 @@
-#include "timestretch.h"
+#include "../../include/timestretch.h"
 
 vector<vector<double>> TimeStretch::changeSpeed(const vector<vector<double>>& samples, double shiftFactor)
 {
-    assert(samples.size() > 0);
+    if (samples.size() == 0) {
+        throw "Must have at least one channel of audio";
+    }
     int numChannels = samples.size();
     int channelLength = samples[0].size();
 

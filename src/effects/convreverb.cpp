@@ -1,7 +1,9 @@
-#include "convreverb.h"
-#include <filesystem>
+#include "../../include/convreverb.h"
 vector<vector<double>> Reverb::convReverb(vector<vector<double>>& samples, const vector<vector<double>> & irSamples)
 {
+    if (samples.size() == 0) {
+        throw "Must have at least one channel of audio";
+    }
     int numChannels = samples.size();
     vector<thread> threads;
     vector<vector<double>> output(numChannels, vector<double>(samples[0].size(), 0.0));

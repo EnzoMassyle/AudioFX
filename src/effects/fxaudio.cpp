@@ -1,4 +1,4 @@
-#include "fxaudio.h"
+#include "../../include/fxaudio.h"
 
 vector<vector<double>> AFX::autotune(const vector<vector<double>>& samples, double intensity, string note, char scale, int sr)
 {

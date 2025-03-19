@@ -17,21 +17,26 @@ endif()
 # Find external libraries
 find_package(FFTW3 CONFIG REQUIRED)
 find_package(SndFile CONFIG REQUIRED)
+find_package(GTest CONFIG REQUIRED)
+
 
 file(GLOB_RECURSE SRC_FILES =
-src/*.cpp
 src/effects/*.cpp
 src/effects/filters/*.cpp
 )
 
+enable_testing()
+
 
 add_library(fxaudio ${SRC_FILES})
-# add_executable(fxaudio ${SRC_FILES})
+# add_executable(fxaudio ${SRC_FILES} src/main.cpp)
 target_include_directories(fxaudio 
 PUBLIC 
 $<INSTALL_INTERFACE:include>
 $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
 )
+
+
 
 
 target_compile_features(fxaudio PRIVATE cxx_std_17)
@@ -95,5 +100,31 @@ export(EXPORT fxaudio-targets
     NAMESPACE FXAUDIO::)
 
 export(PACKAGE FXAUDIO)
-message(STATUS "FXAUDIO Headers will be installed to: ${CMAKE_INSTALL_INCLUDEDIR}")
+
+
+# TESTING 
+
+enable_testing()
+
+# Gather test files (modify this to include your test files)
+file(GLOB_RECURSE TEST_FILES 
+tests/*.cpp
+)
+message(STATUS "${TEST_FILES}")
+
+# Create test executable
+add_executable(fxaudio_tests ${TEST_FILES} ${SRC_FILES} tests/main.cpp)
+target_link_libraries(fxaudio_tests 
+    PRIVATE 
+    SndFile::sndfile 
+    FFTW3::fftw3
+    GTest::gtest 
+    GTest::gtest_main
+    GTest::gmock 
+    GTest::gmock_main
+)
+
+# Register the tests with CTest
+include(GoogleTest)
+gtest_discover_tests(fxaudio_tests)
 

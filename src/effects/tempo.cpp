@@ -1,8 +1,10 @@
-#include "tempo.h"
+#include "../../include/tempo.h"
 
 vector<vector<double>> Tempo::changeTempo(const vector<vector<double>>& samples, double r)
 {
-    assert(samples.size() > 0);
+    if (samples.size() == 0) {
+        throw "Must have at least one channel of audio";
+    }
     int numChannels = samples.size();
     int newChannelLength = samples[0].size()/ r;
     vector<vector<double>> output(numChannels, vector<double>(newChannelLength, 0.0));

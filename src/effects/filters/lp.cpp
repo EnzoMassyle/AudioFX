@@ -1,4 +1,4 @@
-#include "filters/lp.h"
+#include "../../../include/filters/lp.h"
 LowPass::LowPass(double cutoffFreq, int sampleRate, double q)
 {
     this->fs = sampleRate;
@@ -8,7 +8,9 @@ LowPass::LowPass(double cutoffFreq, int sampleRate, double q)
 
 void LowPass::setCoefficients(double f0, double q)
 {
-    assert(q > 0);
+    if (q <= 0) {
+        throw "invalid Q factor";
+    }
     double wc = (f0 * 2 *  PI) / this->fs;
     double alpha = sin(wc) / (2 * q);
     double beta = cos(wc); 

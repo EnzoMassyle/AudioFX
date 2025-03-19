@@ -1,4 +1,5 @@
-#include "autotune.h"
+#include "../../include/autotune.h"
+
 map<char, vector<int>> Autotune::intervals = {
     {'M', vector<int>(initializer_list<int>{4, 5, 7, 9, 11, 12})},
     {'m', vector<int>(initializer_list<int>{3, 5, 7, 8, 10, 12})}
@@ -21,6 +22,10 @@ map<string, double> Autotune::rootNotes = {
 
 Autotune::Autotune(double intensity, string note, char scale)
 {
+    if (rootNotes.find(note) == rootNotes.end() || intervals.find(scale) == intervals.end()) {
+        throw "Invalid args";
+    }
+    
     this->intensity = intensity;
     this->note = note;
     this->scale = scale;
@@ -46,6 +51,10 @@ void Autotune::fillNoteTable()
 
 vector<vector<double>> Autotune::process(const vector<vector<double>>& samples, int sampleRate)
 {
+    if (samples.size() == 0) {
+        throw "Must have at least one channel of audio";
+    }
+
     this->sampleRate = sampleRate;
     int numChannels = samples.size();
     vector<vector<double>> output(samples.size(), vector<double>(samples[0].size(), 0.0));
