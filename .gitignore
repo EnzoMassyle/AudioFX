@@ -28,11 +28,9 @@ Makefile
 *.so
 *.dll
 *.dylib
-*.wav
-assets/*.wav
+
 
 src/CMakeUserPresets.json
 
-samples/
 venv/
 Markdown-3.7.dist-info/
