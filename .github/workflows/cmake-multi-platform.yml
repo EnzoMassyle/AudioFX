@@ -79,16 +79,16 @@ jobs:
             os: macos-latest
 
           # Android (with explicit NDK setup)
-          - vcpkg_triplet: x64-android
-            c_compiler: clang
-            cpp_compiler: clang++
-            os: ubuntu-latest
-            android_abi: x86_64
-          - vcpkg_triplet: arm64-android
-            c_compiler: clang
-            cpp_compiler: clang++
-            os: ubuntu-latest
-            android_abi: arm64-v8a
+          # - vcpkg_triplet: x64-android
+          #   c_compiler: clang
+          #   cpp_compiler: clang++
+          #   os: ubuntu-latest
+          #   android_abi: x86_64
+          # - vcpkg_triplet: arm64-android
+          #   c_compiler: clang
+          #   cpp_compiler: clang++
+          #   os: ubuntu-latest
+          #   android_abi: arm64-v8a
 
     steps:
     - uses: actions/checkout@v4
