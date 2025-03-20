@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        vcpkg_triplet: [x64-windows-release, x86-windows, x64-windows, x64-windows-static, x64-windows-static-md, arm64-windows, arm64-windows-static-md, x64-uwp, arm64-uwp, x64-linux-release, x64-linux, x64-osx-release, x64-osx, arm64-osx, x64-android, arm64-android]
+        vcpkg_triplet: [x64-windows-release, x86-windows, x64-windows, x64-windows-static, x64-windows-static-md, arm64-windows, arm64-windows-static-md, x64-uwp, arm64-uwp, x64-linux-release, x64-linux, x64-osx-release, x64-osx, arm64-osx]
         build_type: [Release]
         include:
           # cl  
@@ -79,16 +79,16 @@ jobs:
             os: macos-latest
 
           # Android (with explicit NDK setup)
-          - vcpkg_triplet: x64-android
-            c_compiler: clang
-            cpp_compiler: clang++
-            os: ubuntu-latest
-            android_abi: x86_64
-          - vcpkg_triplet: arm64-android
-            c_compiler: clang
-            cpp_compiler: clang++
-            os: ubuntu-latest
-            android_abi: arm64-v8a
+          # - vcpkg_triplet: x64-android
+          #   c_compiler: clang
+          #   cpp_compiler: clang++
+          #   os: ubuntu-latest
+          #   android_abi: x86_64
+          # - vcpkg_triplet: arm64-android
+          #   c_compiler: clang
+          #   cpp_compiler: clang++
+          #   os: ubuntu-latest
+          #   android_abi: arm64-v8a
 
     steps:
     - uses: actions/checkout@v4
