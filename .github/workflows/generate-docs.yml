@@ -1,5 +1,5 @@
 
-name: fasdf
+name: Generate documentation
 on:
     push:
         branches:
