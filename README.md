@@ -1,5 +1,5 @@
 # Abstract
-This project is an open-source C++ library enabling developers to transform audio effortlessly without DSP expertise. The current stage of development is building out the audio effects and tweaking them to be high quality. 
+This project is an open-source C++ library enabling developers to transform audio effortlessly without DSP expertise. I mainly did this project to get a better understanding of digital signal processing and I have always been a sound nerd. This library provides methods for offline audio processing. Methods have been optimized for speed and quality.
 
 # Technologies used
 * Uses Microsoft's [vcpkg](https://github.com/microsoft/vcpkg) as a package manager.
