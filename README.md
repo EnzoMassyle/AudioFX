@@ -7,36 +7,43 @@ This project is an open-source C++ library enabling developers to transform audi
 * CI/CD with Github worfklows for cross-platform builds
 
 # Documentation
-refer here for the documetnation
+Working on that
+
+# Setting up vcpkg
+[follow this guide](https://learn.microsoft.com/en-us/vcpkg/get_started/get-started?pivots=shell-bash) to set up vcpkg for your build system
 # How to use 
-I am currently working on getting this package on the vcpkg open-source registry. It is taking longer than expected so for now this will have to do for now. 
-#### Clone this repository
-Currently you can use this library by importing is as a module in your project. In your project directory run the following: 
-```Console
-git clone https://github.com/EnzoMassyle/AudioFX.git
-```
-#### Setting up vcpkg
-[follow this guide](https://learn.microsoft.com/en-us/vcpkg/get_started/get-started?pivots=shell-bash) to set up vcpkg
+This library is a port on vcpkg. Using this library just requires adding the port.
 
-#### Installing depenencies
-Run this command to install the needed dependencies
+If you are running vcpkg in classic mode run this command
 ```Console
-vcpkg install fftw3 gtest libsndfile
+vcpkg install fxaudio
 ```
 
-#### Link with project
-
-Add this code to your CMakeLists.txt
+If you are running vcpkg in manifest mode run this command
 ```Console
-
-add_subdirectory(AudioFX)
-
-target_include_directories(myproject PRIVATE AudioFX/include)
-
-target_link_libraries(myproject PRIVATE fxaudio)
-
+vcpkg add port fxaudio
 ```
 
+#### Link with project with CMake
+
+If you are using CMake as your build system add this code to your CMakeLists.txt
+```Console
+find_package(FXAUDIO CONFIG REQUIRED)
+target_link_libraries(myproject PRIVATE FXAUDIO::fxaudio)
+```
+# Example Code
+This is a small example of how to use some the classes and methods provided. 
+```Console
+#include<fxaudio.h>
+
+int main() {
+    FileHandler fh = FileHandler();
+    AudioFile af = fh.open("../mysndfile.wav");
+    AFX afx = AFX();
+    af.samples = afx.pitchShift(af.samples, 5);
+    fh.write(af);
+}
+```
 
 
 

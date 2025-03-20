@@ -8,6 +8,13 @@
 #include "fft.h"
 #include "tempo.h"
 using namespace std;
+
+
+/**
+ * @class Autotune
+ * @brief Autotune music effect
+ * 
+ */
 class Autotune
 {
 private:
@@ -18,27 +25,28 @@ private:
 
 
     /**
+     * @brief Analyze frequencies of the audio slice and tune it to the nearest correct note
      * @param slice -> Chunk of an audio sample
      * @param start -> start of output
      * @param out -> vector to store output 
      * 
-     * Analyze frequencies of the audio slice and tune it to the nearest correct note
      */
     void tuneSlice(vector<double> slice, int start, vector<double>& out);
 
 
     /**
+     * @brief Perform autotune algorithm to a singular channel of audio
      * @param channel -> a single channel of audio
      * @param out -> vector to store output
      * 
-     * Perform autotune algorithm to a singular channel of audio
      */
     void tuneChannel(const vector<double>& channel, vector<double>&out);
 
     /**
+     * @brief For a given frequency, find the closest note for the given scale and calculate the shifting factor
      * @param f -> frequency
      *
-     * For a given frequency, find the closest note for the given scale and calculate the shifting factor
+     * @returns shifting factor
      */
     double findShiftingFactor(double f);
 
@@ -56,14 +64,16 @@ public:
     Autotune(double intensity, string note, char scale);
 
     /**
+     * @brief Use overlapping window approach to tune each audio frame to the nearest correct pitch on the provided musical scale
      * @param samples -> Audio samples separated by channel
      * @param sampleRate -> sample rate
-     * Use granular synthesis approach to tune each audio grain to the nearest correct pitch on the provided musical scale
-     */
+     * 
+     * @returns Modified audio
+     **/
     vector<vector<double>> process(const vector<vector<double>>& samples, int sampleRate);
 
     /**
-     * Fill note table depending on the musical scale used
+     * @brief  note table depending on the musical scale used
      */
     void fillNoteTable();
 };

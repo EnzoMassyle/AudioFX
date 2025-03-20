@@ -10,6 +10,20 @@
 #include "filters/hs.h"
 #include "filters/ls.h"
 #include "params.h"
+
+/**
+ * @class EQ
+ * @brief parametric equalizer with 8 Biquad filters
+ * 
+ * 
+ * the order of the filters is follows:
+ * 
+ * 1 High pass 
+ * 1 Low shelf
+ * 4 Bell 
+ * 1 High shelf
+ * 1 Low pass
+ */
 class EQ
 {
 private:
@@ -21,30 +35,27 @@ private:
 public:
 
     /**
+     * @brief Initialize all filters for EQ
      * @param sr -> sample rate
-     * 
-     * Initialize all filters for EQ
      */
     EQ(int sr);
 
     /**
+     * @brief Initialize filters for EQ giving then the corresponding gains in g
      * @param sr -> samples rate
      * @param g -> array of gains for each filter that is not a pass filter
      * @param lenG -> length of array g
-     * 
-     * Initialize filters for EQ giving then the corresponding gains in g
      */
     EQ(int sr, double g[], int lenG);
 
     /**
-     * Free memory
+     * @brief Destory filters and free memory
      */
     ~EQ();
 
     /**
+     * @brief Apply filters to samples in a cascading fashion
      * @param samples -> audio samples separated by channel
-     * 
-     * Apply filters to samples in a cascading fashion
      */
     void applyEQ(vector<vector<double>> &samples);
 

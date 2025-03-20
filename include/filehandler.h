@@ -10,6 +10,11 @@
 
 using namespace std;
 
+/**
+ * @class AudioFile
+ * @brief Data structure after opening a file through the FileHandler class
+ * 
+ */
 class AudioFile
 {
     public:
@@ -21,7 +26,14 @@ class AudioFile
         /* Close file */
         ~AudioFile();
 };
-class FileHandler
+
+/** @} */  // End of AudioFile documentation group
+
+/**
+ * @class FileHandler
+ * @brief Handle sound file operations
+ * 
+ */class FileHandler
 {
 private:
     double *buffer;
@@ -31,17 +43,15 @@ public:
     FileHandler();
     ~FileHandler();
     /**
+     * @brief Attempt to open audio file. If successful, fill vector with audio samples
      * @param fn -> file path to an audio sample
      * @param info -> metadata of audio file
-     *
-     * Attempt to open audio file. If successful, fill vector with audio samples
      */
     AudioFile open(const char *fn);
 
     /**
+     * @brief Write data from output to an output file
      * @param output -> vector filled with audio samples
-     *
-     * Write data from output to an output file
      */
     void write(AudioFile af, const char *writeName = "out.wav");
 

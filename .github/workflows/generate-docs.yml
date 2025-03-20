@@ -1,0 +1,26 @@
+
+name: fasdf
+on:
+    push:
+        branches:
+        - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps: 
+        - name: Checkout repository
+          uses: actions/checkout@v4
+        - name: Install doxygen
+          run: sudo apt-get install -y doxygen graphviz
+        - name: Generate Documentation
+          run: doxygen Doxyfile
+        - name: Deploy to GitHub Pages
+          uses: JamesIves/github-pages-deploy-action@v4
+          with:
+            branch: gh-pages
+            folder: docs/html
+
+
+
+
+    

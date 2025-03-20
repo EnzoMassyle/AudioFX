@@ -9,6 +9,12 @@
 using namespace std;
 typedef fftw_complex cpx;
 
+
+/**
+ * @class FFT
+ * @brief Handler class to perform the Fast Fourier Transform
+ * 
+ */
 class FFT
 {
 private:
@@ -24,40 +30,36 @@ private:
 public:
     static bool planExists;
     /**
+     * @brief Allocate FFT plans and buffers , enabled for multi-threaded or serial use
      * @param n -> FFT size
-     *
-     * Allocate FFT plans and buffers , enabled for multi-threaded or serial use
      */
     FFT(int n);
 
     /**
-     * Destroy FFT plans and buffers
+     * @brief Destroy FFT plans and buffers
      */
     ~FFT();
 
     /**
+     * @brief Apply FFT to vector v
      * @param v -> vector
-     *
-     * Apply FFT to vector v
      */
     vector<complex<double>> fft(const vector<double> &v);
 
     /**
+     * @brief Apply IFFT to complex vector c
      * @param c -> complex vector
-     *
-     * Apply IFFT to complex vector c
      */
     vector<double> ifft(const vector<complex<double>> &c);
 
     /**
+     * @brief Associated with constructor. Will only be called once per the scope of the FFT object instantiation. Needed for multi-threading
      * @param n -> FFT size
-     *
-     * Associated with constructor. Will only be called once per the scope of the FFT object instantiation. Needed for multi-threading
      */
     static void preInit(int n);
 
     /**
-     * Destroy plans once all FFT objects are out of scope. Needed for multi-threading
+     * @brief Destroy plans once all FFT objects are out of scope. Needed for multi-threading
      */
     static void destroyPlan();
 };
