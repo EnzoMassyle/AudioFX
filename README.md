@@ -7,7 +7,7 @@ This project is an open-source C++ library enabling developers to transform audi
 * CI/CD with Github worfklows for cross-platform builds
 
 # Documentation
-Working on that
+Access library documentation [here](https://enzomassyle.github.io/AudioFX/index.html)
 
 # Setting up vcpkg
 [follow this guide](https://learn.microsoft.com/en-us/vcpkg/get_started/get-started?pivots=shell-bash) to set up vcpkg for your build system
