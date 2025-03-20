@@ -2,6 +2,9 @@
 
 vector<vector<double>> TimeStretch::changeSpeed(const vector<vector<double>>& samples, double shiftFactor)
 {
+    if (shiftFactor <= 0) {
+        throw "Shift factor must be greater than 0";
+    }
     if (samples.size() == 0) {
         throw "Must have at least one channel of audio";
     }
