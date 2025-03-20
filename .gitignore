@@ -28,7 +28,6 @@ Makefile
 *.so
 *.dll
 *.dylib
-
 docs
 src/CMakeUserPresets.json
 venv/
