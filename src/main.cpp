@@ -19,31 +19,7 @@ int main(int argc, char *argv[])
     AFX afx = AFX();
 
     /* Perform sound transformations here */
-    // samples = afx.layer(samples, -0.5, 0.5);
-    // samples = afx.layer(samples, 0.5, 0.5);
-    // samples = afx.layer(samples, 1, 0.15);
-    // af.samples = afx.layer(af.samples, -1, 0.15);
-    //hello 
-    // af.samples = afx.pitchShift(af.samples, 10);
     af.samples = afx.autotune(af.samples, 1.0, "F", 'm', af.info.samplerate);
-    // af.samples = afx.convReverb(af.samples, ir.samples);
-    // af.samples = afx.changeTempo(af.samples, 0.877);
-    // EQ eq = afx.createEQ();
-    // eq.setBell2(1.3);
-    // eq.setBell3(1.2);
-    // eq.setLowPass(17500);
-    // eq.setHighShelf(1.2);
-
-
-
-    // EQ eq = afx.createEQ();
-    // eq.setBell2(1.3);
-    // eq.setHighPass(100);
-    // eq.setBell3(1.2);
-    // eq.setHighShelf(1.2);
-    // eq.applyEQ(samples);
-
-    // Utils::normalize(samples);
 
     
 

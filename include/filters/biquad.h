@@ -27,6 +27,7 @@ class Biquad : public Filter
          * @brief sets the parameters of the filter. What is being set depends on the type of filter
          */
         virtual void setCoefficients(double, double) = 0;
+        virtual ~Biquad() = default; 
 };
 
 

@@ -12,7 +12,7 @@ TEST(AutoTuneTests, Constructor) {
     ASSERT_NO_THROW(Autotune(1.0, validNote, validScale));
 }
 
-/* Coverage for processing audio */
+/* Coverage for processing audio methods mostly all of these below test for ensuring proper behavior on edge cases such as an empty list and faulty args*/
 TEST(AutoTuneTests, Process) {
     FileHandler fh = FileHandler();
     AudioFile af = fh.open("../assets/DinerShort.wav");
@@ -40,6 +40,7 @@ TEST(TimeStretchTests, Process) {
     vector<vector<double>> empty;
     ASSERT_NO_THROW(afx.timeStretch(af.samples, 1.2));
     ASSERT_ANY_THROW(afx.timeStretch(empty,1.2));
+    ASSERT_ANY_THROW(afx.timeStretch(af.samples, 0));
 }
 
 TEST(TempoTests, Process) {
@@ -59,4 +60,17 @@ TEST(LayerTests, Process) {
     ASSERT_NO_THROW(afx.layer(af.samples, 5, 1));
     ASSERT_ANY_THROW(afx.layer(empty,5, 1));
 }
+
+
+TEST(ConvReverbTests, Process) {
+    FileHandler fh = FileHandler();
+    AudioFile af = fh.open("../assets/DinerShort.wav");
+    AudioFile ir = fh.open("../assets/ir/church.wav");
+    AFX afx = AFX();
+    vector<vector<double>> empty;
+    ASSERT_NO_THROW(afx.convReverb(af.samples, ir.samples));
+    ASSERT_ANY_THROW(afx.convReverb(empty, ir.samples));
+    ASSERT_ANY_THROW(afx.convReverb(af.samples, empty));
+}
+
 

@@ -29,6 +29,7 @@ Makefile
 *.dll
 *.dylib
 
+docs
 src/CMakeUserPresets.json
 venv/
 Markdown-3.7.dist-info/
