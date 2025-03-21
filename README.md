@@ -2,6 +2,7 @@
 This project is an open-source C++ library enabling developers to transform audio effortlessly without DSP expertise. I mainly did this project to get a better understanding of digital signal processing and I have always been a sound nerd. This library provides methods for offline audio processing. Methods have been optimized for speed and quality.
 
 # Technologies used
+* CMake build system
 * Uses Microsoft's [vcpkg](https://github.com/microsoft/vcpkg) as a package manager.
 * Unit testing with Google Tests (gtests)
 * CI/CD with Github worfklows for cross-platform builds
