@@ -140,6 +140,12 @@ jobs:
     - name: Build
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
+    - name: Upload compiled library
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.vcpkg_triplet }}-lib
+        path: ${{ steps.strings.outputs.build-output-dir }}/output/*
+
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: ctest --build-config ${{ matrix.build_type }}
